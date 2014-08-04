@@ -5,26 +5,28 @@ filetype off
 set rtp+=~/.vim/bundle/vundle
 call vundle#rc()
 
+Bundle 'Tagbar'
 Bundle 'gmarik/vundle'
-Bundle 'Lokaltog/vim-easymotion'
+"Bundle 'Lokaltog/vim-easymotion' now using vim-sneak
 Bundle 'The-NERD-tree'
 Bundle 'NERD_Tree-and-ack'
 "Bundle 'clang-complete' to slow...
 Bundle 'narrow_region'
 "Bundle 'Command-T' deson't work on windows
 Bundle 'Mark'
-Bundle 'ack.vim'
+Bundle 'mileszs/ack.vim'
 Bundle 'https://github.com/vim-scripts/a.vim'
-Bundle 'vmark.vim--Visual-Bookmarking'
+"Bundle 'vmark.vim--Visual-Bookmarking'
 Bundle 'https://github.com/Lokaltog/vim-powerline'
 Bundle 'Solarized'
 Bundle 'ctrlp.vim'
 Bundle 'cpp.vim'
 Bundle 'vimwiki'
-Bundle 'vcscommand.vim'
+"Bundle 'vcscommand.vim'
 "Bundle 'https://github.com/wookiehangover/jshint.vim'
 Bundle 'vim-coffee-script'
-Bundle 'yankstack'
+"Bundle 'yankstack'
+Bundle 'justinmk/vim-sneak'
 Bundle 'JavaScript-syntax'
 Bundle 'Syntastic'
 Bundle 'https://github.com/myhere/vim-nodejs-complete'
@@ -37,7 +39,7 @@ filetype plugin indent on
 
 "let g:Powerline_symbols = 'fancy'
 let g:Powerline_theme = 'default'
-let g:Powerline_colorscheme = 'skwp'
+"let g:Powerline_colorscheme = 'skwp'
  let g:syntastic_mode_map = { 'mode': 'active',
                                \ 'active_filetypes': ['javascript'],
                                \ 'passive_filetypes': [] }
@@ -85,10 +87,12 @@ map <F1> :NERDTreeToggle<CR>
 map <M-RIGHT> gt
 map <silent> <F7> :!gnome-terminal<CR>
 
-set gfn=Inconsolata\ 10
+set gfn=Inconsolata\ 9
 let g:ctrlp_working_path_mode = 0
 let NERDTreeShowBookmarks=1
 let NERDTreeChDirMode=2
 let NERDTreeShowLineNumbers=1
+let g:ackprg="ack -H --nocolor --nogroup --column"
+let g:ctrlp_custom_ignore = 'node_modules'
 
 colorscheme solarized
