@@ -34,14 +34,22 @@
   (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
   (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 
+(defun package-safe-install (&rest packages)
+  (dolist (package packages)
+    (unless (package-installed-p package)
+      (package-install package))
+    (require package)))
+  
+
   ; Load packages
+  (package-safe-install 'evil)
   (evil-mode 1)        ;; enable evil-mode
   )
 
 (defun system-is-my-workpc ()
 (interactive)
 "Return true if the system we are running on is my PC at work"
-(string-equal system-name "parwd17.dashlane.com")
+(string-equal system-name "PARWD17")
 )
 
 (defun system-is-laptop ()
@@ -75,7 +83,7 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes (quote ("4cf3221feff536e2b3385209e9b9dc4c2e0818a69a1cdb4b522756bcdf4e00a4" "4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" default)))
  '(inhibit-startup-screen t)
- '(org-agenda-files (quote ("~/ownCloud/org/home.org" "~/ownCloud/org/movies.org"))))
+)
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -88,7 +96,13 @@
 (show-paren-mode 1)
 
 (setq org-default-notes-file (concat org-directory "/notes.org"))
+(setq org-refile-targets '((org-agenda-files :maxlevel . 9)))
 (define-key global-map "\C-cc" 'org-capture)
 
 (require 'evil-leader)
 (require 'evil-org)
+
+ (setq org-agenda-custom-commands
+       '(;; match those tagged with :inbox:, are not scheduled, are not DONE.
+         ("ii" "[i]nbox tagged unscheduled tasks" tags "-SCHEDULED={.+}/!+TODO|+STARTED|+WAITING")))
+
