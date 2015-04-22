@@ -33,6 +33,8 @@ Plugin 'https://github.com/arkwright/vim-whiplash.git'
 Plugin 'DoxygenToolkit.vim'
 Plugin 'DoxyGen-Syntax'
 Plugin 'Markdown'
+Plugin 'wting/rust.vim'
+Plugin 'ScmFrontEnd-former-name--MinSCM'
 
 filetype plugin indent on
 
@@ -57,6 +59,9 @@ set backspace=indent,eol,start
 " Abbreviations
 " --------------------------------------- "
 :iab cdate // DRA <c-r>=strftime("%Y-%m-%d")<CR>:
+:iab rnP return new Promise(function(resolve, reject){<CR>});<C-O>O
+:iab JSO JSON.stringify
+:iab clog console.log
 :iab cdatef // DRA_Fix_<c-r>=strftime("%Y-%m-%d")<CR>_
 :iab boxcom ////////////////////////////////////////////////////////////////////////////////<C-O>o//
 
@@ -94,6 +99,7 @@ map <silent> <F7> :!xterm<CR>
 "set gfn=Menlo\ for\ Powerline\ 11
 set gfn=Droid\ Sans\ Mono\ 9
 let g:ctrlp_working_path_mode = 0
+let g:ctrlp_switch_buffer = 0
 let NERDTreeShowBookmarks=1
 let NERDTreeChDirMode=2
 let NERDTreeShowLineNumbers=1
@@ -104,8 +110,8 @@ if has("gui_running")
     colorscheme solarized
 endif
 
-highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-match OverLength /\%81v.\+/
+"highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+"match OverLength /\%81v.\+/
 set completeopt=longest,menuone
 
 " Whiplash config

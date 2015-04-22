@@ -81,7 +81,9 @@ export SSH_KEY_PATH="~/.ssh/id_rsa"
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias psg="ps aux | grep -i"
-
+hgdiff() {
+    hg cat $1 | gvim - -c  ":vert diffsplit $1" -c "map q :qa!<CR>";
+}
 
 # Fix zsh tab completion freeze on git stuff.
 __git_files () { 

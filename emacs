@@ -47,7 +47,7 @@
 (defun system-is-laptop ()
 (interactive)
 "Return true if the system we are running on is my laptop"
-(string-equal system-name "caladan")
+(string-equal system-name "caladan.localdomain")
 )
 
 (if (system-is-my-workpc)
@@ -75,7 +75,7 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes (quote ("4cf3221feff536e2b3385209e9b9dc4c2e0818a69a1cdb4b522756bcdf4e00a4" "4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" default)))
  '(inhibit-startup-screen t)
- '(org-agenda-files (quote ("~/ownCloud/org/home.org" "~/ownCloud/org/movies.org"))))
+ '(org-agenda-files (quote ("~/ownCloud/org/work.org"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
