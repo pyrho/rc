@@ -34,14 +34,22 @@
   (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
   (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 
+(defun package-safe-install (&rest packages)
+  (dolist (package packages)
+    (unless (package-installed-p package)
+      (package-install package))
+    (require package)))
+  
+
   ; Load packages
+  (package-safe-install 'evil)
   (evil-mode 1)        ;; enable evil-mode
   )
 
 (defun system-is-my-workpc ()
 (interactive)
 "Return true if the system we are running on is my PC at work"
-(string-equal system-name "parwd17.dashlane.com")
+(string-equal system-name "PARWD17")
 )
 
 (defun system-is-laptop ()
@@ -88,7 +96,13 @@
 (show-paren-mode 1)
 
 (setq org-default-notes-file (concat org-directory "/notes.org"))
+(setq org-refile-targets '((org-agenda-files :maxlevel . 9)))
 (define-key global-map "\C-cc" 'org-capture)
 
 (require 'evil-leader)
 (require 'evil-org)
+
+ (setq org-agenda-custom-commands
+       '(;; match those tagged with :inbox:, are not scheduled, are not DONE.
+         ("ii" "[i]nbox tagged unscheduled tasks" tags "-SCHEDULED={.+}/!+TODO|+STARTED|+WAITING")))
+
