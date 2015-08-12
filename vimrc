@@ -35,6 +35,11 @@ Plugin 'DoxyGen-Syntax'
 Plugin 'Markdown'
 Plugin 'wting/rust.vim'
 Plugin 'ScmFrontEnd-former-name--MinSCM'
+Plugin 'https://github.com/terryma/vim-expand-region'
+Plugin 'mustache/vim-mustache-handlebars'
+Plugin 'The-NERD-Commenter'
+
+au BufRead,BufNewFile *.handlebars,*.hbs set ft=html syntax=handlebars
 
 filetype plugin indent on
 
@@ -95,6 +100,20 @@ map <F1> :NERDTreeToggle<CR>
 map <M-RIGHT> gt
 map <silent> <F7> :!xterm<CR>
 
+
+"http://sheerun.net/2014/03/21/how-to-boost-your-vim-productivity/
+let mapleader = "\<Space>"
+nmap <Leader><Leader> V
+vmap v <Plug>(expand_region_expand)
+vmap <C-v> <Plug>(expand_region_shrink)
+nnoremap <Leader>w :w<CR>
+
+nnoremap <Leader>l :wincmd l<CR>
+nnoremap <Leader>k :wincmd k<CR>
+nnoremap <Leader>h :wincmd h<CR>
+nnoremap <Leader>j :wincmd j<CR>
+
+
 "set gfn=Inconsolata\ for\ Powerline\ 11
 "set gfn=Menlo\ for\ Powerline\ 11
 set gfn=Droid\ Sans\ Mono\ 9
@@ -107,6 +126,7 @@ let g:ackprg="ack-grep -H --nocolor --nogroup --column"
 let g:ctrlp_custom_ignore = 'node_modules'
 
 if has("gui_running")
+    set background=dark
     colorscheme solarized
 endif
 
