@@ -38,6 +38,7 @@ Plugin 'ScmFrontEnd-former-name--MinSCM'
 Plugin 'https://github.com/terryma/vim-expand-region'
 Plugin 'mustache/vim-mustache-handlebars'
 Plugin 'The-NERD-Commenter'
+Plugin 'https://github.com/terryma/vim-multiple-cursors'
 
 au BufRead,BufNewFile *.handlebars,*.hbs set ft=html syntax=handlebars
 
@@ -88,6 +89,8 @@ set laststatus=2
 set encoding=utf-8
 set expandtab
 set fillchars+=stl:\ ,stlnc:\
+set cursorline
+set cursorcolumn
 
 map <C-F> :CtrlP<CR>
 map <C-B> :CtrlPBuffer<CR>
