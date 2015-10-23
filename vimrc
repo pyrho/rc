@@ -49,7 +49,13 @@ filetype plugin indent on
 
 " Airline config {{{
 let g:airline#extensions#tabline#enabled = 1
-let g:airline_powerline_fonts = 1
+if has("win32")
+    let g:airline_powerline_fonts = 0
+endif
+if has("unix")
+    let g:airline_powerline_fonts = 1
+endif
+
 let g:airline_theme='badwolf'
 " }}}
 
@@ -168,7 +174,7 @@ if has("unix")
 endif
 
 if has("win32")
-    set gfn=Consolas_for_Powerline_FixedD:h10:cANSI
+    set gfn=Consolas:h10:cANSI
 endif
 " }}}
 " CtrlP config {{{
