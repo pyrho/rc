@@ -1,44 +1,44 @@
-set shell=bash
+if has("unix")
+  set shell=bash
+endif
 set nocp
 filetype off
 
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#rc()
+if has("win32")
+    call plug#begin("~/vimfiles/bundle")
+endif
 
-Bundle 'gmarik/Vundle.vim'
+if has("unix")
+    call plug#begin("~/.vim/bundle")
+endif
 
-Plugin 'Tagbar'
-Plugin 'Solarized'
-Plugin 'The-NERD-tree'
-Plugin 'NERD_Tree-and-ack'
-"Plugin 'clang-complete' to slow...
-Plugin 'narrow_region'
-Plugin 'Mark'
-Plugin 'mileszs/ack.vim'
-Plugin 'https://github.com/vim-scripts/a.vim'
-Plugin 'https://github.com/Lokaltog/vim-powerline'
-Plugin 'ctrlp.vim'
-Plugin 'cpp.vim'
-Plugin 'vimwiki'
-Plugin 'vim-coffee-script'
-Plugin 'justinmk/vim-sneak'
-Plugin 'JavaScript-syntax'
-Plugin 'Syntastic'
-Plugin 'https://github.com/myhere/vim-nodejs-complete'
-Plugin 'jade.vim'
-Plugin 'vim-json-bundle'
-Plugin 'Better-Javascript-Indentation'
-Plugin 'https://github.com/vim-scripts/SuperTab--Van-Dewoestine'
-Plugin 'https://github.com/arkwright/vim-whiplash.git'
-Plugin 'DoxygenToolkit.vim'
-Plugin 'DoxyGen-Syntax'
-Plugin 'Markdown'
-Plugin 'wting/rust.vim'
-Plugin 'ScmFrontEnd-former-name--MinSCM'
-Plugin 'https://github.com/terryma/vim-expand-region'
-Plugin 'mustache/vim-mustache-handlebars'
-Plugin 'The-NERD-Commenter'
-Plugin 'https://github.com/terryma/vim-multiple-cursors'
+Plug 'Solarized'
+Plug 'The-NERD-tree'
+Plug 'NERD_Tree-and-ack'
+Plug 'narrow_region'
+Plug 'Mark'
+Plug 'mileszs/ack.vim'
+Plug 'https://github.com/vim-scripts/a.vim'
+Plug 'powerline/powerline'
+Plug 'ctrlp.vim'
+Plug 'cpp.vim'
+Plug 'vim-coffee-script'
+Plug 'justinmk/vim-sneak'
+Plug 'JavaScript-syntax'
+Plug 'Syntastic'
+Plug 'https://github.com/myhere/vim-nodejs-complete'
+Plug 'jade.vim'
+Plug 'vim-json-bundle'
+Plug 'Better-Javascript-Indentation'
+Plug 'https://github.com/vim-scripts/SuperTab--Van-Dewoestine'
+Plug 'https://github.com/arkwright/vim-whiplash.git'
+Plug 'Markdown'
+Plug 'wting/rust.vim'
+Plug 'https://github.com/terryma/vim-expand-region'
+Plug 'mustache/vim-mustache-handlebars'
+Plug 'The-NERD-Commenter'
+Plug 'https://github.com/terryma/vim-multiple-cursors'
+call plug#end()            " required
 
 au BufRead,BufNewFile *.handlebars,*.hbs set ft=html syntax=handlebars
 
@@ -57,8 +57,14 @@ let g:syntastic_c_remove_include_errors = 1
 syntax on
 " BACKUP
 set backup
-set backupdir=~/.vimswap
-set directory=~/.vimswap
+if has("win32")
+    set backupdir=H:/_vimswap
+    set directory=H:/_vimswap
+endif
+if has("unix")
+    set backupdir=~/.vimswap
+    set directory=~/.vimswap
+endif
 set makeef=error.err
 set backspace=indent,eol,start
 
@@ -70,6 +76,7 @@ set backspace=indent,eol,start
 :iab clog console.log
 :iab cdatef // DRA_Fix_<c-r>=strftime("%Y-%m-%d")<CR>_
 :iab boxcom ////////////////////////////////////////////////////////////////////////////////<C-O>o//
+:iab tryc TRY_KW<C-O>o{<C-O>o}<C-O>oCATCH_NORMAL_NOPRE
 
 " Filetype Settings [require autocmd]
 if has("autocmd")
@@ -109,6 +116,13 @@ let mapleader = "\<Space>"
 nmap <Leader><Leader> V
 vmap v <Plug>(expand_region_expand)
 vmap <C-v> <Plug>(expand_region_shrink)
+nmap <Leader><Leader> V
+vmap <Leader>y "+y
+vmap <Leader>d "+d
+nmap <Leader>p "+p
+nmap <Leader>P "+P
+vmap <Leader>p "+p
+vmap <Leader>P "+P
 nnoremap <Leader>w :w<CR>
 
 nnoremap <Leader>l :wincmd l<CR>
@@ -119,13 +133,24 @@ nnoremap <Leader>j :wincmd j<CR>
 
 "set gfn=Inconsolata\ for\ Powerline\ 11
 "set gfn=Menlo\ for\ Powerline\ 11
-set gfn=Droid\ Sans\ Mono\ 9
+if has("unix")
+    set gfn=Droid\ Sans\ Mono\ 9
+endif
+
+if has("win32")
+    set gfn=Consolas_for_Powerline_FixedD:h10:cANSI
+endif
 let g:ctrlp_working_path_mode = 0
 let g:ctrlp_switch_buffer = 0
 let NERDTreeShowBookmarks=1
 let NERDTreeChDirMode=2
 let NERDTreeShowLineNumbers=1
-let g:ackprg="ack-grep -H --nocolor --nogroup --column"
+if has("unix")
+    let g:ackprg="ack-grep -H --nocolor --nogroup --column"
+endif
+if has("win32")
+    let g:ackprg="ack -H --nocolor --nogroup --column"
+endif
 let g:ctrlp_custom_ignore = 'node_modules'
 
 if has("gui_running")
@@ -144,4 +169,9 @@ let g:WhiplashConfigDir = "~/.whiplash/"
 " tell it to use an undo file
 set undofile
 " set a directory to store the undo history
-set undodir=~/.vimundo/
+if has("win32")
+    set undodir=H:/vimundo
+endif
+if has("unix")
+    set undodir=~/.vimundo/
+endif
