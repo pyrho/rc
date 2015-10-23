@@ -12,7 +12,7 @@ endif
 if has("unix")
     call plug#begin("~/.vim/bundle")
 endif
-Plug 'https://github.com/rking/ag.vim.git'                      "Silver searcher
+Plug 'https://github.com/rking/ag.vim'                      "Silver searcher
 Plug 'The-NERD-tree'
 Plug 'narrow_region'
 Plug 'Mark'
@@ -39,7 +39,7 @@ Plug 'mustache/vim-mustache-handlebars'
 Plug 'The-NERD-Commenter'
 Plug 'https://github.com/terryma/vim-multiple-cursors'
 Plug 'https://github.com/sjl/badwolf'                           "Colorscheme
-Plug 'https://github.com/sjl/gundo.vim.git'                     "Visual undo
+Plug 'https://github.com/sjl/gundo.vim'                     "Visual undo
 call plug#end()                                                 " Required
 " }}}
 
