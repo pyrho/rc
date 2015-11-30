@@ -1,4 +1,7 @@
 rc
 ==
-Setup vundle(https://github.com/gmarik/Vundle.vim):
-git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+#Instructions
+## Vim
+* Install Package manager
+[PlugVim](https://github.com/junegunn/vim-plug)
+* Symlink rc/vimrc to ~/.vimrc
