@@ -3,6 +3,7 @@ if has("unix")
 endif
 set nocp
 filetype off
+let hostname = substitute(system('hostname'), '\n', '', '')
 
 " Plugins {{{
 if has("win32")
@@ -170,7 +171,11 @@ nnoremap <Leader>j :wincmd j<CR>
 " }}}
 " Font {{{
 if has("unix")
-    set gfn=Droid\ Sans\ Mono\ 9
+    if hostname == "thinkvb"
+        set gfn=Droid\ Sans\ Mono\ for\ Powerline\ 10
+    else
+        set gfn=Droid\ Sans\ Mono\ 9\
+    endif
 endif
 
 if has("win32")
