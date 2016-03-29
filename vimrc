@@ -3,6 +3,7 @@ if &compatible
   set nocompatible               " Be iMproved
 endif
 
+" Dein config {{{
 " Required:
 set runtimepath^=/home/pyrho/.dein/repos/github.com/Shougo/dein.vim
 
@@ -10,12 +11,10 @@ set runtimepath^=/home/pyrho/.dein/repos/github.com/Shougo/dein.vim
 call dein#begin(expand('/home/pyrho/.dein'))
 
 " Let dein manage dein
-" Required:
 call dein#add('Shougo/dein.vim')
 
 " Dein plugins {{{
 call dein#add('leafgarland/typescript-vim')
-"call dein#add('HerringtonDarkholme/yats.vim')
 call dein#add('Quramy/tsuquyomi')
 call dein#add('Shougo/deoplete.nvim')
 call dein#add('sjl/badwolf') 
@@ -39,6 +38,7 @@ call dein#add('NLKNguyen/papercolor-theme')
 call dein#add('Sclarki/neonwave.vim')
 " You can specify revision/branch/tag.
 call dein#add('Shougo/vimshell', { 'rev': '3787e5' })
+call dein#add('ervandew/supertab')
 
 " Required:
 call dein#end()
@@ -53,55 +53,13 @@ if dein#check_install()
   call dein#install()
 endif
 
-"End dein Scripts-------------------------
+" }}}
 
 if has("unix")
   set shell=bash
 endif
-set nocp
 let hostname = substitute(system('hostname'), '\n', '', '')
 
-" Plugins {{{
-"if has("win32")
-    "call plug#begin("~/vimfiles/bundle")
-"endif
-"
-"if has("unix")
-    "call plug#begin("~/.vim/bundle")
-"endif
-
-"Plug 'https://github.com/rking/ag.vim'                      "Silver searcher
-"Plug 'The-NERD-tree'
-"Plug 'narrow_region'
-"Plug 'Mark'
-""Plug 'bling/vim-airline'
-"Plug 'ctrlp.vim'
-"Plug 'cpp.vim'
-"Plug 'vimwiki'
-"Plug 'vim-coffee-script'
-""Plug 'justinmk/vim-sneak'
-"Plug 'JavaScript-syntax'
-"Plug 'Syntastic'
-"Plug 'https://github.com/myhere/vim-nodejs-complete'
-"Plug 'jade.vim'
-"Plug 'vim-json-bundle'
-"Plug 'Better-Javascript-Indentation'
-"Plug 'https://github.com/vim-scripts/SuperTab--Van-Dewoestine'
-"Plug 'https://github.com/arkwright/vim-whiplash.git'
-"Plug 'DoxygenToolkit.vim'
-"Plug 'DoxyGen-Syntax'
-"Plug 'Markdown'
-"Plug 'wting/rust.vim'
-"Plug 'https://github.com/terryma/vim-expand-region'
-"Plug 'mustache/vim-mustache-handlebars'
-"Plug 'The-NERD-Commenter'
-"Plug 'https://github.com/terryma/vim-multiple-cursors'
-""Plug 'https://github.com/sjl/badwolf'                           "Colorscheme
-""Plug 'https://github.com/sjl/gundo.vim'                     "Visual undo
-"call plug#end()                                                 " Required
-" }}}
-
-"filetype plugin indent on
 
 " Airline config {{{
 let g:airline#extensions#tabline#enabled = 1
