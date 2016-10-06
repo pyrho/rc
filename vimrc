@@ -13,36 +13,36 @@ call dein#begin(expand('/home/pyrho/.dein'))
 " Let dein manage dein
 call dein#add('Shougo/dein.vim')
 
-" Dein plugins {{{
-call dein#add('leafgarland/typescript-vim')
-call dein#add('Quramy/tsuquyomi')
-call dein#add('Shougo/deoplete.nvim')
-call dein#add('sjl/badwolf') 
-call dein#add('sjl/gundo.vim')
-call dein#add('justinmk/vim-sneak')
-call dein#add('vim-airline/vim-airline')
+call dein#add('leafgarland/typescript-vim') " TS syntax
+call dein#add('simnalamburt/vim-mundo') " Visual undo
+call dein#add('Quramy/tsuquyomi') " TS completion
+call dein#add('Shougo/deoplete.nvim') " Async completion
+call dein#add('mhartington/deoplete-typescript')
+call dein#add('justinmk/vim-sneak') "Smart motions
+call dein#add('vim-airline/vim-airline') " Powerline fork
 call dein#add('vim-airline/vim-airline-themes')
-call dein#add('rking/ag.vim')
+call dein#add('rking/ag.vim') " The Silver Searcher plugin
 call dein#add('Shougo/neosnippet.vim')
-call dein#add('Shougo/neosnippet-snippets')
-call dein#add('Shougo/vimproc.vim')
-call dein#add('scrooloose/nerdtree')
-call dein#add('kien/ctrlp.vim')
+"call dein#add('Shougo/neosnippet-snippets') "Dont need those.
+call dein#add('Shougo/vimproc.vim') " Interactive command execution
+call dein#add('scrooloose/nerdtree') " File sidebar
+call dein#add('scrooloose/nerdcommenter') " Commenting
+call dein#add('kien/ctrlp.vim') " Find & open files
 call dein#add('Shougo/unite.vim')
 call dein#add('Shougo/unite-outline')
-call dein#add('jason0x43/vim-js-indent')
-call dein#add('scrooloose/syntastic')
-call dein#add('Yggdroot/vim-mark')
-call dein#add('tpope/vim-fugitive')
-call dein#add('NLKNguyen/papercolor-theme')
-call dein#add('Sclarki/neonwave.vim')
-" You can specify revision/branch/tag.
-call dein#add('Shougo/vimshell', { 'rev': '3787e5' })
-call dein#add('ervandew/supertab')
-
+call dein#add('jason0x43/vim-js-indent') " Syntax for js
+" Disabled because suspected to cause location list issues
+" Specially ball breaking when navigation with Tsuquyomi's :TsuReferences
+call dein#add('scrooloose/syntastic') " Syntax checker
+call dein#add('Yggdroot/vim-mark') " Mark words with color
+"call dein#add('tpope/vim-fugitive') "Git management
+call dein#add('Sclarki/neonwave.vim') " Used theme
+call dein#add('ervandew/supertab') " Tab completion
+"call dein#add('airblade/vim-gitgutter') " Left gutter with modification indication (git)
+call dein#add('mustache/vim-mustache-handlebars') " Syntax for .hbs
+call dein#add('lambdalisue/vim-gita') " Git tool
 " Required:
 call dein#end()
-" }}}
 
 " Required:
 syntax on
@@ -60,7 +60,9 @@ if has("unix")
 endif
 let hostname = substitute(system('hostname'), '\n', '', '')
 
-
+" Supertab config {{{
+let g:SuperTabDefaultCompletionType = "context"
+" }}}
 " Airline config {{{
 let g:airline#extensions#tabline#enabled = 1
 if has("win32")
@@ -73,21 +75,59 @@ endif
 "let g:airline_theme='papercolor'
 let g:airline_theme='kolor'
 " }}}
-
 " Deoplete config {{{
 let g:deoplete#enable_at_startup = 1
 " }}}
-
 "Syntastic config {{{
  let g:syntastic_mode_map = { 'mode': 'active',
                                \ 'active_filetypes': ['javascript'],
                                \ 'passive_filetypes': [''] }
+let b:syntastic_javascript_eslint_exec = './node_modules/.bin/eslint'
 
 let g:syntastic_c_remove_include_errors = 1
 " This allows syntastic to read the tsconfig.json file.
 let g:syntastic_typescript_tsc_fname = ''
-" }}}
 
+let g:syntastic_typescript_checkers = ['tslint']
+
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_loc_list_height = 5
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 1
+let g:syntastic_javascript_checkers = ['eslint']
+
+highlight link SyntasticErrorSign SignColumn
+highlight link SyntasticWarningSign SignColumn
+highlight link SyntasticStyleErrorSign SignColumn
+highlight link SyntasticStyleWarningSign SignColumn
+" }}}
+" Neosnippets config {{{
+" Plugin key-mappings.
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-k>     <Plug>(neosnippet_expand_target)
+
+" SuperTab like snippets behavior.
+"imap <expr><TAB>
+" \ pumvisible() ? "\<C-n>" :
+" \ neosnippet#expandable_or_jumpable() ?
+" \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+
+let g:neosnippet#snippets_directory='~/.vimsnippets'
+let g:neosnippet#disable_runtime_snippets={'_': 1}
+
+" For conceal markers.
+if has('conceal')
+  set conceallevel=2 concealcursor=niv
+endif
+" }}}
 " Backup {{{
 set backup
 if has("win32")
@@ -101,7 +141,11 @@ endif
 " }}}
 " Misc {{{
 set makeef=error.err
+let g:gitgutter_map_keys = 0
 set backspace=indent,eol,start
+autocmd BufWritePre * %s/\s\+$//e "Automatically Remove trailing whitespaces
+let g:matchparen_timeout = 20
+let g:matchparen_insert_timeout = 20
 " }}}
 " Abbreviations {{{
 :iab cdate // DRA <c-r>=strftime("%Y-%m-%d")<CR>:
@@ -126,7 +170,7 @@ set softtabstop=4
 set shiftwidth=4
 " }}}
 " Options {{{
-set foldmethod=indent
+set foldmethod=syntax
 set foldenable
 set foldlevelstart=10               " Only fold nested stuff
 set foldnestmax=10                  " Don't fold too deeply nested stuff
@@ -139,14 +183,15 @@ set relativenumber
 set number                          " Shows the line # on the current line (with 'relativenumber)
 set incsearch
 set mouse=ar
-set ignorecase
+set noignorecase
 set laststatus=2
 set encoding=utf-8
-set cursorline
-set cursorcolumn
+set nocursorline                    " Apparently this causes slowness.
+set nocursorcolumn                  " This too.
 set hlsearch
 set showmatch                       " Jump to matching [{()}] when inserting
 set undofile                        " Tell it to use an undo file
+set fileformat=unix
 " Set a directory to store the undo history
 if has("win32")
     set undodir=H:/vimundo
@@ -170,7 +215,6 @@ map <F1> :NERDTreeToggle<CR>
 map <M-RIGHT> gt
 map <silent> <F7> :!xterm<CR>
 nnoremap <Leader>no :nohlsearch<CR>
-nmap <Leader><Leader> V
 vmap v <Plug>(expand_region_expand)
 vmap <C-v> <Plug>(expand_region_shrink)
 nmap <Leader><Leader> V
@@ -180,6 +224,8 @@ nmap <Leader>p "+p
 nmap <Leader>P "+P
 vmap <Leader>p "+p
 vmap <Leader>P "+P
+map <Leader>n :lne<CR>
+map <Leander>p :lpr<CR>
 nnoremap <Leader>w :wa<CR>
 "Open ag.vim
 nnoremap <leader>a :Ag
@@ -187,6 +233,10 @@ nnoremap <Leader>l :wincmd l<CR>
 nnoremap <Leader>k :wincmd k<CR>
 nnoremap <Leader>h :wincmd h<CR>
 nnoremap <Leader>j :wincmd j<CR>
+nnoremap <Leader>o :only<CR>
+nnoremap <Leader>q :q<CR>
+map <Leader>f :NERDTreeFind<CR>
+map <Leader>g :Gita status<CR>
 " }}}
 " Font {{{
 if has("unix")
@@ -212,6 +262,12 @@ let NERDTreeShowBookmarks=1
 let NERDTreeChDirMode=2
 let NERDTreeShowLineNumbers=1
 " }}}
+" NERDCommenter config {{{
+
+let g:NERDCustomDelimiters = {
+            \ 'javascript': { 'left': '// ', 'leftAlt': '/*'}
+            \ }
+" }}}
 " Ack config {{{
 let g:ackprg="ack-grep -H --nocolor --nogroup --column"
 " }}}
@@ -221,13 +277,13 @@ if has("gui_running")
 endif
 
 if has('nvim')
-    colorscheme neonwave   
+    colorscheme neonwave
     "set background=light
     "colorscheme PaperColor
 endif
 
 highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-match OverLength /\%120v.\+/
+match OverLength /\%150v.\+/
 " }}}
 " Whiplash config {{{
 let g:WhiplashProjectsDir = "~/repos/"
@@ -235,6 +291,9 @@ let g:WhiplashConfigDir = "~/.whiplash/"
 " }}}
 " Tsuquyomi config {{{
 autocmd FileType typescript nmap <buffer> <Leader>t : <C-u>echo tsuquyomi#hint()<CR>
+" }}}
+" NeoVim Config {{{
+let g:python_host_prog = '/usr/bin/python'
 " }}}
 
 " vim:foldmethod=marker:foldlevel=0
