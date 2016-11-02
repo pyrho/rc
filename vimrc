@@ -5,10 +5,10 @@ endif
 
 " Dein config {{{
 " Required:
-set runtimepath^=/home/pyrho/.dein/repos/github.com/Shougo/dein.vim
+set runtimepath^=/home/dinesh/.config/nvim/repos/github.com/Shougo/dein.vim
 
 " Required:
-call dein#begin(expand('/home/pyrho/.dein'))
+call dein#begin(expand('/home/dinesh/.config/nvim/'))
 
 " Let dein manage dein
 call dein#add('Shougo/dein.vim')
@@ -21,13 +21,12 @@ call dein#add('mhartington/deoplete-typescript')
 call dein#add('justinmk/vim-sneak') "Smart motions
 call dein#add('vim-airline/vim-airline') " Powerline fork
 call dein#add('vim-airline/vim-airline-themes')
-call dein#add('rking/ag.vim') " The Silver Searcher plugin
+"call dein#add('rking/ag.vim') " The Silver Searcher plugin - FZF does that
 call dein#add('Shougo/neosnippet.vim')
 "call dein#add('Shougo/neosnippet-snippets') "Dont need those.
-call dein#add('Shougo/vimproc.vim') " Interactive command execution
+call dein#add('Shougo/vimproc.vim', {'build': 'make'}) " Interactive command execution
 call dein#add('scrooloose/nerdtree') " File sidebar
 call dein#add('scrooloose/nerdcommenter') " Commenting
-call dein#add('kien/ctrlp.vim') " Find & open files
 call dein#add('Shougo/unite.vim')
 call dein#add('Shougo/unite-outline')
 call dein#add('jason0x43/vim-js-indent') " Syntax for js
@@ -35,12 +34,19 @@ call dein#add('jason0x43/vim-js-indent') " Syntax for js
 " Specially ball breaking when navigation with Tsuquyomi's :TsuReferences
 call dein#add('scrooloose/syntastic') " Syntax checker
 call dein#add('Yggdroot/vim-mark') " Mark words with color
-"call dein#add('tpope/vim-fugitive') "Git management
+" call dein#add('tpope/vim-fugitive') "Git management
 call dein#add('Sclarki/neonwave.vim') " Used theme
+call dein#add('YorickPeterse/happy_hacking.vim') " Theme
+"call dein#add('atelierbram/vim-colors_duotones') " Theme
+call dein#add('chriskempson/base16-vim') " Theme
 call dein#add('ervandew/supertab') " Tab completion
-"call dein#add('airblade/vim-gitgutter') " Left gutter with modification indication (git)
+"call dein#add('airblade/vim-gitgutter') " Left gutter with modification indication (git) (Causes issue with tsuqyomi
 call dein#add('mustache/vim-mustache-handlebars') " Syntax for .hbs
 call dein#add('lambdalisue/vim-gita') " Git tool
+call dein#add('junegunn/fzf', {'build': './install --all', 'merged': 0}) " Fzf fuzzy finder (ala CtrlP)
+call dein#add('junegunn/fzf.vim', {'depends': 'fzf'}) " Fzf fuzzy finder (ala CtrlP)
+call dein#add('vimwiki/vimwiki.git')
+call dein#add('Olical/vim-enmasse') " Mass actions through the quick fix window
 " Required:
 call dein#end()
 
@@ -60,6 +66,14 @@ if has("unix")
 endif
 let hostname = substitute(system('hostname'), '\n', '', '')
 
+" Base16 colors fix {{{
+if filereadable(expand("~/.vimrc_background"))
+  let base16colorspace=256
+  source ~/.vimrc_background
+endif
+hi MatchParen cterm=bold ctermbg=none ctermfg=red
+" }}}
+
 " Supertab config {{{
 let g:SuperTabDefaultCompletionType = "context"
 " }}}
@@ -73,7 +87,7 @@ if has("unix")
 endif
 
 "let g:airline_theme='papercolor'
-let g:airline_theme='kolor'
+let g:airline_theme='luna'
 " }}}
 " Deoplete config {{{
 let g:deoplete#enable_at_startup = 1
@@ -183,7 +197,11 @@ set relativenumber
 set number                          " Shows the line # on the current line (with 'relativenumber)
 set incsearch
 set mouse=ar
-set noignorecase
+set ignorecase
+set smartcase
+" That make so that even while 'smartcase' is enabled, * and # still respect case
+:nnoremap * /\<<C-R>=expand('<cword>')<CR>\><CR>
+:nnoremap # ?\<<C-R>=expand('<cword>')<CR>\><CR>
 set laststatus=2
 set encoding=utf-8
 set nocursorline                    " Apparently this causes slowness.
@@ -204,8 +222,12 @@ endif
 let mapleader = "\<Space>"
 "Hilight last inserted text
 nnoremap gV `[v`]
-map <C-F> :CtrlP<CR>
-map <C-B> :CtrlPBuffer<CR>
+" FZF mappins {{{
+map <C-F> :FZF<CR>
+map <C-B> :Buffers<CR>
+map <C-L> :BLines<CR>
+" }}}
+map <Leader>a :Ag
 map <F2> :cp<CR>
 map <F3> :cn<CR>
 map te :tabedit %<CR>
@@ -227,8 +249,6 @@ vmap <Leader>P "+P
 map <Leader>n :lne<CR>
 map <Leander>p :lpr<CR>
 nnoremap <Leader>w :wa<CR>
-"Open ag.vim
-nnoremap <leader>a :Ag
 nnoremap <Leader>l :wincmd l<CR>
 nnoremap <Leader>k :wincmd k<CR>
 nnoremap <Leader>h :wincmd h<CR>
@@ -251,12 +271,6 @@ if has("win32")
     set gfn=Consolas:h10:cANSI
 endif
 " }}}
-" CtrlP config {{{
-let g:ctrlp_match_window = 'bottom,order:ttb'
-let g:ctrlp_switch_buffer = 0
-let g:ctrlp_working_path_mode = 0
-let g:ctrlp_user_command = 'ag %s -l --nocolor --hidden -g ""'
-" }}}
 " NERTTree config {{{
 let NERDTreeShowBookmarks=1
 let NERDTreeChDirMode=2
@@ -277,13 +291,15 @@ if has("gui_running")
 endif
 
 if has('nvim')
-    colorscheme neonwave
-    "set background=light
+    "colorscheme neonwave
+    "colorscheme happy_hacking
+    " colorscheme duotone-darkearth
     "colorscheme PaperColor
 endif
 
 highlight OverLength ctermbg=red ctermfg=white guibg=#592929
 match OverLength /\%150v.\+/
+set colorcolumn=80
 " }}}
 " Whiplash config {{{
 let g:WhiplashProjectsDir = "~/repos/"
