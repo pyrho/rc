@@ -1,0 +1,6 @@
+set vicmd=nvim
+set history
+set ignorecase
+set rulerformat="%=%2l-%S [%L] "
+set incsearch
+filetype *.avi mplayer %c
