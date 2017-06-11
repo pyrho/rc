@@ -5,11 +5,11 @@ endif
 
 " Dein config {{{
 " Required:
-set runtimepath^=/home/dinesh/.config/nvim/repos/github.com/Shougo/dein.vim
+set runtimepath^=~/.cache/dein/repos/github.com/Shougo/dein.vim
 set runtimepath+=~/.config/nvim/repos/github.com/amiorin/vim-project/
 
 " Required:
-call dein#begin(expand('/home/dinesh/.config/nvim/'))
+call dein#begin(expand('~/.config/nvim/'))
 
 " Let dein manage dein
 call dein#add('Shougo/dein.vim')

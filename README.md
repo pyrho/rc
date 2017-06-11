@@ -1,7 +1,12 @@
-rc
+Configuration files for various tools
 ==
-#Instructions
-## Vim
+
+## (Neo)?Vim
 * Install Package manager
-[PlugVim](https://github.com/junegunn/vim-plug)
-* Symlink rc/vimrc to ~/.vimrc
+  * Follow instructions for [Dein](https://github.com/Shougo/dein.vim#quick-start) to complete install
+ 
+* Symlink config file `ln -sf {this repos path}/vimrc ~/.vimrc && ln -sf {this repo}/vimrc ~/.config/nvim/init.vim`
+
+## ZSH
+### Theme install
+* `curl -o - https://raw.githubusercontent.com/denysdovhan/spaceship-zsh-theme/master/install.zsh | zsh`
