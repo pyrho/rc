@@ -9,7 +9,7 @@
 theme                               = {}
 
 themes_dir                          = os.getenv("HOME") .. "/.config/awesome/themes/powerarrow-darker"
-theme.wallpaper                     = "/home/dinesh/Pictures/bebop.jpg"
+theme.wallpaper                     = os.getenv("HOME") .. "/Pictures/bebop.jpg"
 
 theme.font                          = "Cousine for Powerline Regular 11"
 theme.fg_normal                     = "#DDDDFF"
