@@ -293,6 +293,9 @@ nnoremap <Leader>j :wincmd j<CR>
 nnoremap <Leader>q :q<CR>
 map <Leader>f :NERDTreeFind<CR>
 imap jj <Esc>
+inoremap {;<CR> {<CR>};<ESC>O
+inoremap {<CR> {<CR>}<ESC>O
+inoremap =>{ => {<CR>});<ESC>O
 " }}}
 " Font {{{
 if has("unix")
