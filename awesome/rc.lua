@@ -102,7 +102,7 @@ end
 
 -- {{{ Tags
 tags = {
-   names = { "web", "two", "three", "four", "five", "six"},
+   names = { "一", "二", "三", "四", "五", "六"},
    layout = { layouts[4], layouts[1], layouts[1], layouts[1], layouts[1], layouts[1], layouts[1], layouts[1], layouts[1]}
 }
 for s = 1, screen.count() do
@@ -528,7 +528,8 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey }, "c", function () awful.util.spawn("xsel -p -o | xsel -i -b") end),
 
     -- User programs
-    awful.key({ modkey }, "q", function () awful.util.spawn_with_shell("sr -browser=vimb $(sr -elvi | gawk '{ print $1 }' | dmenu -p search )") end),
+    -- awful.key({ modkey }, "q", function () awful.util.spawn_with_shell("sr -browser=vimb $(sr -elvi | gawk '{ print $1 }' | dmenu -p search )") end),
+    awful.key({ modkey }, "q", function () awful.util.spawn_with_shell("sr -browser=vimb duckduckgo $(dmenu -p 'search for: ')") end),
     awful.key({ modkey }, "s", function () awful.util.spawn(gui_editor) end),
     awful.key({ modkey }, "g", function () awful.util.spawn(graphics) end),
 
