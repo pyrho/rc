@@ -11,7 +11,7 @@ theme                               = {}
 themes_dir                          = os.getenv("HOME") .. "/.config/awesome/themes/powerarrow-darker"
 theme.wallpaper                     = os.getenv("HOME") .. "/Pictures/bebop.jpg"
 
-theme.font                          = "Cousine for Powerline Regular 11"
+theme.font                          = "Cousine for Powerline Regular 12"
 theme.fg_normal                     = "#DDDDFF"
 theme.fg_focus                      = "#F0DFAF"
 theme.fg_urgent                     = "#CC9393"
@@ -72,8 +72,10 @@ theme.widget_vol_no                 = themes_dir .. "/icons/vol_no.png"
 theme.widget_vol_mute               = themes_dir .. "/icons/vol_mute.png"
 theme.widget_mail                   = themes_dir .. "/icons/mail.png"
 theme.widget_mail_on                = themes_dir .. "/icons/mail_on.png"
+theme.widget_bitcoin                = themes_dir .. "/icons/bitcoin.png"
+theme.widget_eth                = themes_dir .. "/icons/eth.png"
 
-theme.tasklist_disable_icon         = true
+theme.tasklist_disable_icon         = false
 theme.tasklist_floating             = ""
 theme.tasklist_maximized_horizontal = ""
 theme.tasklist_maximized_vertical   = ""

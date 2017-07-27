@@ -102,7 +102,7 @@ end
 
 -- {{{ Tags
 tags = {
-   names = { "一", "二", "三", "四", "五", "六"},
+   names = { " 一 ", " 二 ", " 三 ", " 四 ", " 五 ", " 六 "},
    layout = { layouts[4], layouts[1], layouts[1], layouts[1], layouts[1], layouts[1], layouts[1], layouts[1], layouts[1]}
 }
 for s = 1, screen.count() do
@@ -163,7 +163,32 @@ mailwidget = lain.widgets.imap({
 })
 ]]
 
+-- ETH
+ethrateicon = wibox.widget.imagebox(beautiful.widget_eth)
+ethrate = lain.widgets.abase({
+    cmd = "curl -m5 -s 'https://api.coinbase.com/v2/exchange-rates?currency=ETH'",
+    settings = function()
+        local btc, pos, err = require("lain.util").dkjson.decode(output, 1, nil)
+        local btc_price = (not err and btc and btc["data"]["rates"]["USD"]) or "N/A"
 
+        -- customize here
+        widget:set_text(" " .. btc_price .. " ")
+    end,
+    timeout = 900
+})
+
+btcrateicon = wibox.widget.imagebox(beautiful.widget_bitcoin)
+btcrate = lain.widgets.abase({
+    cmd = "curl -m5 -s 'https://api.coinbase.com/v2/exchange-rates?currency=BTC'",
+    settings = function()
+        local btc, pos, err = require("lain.util").dkjson.decode(output, 1, nil)
+        local btc_price = (not err and btc and btc["data"]["rates"]["USD"]) or "N/A"
+
+        -- customize here
+        widget:set_text(" " .. btc_price .. " ")
+    end,
+    timeout = 900
+})
 -- MEM
 memicon = wibox.widget.imagebox(beautiful.widget_mem)
 memwidget = lain.widgets.mem({
@@ -257,6 +282,7 @@ arrl_ld = separators.arrow_left("alpha", beautiful.bg_focus)
 
 -- Create a wibox for each screen and add it
 mywibox = {}
+mybottonwibox = {}
 mypromptbox = {}
 mylayoutbox = {}
 mytaglist = {}
@@ -336,6 +362,7 @@ for s = 1, screen.count() do
 
     -- Create the wibox
     mywibox[s] = awful.wibox({ position = "top", screen = s, height = 18 })
+    mybottonwibox[s] = awful.wibox({ position = "bottom", screen = s, height = 18 })
 
     -- Widgets that are aligned to the upper left
     local left_layout = wibox.layout.fixed.horizontal()
@@ -369,6 +396,8 @@ for s = 1, screen.count() do
         right_layout_add(volicon, volumewidget)
         --right_layout_add(mailicon, mailwidget)
         right_layout_add(memicon, memwidget)
+        right_layout_add(ethrateicon, ethrate)
+        right_layout_add(btcrateicon, btcrate)
         right_layout_add(cpuicon, cpuwidget)
         right_layout_add(tempicon, tempwidget)
         right_layout_add(fsicon, fswidget)
@@ -382,9 +411,13 @@ for s = 1, screen.count() do
     -- Now bring it all together (with the tasklist in the middle)
     local layout = wibox.layout.align.horizontal()
     layout:set_left(left_layout)
-    layout:set_middle(mytasklist[s])
+    -- layout:set_middle(mytasklist[s])
     layout:set_right(right_layout)
     mywibox[s]:set_widget(layout)
+
+    local layout_bottom = wibox.layout.align.horizontal()
+    layout_bottom:set_middle(mytasklist[s])
+    mybottonwibox[s]:set_widget(layout_bottom)
 
 end
 -- }}}
