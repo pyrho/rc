@@ -1,4 +1,3 @@
-"dein Scripts-----------------------------
 if &compatible
   set nocompatible               " Be iMproved
 endif
@@ -6,60 +5,57 @@ endif
 " Dein config {{{
 " Required:
 set runtimepath^=~/.cache/dein/repos/github.com/Shougo/dein.vim
-set runtimepath+=~/.config/nvim/repos/github.com/amiorin/vim-project/
 
 " Required:
-call dein#begin(expand('~/.config/nvim/'))
+call dein#begin(expand('~/.cache/dein'))
 
 " Let dein manage dein
 call dein#add('Shougo/dein.vim')
 
-call dein#add('leafgarland/typescript-vim') " TS syntax
+call dein#add('Shougo/unite.vim') "Required for vimfiler
+call dein#add('Shougo/vimfiler.vim')
+
+"call dein#local('/home/dinesh/testnvim')
+call dein#add('neovim/node-host', { 'branch': 'next', 'do': 'npm install -g neovim@next' })
+call dein#add('HerringtonDarkholme/yats.vim') " TS syntax file (better than typescript-vim)
 call dein#add('simnalamburt/vim-mundo') " Visual undo
-call dein#add('Quramy/tsuquyomi') " TS completion
 call dein#add('Shougo/deoplete.nvim') " Async completion
-" call dein#add('mhartington/deoplete-typescript') " using tsuquyomi instead
+"call dein#add('mhartington/deoplete-typescript') " TS code browsing, better than Tsu
+"call dein#add('pyrho/nvim-typescript', { 'rev': 'pyrhospatches'})
+call dein#add('/home/dinesh/repos/forks/nvim-typescript-upstream')
+"call dein#add('/home/dinesh/repos/forks/nvim-typescript')
+"call dein#add('mhartington/nvim-typescript')
 call dein#add('justinmk/vim-sneak') "Smart motions
 call dein#add('vim-airline/vim-airline') " Powerline fork
 call dein#add('vim-airline/vim-airline-themes')
-"call dein#add('rking/ag.vim') " The Silver Searcher plugin - FZF does that
-call dein#add('Shougo/neosnippet.vim')
-"call dein#add('Shougo/neosnippet-snippets') "Dont need those.
+call dein#add('Shougo/neosnippet.vim') "Snippets
 call dein#add('Shougo/vimproc.vim', {'build': 'make'}) " Interactive command execution
-call dein#add('scrooloose/nerdtree') " File sidebar
-call dein#add('scrooloose/nerdcommenter') " Commenting
-call dein#add('Shougo/unite.vim')
-call dein#add('Shougo/unite-outline')
+call dein#add('tpope/vim-commentary') " Commenting
 call dein#add('jason0x43/vim-js-indent') " Syntax for js
-" Disabled because suspected to cause location list issues
-" Specially ball breaking when navigation with Tsuquyomi's :TsuReferences
 call dein#add('scrooloose/syntastic') " Syntax checker
 call dein#add('Yggdroot/vim-mark') " Mark words with color
-" call dein#add('tpope/vim-fugitive') "Git management
-call dein#add('YorickPeterse/happy_hacking.vim') " Theme
-call dein#add('chriskempson/base16-vim') " Theme
 call dein#add('ervandew/supertab') " Tab completion
-"call dein#add('airblade/vim-gitgutter') " Left gutter with modification indication (git) (Causes issue with tsuqyomi
+call dein#add('airblade/vim-gitgutter') " Left gutter with modification indication (git) (Causes issue with tsuqyomi
 call dein#add('mustache/vim-mustache-handlebars') " Syntax for .hbs
 call dein#add('lambdalisue/gina.vim') " Git tool
+" These two lines are needed, see: https://github.com/Shougo/dein.vim/issues/74
 call dein#add('junegunn/fzf', {'build': './install --all', 'merged': 0}) " Fzf fuzzy finder (ala CtrlP)
 call dein#add('junegunn/fzf.vim', {'depends': 'fzf'}) " Fzf fuzzy finder (ala CtrlP)
-call dein#add('vimwiki/vimwiki.git')
-call dein#add('Olical/vim-enmasse') " Mass actions through the quick fix window
-call dein#add('ternjs/tern_for_vim', {'build': 'npm install -g tern'}) " JS code browsing/completion
-"call dein#add('severin-lemaignan/vim-minimap') " sucks
+call dein#add('Mephistophiles/vimwiki') " Fork of vimwiki/vimwiki.git, with an option to disable mappings
 call dein#add('JamshedVesuna/vim-markdown-preview') " Preview markdown
-" call dein#add('carlitux/deoplete-ternjs', { 'build': 'npm install -g tern' }) " deoplete source for JS
 call dein#add('mhinz/vim-startify')
-" call dein#add('maxbrunsfeld/vim-yankstack') " Shitty and breaks vim-sneak because of the default bindings
-call dein#add('mtscout6/syntastic-local-eslint.vim')
 call dein#add('chrisbra/NrrwRgn') " Narrow to a region of a buffer
-call dein#add('yuratomo/w3m.vim')
-"call dein#add('joshdick/onedark.vim')
-call dein#add('rakr/vim-one')
+call dein#add('MattesGroeger/vim-bookmarks') " Bookmarks manager
+call dein#add('chriskempson/base16-vim')
+call dein#add('vimlab/mdn.vim') " Mozilla Developper Network integration
+call dein#add('ryanoasis/vim-devicons')
+call dein#add('tiagofumo/vim-nerdtree-syntax-highlight')
+call dein#add('pangloss/vim-javascript')
+call dein#add('davidhalter/jedi-vim')
 
 " Required:
 call dein#end()
+call dein#save_state()
 
 " Required:
 syntax on
@@ -78,13 +74,12 @@ endif
 let hostname = substitute(system('hostname'), '\n', '', '')
 
 " Base16 colors fix {{{
-"if filereadable(expand("~/.vimrc_background"))
-  "let base16colorspace=256
-  "source ~/.vimrc_background
-"endif
+if filereadable(expand("~/.vimrc_background"))
+  let base16colorspace=256
+  source ~/.vimrc_background
+endif
 hi MatchParen cterm=bold ctermbg=none ctermfg=red
 " }}}
-"
 " True color fix {{{
 "Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
 "If you're using tmux version 2.2 or later, you can remove the outermost $TMUX check and use tmux's 24-bit color support
@@ -102,13 +97,24 @@ if (empty($TMUX))
   endif
 endif
 " }}}
-
 " VimWiki {{{
 let g:vimwiki_list = [{'path': '~/vimwiki/',
             \ 'syntax': 'markdown', 'ext': '.md'}]
 " }}}
+" Vim Bookmarks config {{{
+let g:bookmarks_save_per_working_dir = 1
+let g:bookmark_auto_save = 1
+" }}}
+" nvim-typescript config {{{
 
-
+let g:nvim_typescript#javascript_support = 1
+let g:nvim_typescript#loc_list_item_truncate_after = -1
+" run TSSyncErr on write
+autocmd! BufWritePost *.ts,*.tsx TSSyncErr
+" }}}
+" VimWiki config {{{
+let g:vimwiki_use_mapping = 0
+" }}}
 " Supertab config {{{
 let g:SuperTabDefaultCompletionType = "context"
 " }}}
@@ -121,9 +127,7 @@ if has("unix")
     let g:airline_powerline_fonts = 1
 endif
 
-"let g:airline_theme='papercolor'
-"let g:airline_theme='simple'
-let g:airline_theme='one'
+let g:airline_theme='wombat'
 " }}}
 " Deoplete config {{{
 let g:deoplete#enable_at_startup = 1
@@ -258,44 +262,52 @@ endif
 " Custom bindings {{{
 let mapleader = "\<Space>"
 "Hilight last inserted text
-nnoremap gV `[v`]
 " FZF mappins {{{
-nnoremap <Leader>o :FZF<CR>
+nnoremap <Leader>o :call Fzf_dev()<CR>
 map <Leader>b :Buffers<CR>
 map <C-L> :BTS<CR>
 " }}}
+" nvim-typescipt mappings {{{
+autocmd FileType typescript,javascript
+            \ map <Leader>d :TSDef<CR> |
+            \ map <Leader>t :TSType<CR> |
+            \ noremap <Leader>r :TSRefs<CR> |
+            \ map <C-P> :TSSearchFZF 
+" }}}
+" Mark mappings {{{
+nmap <Leader>N <Plug>MarkAllClear
+" }}}
 map <Leader>a :Ag
 map <F2> :cp<CR>
+nnoremap gV `[v`]
+nmap <Tab> :bn<CR>
+nmap <S-Tab> :bp<CR>
 map <F3> :cn<CR>
+map <F5> :lprev<CR>
+map <F6> :lnext<CR>
 map te :tabedit %<CR>
 map tc :tabclose<CR>
+map <F1> :VimFilerExplorer<CR>
+nmap <Leader>f :VimFilerBufferDir -force-quit<CR>
 map <M-LEFT> gT
-map <F1> :NERDTreeToggle<CR>
 map <M-RIGHT> gt
 map <silent> <F7> :!xterm<CR>
 nnoremap <Leader>no :nohlsearch<CR>
 vmap v <Plug>(expand_region_expand)
 vmap <C-v> <Plug>(expand_region_shrink)
-nmap <Leader><Leader> V
-vmap <Leader>y "+y
-vmap <Leader>d "+d
-nmap <Leader>p "+p
-nmap <Leader>P "+P
-vmap <Leader>p "+p
-vmap <Leader>P "+P
-nmap <Leader>p <Plug>yankstack_substitute_older_paste
-nmap <Leader>P <Plug>yankstack_substitute_newer_paste
+map <Leader>y "+yy
+map <Leader>p "+p
 nnoremap <Leader>w :wa<CR>
 nnoremap <Leader>l :wincmd l<CR>
 nnoremap <Leader>k :wincmd k<CR>
 nnoremap <Leader>h :wincmd h<CR>
 nnoremap <Leader>j :wincmd j<CR>
 nnoremap <Leader>q :q<CR>
-map <Leader>f :NERDTreeFind<CR>
 imap jj <Esc>
 inoremap {;<CR> {<CR>};<ESC>O
 inoremap {<CR> {<CR>}<ESC>O
 inoremap =>{ => {<CR>});<ESC>O
+map <Up> :<Up>
 " }}}
 " Font {{{
 if has("unix")
@@ -310,20 +322,6 @@ if has("win32")
     set gfn=Consolas:h10:cANSI
 endif
 " }}}
-" NERTTree config {{{
-let NERDTreeShowBookmarks=1
-let NERDTreeChDirMode=2
-let NERDTreeShowLineNumbers=1
-" }}}
-" NERDCommenter config {{{
-
-let g:NERDCustomDelimiters = {
-            \ 'javascript': { 'left': '// ', 'leftAlt': '/*'}
-            \ }
-" }}}
-" Ack config {{{
-let g:ackprg="ack-grep -H --nocolor --nogroup --column"
-" }}}
 " Colorscheme {{{
 if has("gui_running")
     colorscheme badwolf
@@ -336,91 +334,97 @@ if has('nvim')
     "colorscheme PaperColor
     "colorscheme onedark
     set background=dark
-    colorscheme one
+    "colorscheme one
 endif
 
 highlight OverLength ctermbg=red ctermfg=white guibg=#592929
 match OverLength /\%150v.\+/
 set colorcolumn=80
 " }}}
-" Whiplash config {{{
-let g:WhiplashProjectsDir = "~/repos/"
-let g:WhiplashConfigDir = "~/.whiplash/"
-" }}}
-" Tsuquyomi config {{{
-autocmd FileType typescript nmap <buffer> <Leader>t : <C-u>echo tsuquyomi#hint()<CR>
-let g:tsuquyomi_single_quote_import = 1
-let g:tsuquyomi_completion_preview = 1
+" Trailing whitespace {{{
+highlight ExtraWhitespace ctermbg=red ctermfg=white guibg=red
+autocmd FileType vimfiler highlight clear ExtraWhitespace
+match ExtraWhitespace /\s\+$/
+autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+autocmd BufWinLeave * call clearmatches()
 " }}}
 " NeoVim Config {{{
 let g:python_host_prog = '/usr/bin/python'
 " }}}
-" Tern config {{{
-let g:tern#command = ["tern"]
-let g:tern#arguments = ["--persistent"]
-" }}}
-
 " Startify config {{{
 let g:startify_change_to_vcs_root = 1
+let g:startify_bookmarks = [
+            \ { 'init.vim': '~/.config/nvim/init.vim' },
+            \ { 'wiki': '~/vimwiki/index.md'},
+            \ ]
+
 " }}}
+" Vimfiler config {{{
 
-
-function! TonPere(navitem)
-  let heading = {}
-  let heading.word = a:navitem.text."(".a:navitem.kind.")"
-  "let heading.type = a:navitem.kind
-  if has_key(a:navitem, 'spans') && len(a:navitem.spans)
-    let heading.lnum = a:navitem.spans[0].start.line
-  endif
-
-  "      {tagname}      <Tab>  {tagfile}<Tab>    {tagaddress}
-  return heading.word . "\t" . ':' . a:navitem.spans[0].start.line
+function s:define_vimfiler_mappings()
+    nmap <buffer> <Enter> <Plug>(vimfiler_cd_or_edit)
+    nmap <buffer> o <Plug>(vimfiler_expand_or_edit)
+    nmap <buffer> h <Plug>(vimfiler_smart_h)
+    nmap <buffer> l <Plug>(vimfiler_smart_l)
+    nmap <buffer> cd <Plug>(vimfiler_make_directory)
+    nmap <buffer> cf <Plug>(vimfiler_new_file)
+    nmap <buffer> sm <Plug>(vimfiler_toggle_safe_mode)
+    nmap <buffer> r <Plug>(vimfiler_rename_file)
+    nmap <buffer> c <Plug>(vimfiler_copy_file)
+    nmap <buffer> m <Plug>(vimfiler_move_file)
+    nmap <buffer> q <Plug>(vimfiler_hide)
+    nmap <buffer> v <Plug>(vimfiler_preview_file)
+    nmap <buffer> yy <Plug>(vimfiler_yank_full_path)
+    nmap <buffer> t <Plug>(vimfiler_expand_tree)
+    nmap <buffer> T <Plug>(vimfiler_expand_tree_recursive)
+    nmap <buffer> d <Plug>(vimfiler_delete_file)
+    nmap <buffer> i <Plug>(vimfiler_cd_input_directory)
+    nmap <buffer> j <Plug>(vimfiler_loop_cursor_down)
+    nmap <buffer> k <Plug>(vimfiler_loop_cursor_up)
+    nnoremap <silent><buffer><expr> sp vimfiler#do_switch_action('split')
+    nnoremap <silent><buffer><expr> vs vimfiler#do_switch_action('vsplit')
 endfunction
 
-function! TonPereAuCarre(parent_node, navitem_list)
-  for navitem in a:navitem_list
-    let heading = TonPere(navitem)
-    call add(a:parent_node, heading)
-    if has_key(navitem, 'childItems') && len(navitem.childItems)
-      call TonPereAuCarre(a:parent_node, navitem.childItems)
-    endif
-  endfor
-  return a:parent_node
+let g:vimfiler_no_default_key_mappings = 1
+let g:vimfiler_as_default_explorer = 1
+
+autocmd FileType vimfiler call s:define_vimfiler_mappings()
+
+
+" }}}
+" Tmp FZF dev-icons {{{
+" Files + devicons
+function! Fzf_dev()
+  function! s:files()
+    let files = split(system($FZF_DEFAULT_COMMAND), '\n')
+    return s:prepend_icon(files)
+  endfunction
+
+  function! s:prepend_icon(candidates)
+    let result = []
+    for candidate in a:candidates
+      let filename = fnamemodify(candidate, ':p:t')
+      let icon = WebDevIconsGetFileTypeSymbol(filename, isdirectory(filename))
+      call add(result, printf("%s %s", icon, candidate))
+    endfor
+
+    return result
+  endfunction
+
+  function! s:edit_file(item)
+    let parts = split(a:item, ' ')
+    let file_path = get(parts, 1, '')
+    execute 'silent e' file_path
+  endfunction
+
+  call fzf#run({
+        \ 'source': <sid>files(),
+        \ 'sink':   function('s:edit_file'),
+        \ 'options': '-m -x +s',
+        \ 'down':    '40%' })
 endfunction
-
-fu! TaMere(context)
-  let root = []
-
-  " 1. Fetch navigation info from TSServer.
-  let [navbar_list, is_success] = tsuquyomi#navBar()
-
-  if is_success
-    let root = TonPereAuCarre(root, navbar_list)
-  endif
-
-  call uniq(sort(root))
-  return root
-endfunction
-
-
-function! s:btags_sink(line)
-  execute split(a:line, "\t")[1]
-endfunction
-
-function! s:btags()
-  try
-    call fzf#run({
-    \ 'source':  TaMere(0),
-    \ 'down':    '40%',
-    \ 'sink':    function('s:btags_sink')})
-  catch
-    echohl WarningMsg
-    echom v:exception
-    echohl None
-  endtry
-endfunction
-
-command! BTS call s:btags()
-
+" }}}
 
 " vim:foldmethod=marker:foldlevel=0
