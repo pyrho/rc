@@ -32,7 +32,8 @@ call dein#add('Shougo/neosnippet.vim') "Snippets
 call dein#add('Shougo/vimproc.vim', {'build': 'make'}) " Interactive command execution
 call dein#add('tpope/vim-commentary') " Commenting
 call dein#add('jason0x43/vim-js-indent') " Syntax for js
-call dein#add('scrooloose/syntastic') " Syntax checker
+" call dein#add('scrooloose/syntastic') " Syntax checker
+call dein#add('neomake/neomake')
 call dein#add('Yggdroot/vim-mark') " Mark words with color
 call dein#add('ervandew/supertab') " Tab completion
 call dein#add('airblade/vim-gitgutter') " Left gutter with modification indication (git) (Causes issue with tsuqyomi
@@ -105,12 +106,12 @@ let g:vimwiki_list = [{'path': '~/vimwiki/',
 let g:bookmarks_save_per_working_dir = 1
 let g:bookmark_auto_save = 1
 " }}}
-" nvim-typescript config {{{
+" nvim-typescript config {{
 
 let g:nvim_typescript#javascript_support = 1
 let g:nvim_typescript#loc_list_item_truncate_after = -1
 " run TSSyncErr on write
-autocmd! BufWritePost *.ts,*.tsx TSSyncErr
+" autocmd! BufWritePost *.ts,*.tsx TSSyncErr
 " }}}
 " VimWiki config {{{
 let g:vimwiki_use_mapping = 0
@@ -120,6 +121,9 @@ let g:SuperTabDefaultCompletionType = "context"
 " }}}
 " Airline config {{{
 let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#neomake#enabled = 1
+" }}}
+
 if has("win32")
     let g:airline_powerline_fonts = 0
 endif
@@ -131,6 +135,9 @@ let g:airline_theme='wombat'
 " }}}
 " Deoplete config {{{
 let g:deoplete#enable_at_startup = 1
+" }}}
+" Neomake config {{{
+autocmd! BufWritePost * Neomake
 " }}}
 "Syntastic config {{{
  let g:syntastic_mode_map = { 'mode': 'active',
