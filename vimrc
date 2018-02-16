@@ -20,9 +20,9 @@ call dein#add('neovim/node-host', { 'branch': 'next', 'do': 'npm install -g neov
 call dein#add('HerringtonDarkholme/yats.vim') " TS syntax file (better than typescript-vim)
 call dein#add('simnalamburt/vim-mundo') " Visual undo
 call dein#add('Shougo/deoplete.nvim') " Async completion
-"call dein#add('mhartington/deoplete-typescript') " TS code browsing, better than Tsu
+call dein#add('mhartington/nvim-typescript') " TS code browsing, better than Tsu
 "call dein#add('pyrho/nvim-typescript', { 'rev': 'pyrhospatches'})
-call dein#add('/home/dinesh/repos/forks/nvim-typescript-upstream')
+"call dein#add('/home/dinesh/repos/forks/nvim-typescript-upstream')
 "call dein#add('/home/dinesh/repos/forks/nvim-typescript')
 "call dein#add('mhartington/nvim-typescript')
 call dein#add('justinmk/vim-sneak') "Smart motions
@@ -38,11 +38,11 @@ call dein#add('Yggdroot/vim-mark') " Mark words with color
 call dein#add('ervandew/supertab') " Tab completion
 call dein#add('airblade/vim-gitgutter') " Left gutter with modification indication (git) (Causes issue with tsuqyomi
 call dein#add('mustache/vim-mustache-handlebars') " Syntax for .hbs
-call dein#add('lambdalisue/gina.vim') " Git tool
+call dein#add('tpope/vim-fugitive') " Git (better than gina)
 " These two lines are needed, see: https://github.com/Shougo/dein.vim/issues/74
 call dein#add('junegunn/fzf', {'build': './install --all', 'merged': 0}) " Fzf fuzzy finder (ala CtrlP)
 call dein#add('junegunn/fzf.vim', {'depends': 'fzf'}) " Fzf fuzzy finder (ala CtrlP)
-call dein#add('Mephistophiles/vimwiki') " Fork of vimwiki/vimwiki.git, with an option to disable mappings
+" call dein#add('Mephistophiles/vimwiki') " Fork of vimwiki/vimwiki.git, with an option to disable mappings
 call dein#add('JamshedVesuna/vim-markdown-preview') " Preview markdown
 call dein#add('mhinz/vim-startify')
 call dein#add('chrisbra/NrrwRgn') " Narrow to a region of a buffer
@@ -53,7 +53,12 @@ call dein#add('ryanoasis/vim-devicons')
 call dein#add('tiagofumo/vim-nerdtree-syntax-highlight')
 call dein#add('pangloss/vim-javascript')
 call dein#add('davidhalter/jedi-vim')
-
+call dein#add('kchmck/vim-coffee-script')
+call dein#add('tomlion/vim-solidity')
+call dein#add('funcodeio/lz4.vim')
+call dein#add('junegunn/vim-slash')
+call dein#add('junegunn/rainbow_parentheses.vim')
+call dein#add('elzr/vim-json')
 " Required:
 call dein#end()
 call dein#save_state()
@@ -99,8 +104,9 @@ if (empty($TMUX))
 endif
 " }}}
 " VimWiki {{{
-let g:vimwiki_list = [{'path': '~/vimwiki/',
-            \ 'syntax': 'markdown', 'ext': '.md'}]
+"let g:vimwiki_list = [{'path': '~/vimwiki/',
+            "\ 'syntax': 'markdown', 'ext': '.md'}]
+" let g:vimwiki_use_mapping = 0
 " }}}
 " Vim Bookmarks config {{{
 let g:bookmarks_save_per_working_dir = 1
@@ -113,15 +119,14 @@ let g:nvim_typescript#loc_list_item_truncate_after = -1
 " run TSSyncErr on write
 " autocmd! BufWritePost *.ts,*.tsx TSSyncErr
 " }}}
-" VimWiki config {{{
-let g:vimwiki_use_mapping = 0
-" }}}
 " Supertab config {{{
 let g:SuperTabDefaultCompletionType = "context"
 " }}}
 " Airline config {{{
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#neomake#enabled = 1
+let g:airline#extensions#tabline#fnamemod = ':.'
+let g:airline#extensions#tabline#fnamecollapse = 0
 " }}}
 
 if has("win32")
@@ -294,8 +299,8 @@ map <F5> :lprev<CR>
 map <F6> :lnext<CR>
 map te :tabedit %<CR>
 map tc :tabclose<CR>
-map <F1> :VimFilerExplorer<CR>
-nmap <Leader>f :VimFilerBufferDir -force-quit<CR>
+map <F1> :VimFilerExplorer -find<CR>
+nmap <Leader>f :VimFilerBufferDir -force-quit -find<CR>
 map <M-LEFT> gT
 map <M-RIGHT> gt
 map <silent> <F7> :!xterm<CR>
@@ -311,6 +316,8 @@ nnoremap <Leader>h :wincmd h<CR>
 nnoremap <Leader>j :wincmd j<CR>
 nnoremap <Leader>q :q<CR>
 imap jj <Esc>
+imap kk <Esc>
+inoremap {,<CR> {<CR>},<ESC>O
 inoremap {;<CR> {<CR>};<ESC>O
 inoremap {<CR> {<CR>}<ESC>O
 inoremap =>{ => {<CR>});<ESC>O
@@ -363,8 +370,9 @@ let g:python_host_prog = '/usr/bin/python'
 " Startify config {{{
 let g:startify_change_to_vcs_root = 1
 let g:startify_bookmarks = [
-            \ { 'init.vim': '~/.config/nvim/init.vim' },
-            \ { 'wiki': '~/vimwiki/index.md'},
+            \ { 't': '~/.config/nvim/init.vim' },
+            \ { 'n': '~/mtmp/notes' },
+            \ { 'r': '~/repos' },
             \ ]
 
 " }}}
@@ -402,36 +410,62 @@ autocmd FileType vimfiler call s:define_vimfiler_mappings()
 
 " }}}
 " Tmp FZF dev-icons {{{
-" Files + devicons
 function! Fzf_dev()
+  let l:fzf_files_options =
+        \ '--preview "echo {} | tr -s \" \" \"\n\" | tail -1 | xargs rougify | head -'.&lines.'"'
   function! s:files()
-    let files = split(system($FZF_DEFAULT_COMMAND), '\n')
-    return s:prepend_icon(files)
+    let l:files = split(system($FZF_DEFAULT_COMMAND), '\n')
+    return s:prepend_icon(l:files)
   endfunction
 
   function! s:prepend_icon(candidates)
-    let result = []
-    for candidate in a:candidates
-      let filename = fnamemodify(candidate, ':p:t')
-      let icon = WebDevIconsGetFileTypeSymbol(filename, isdirectory(filename))
-      call add(result, printf("%s %s", icon, candidate))
+    let l:result = []
+    for l:candidate in a:candidates
+      let l:filename = fnamemodify(l:candidate, ':p:t')
+      let l:icon = WebDevIconsGetFileTypeSymbol(l:filename, isdirectory(l:filename))
+      call add(l:result, printf('%s %s', l:icon, l:candidate))
     endfor
 
-    return result
+    return l:result
   endfunction
 
   function! s:edit_file(item)
-    let parts = split(a:item, ' ')
-    let file_path = get(parts, 1, '')
-    execute 'silent e' file_path
+    let l:parts = split(a:item, ' ')
+    let l:file_path = get(l:parts, 1, '')
+    execute 'silent e' l:file_path
   endfunction
 
   call fzf#run({
         \ 'source': <sid>files(),
         \ 'sink':   function('s:edit_file'),
-        \ 'options': '-m -x +s',
+        \ 'options': '-m ' . l:fzf_files_options,
         \ 'down':    '40%' })
 endfunction
+
+" Augmenting Ag command using fzf#vim#with_preview function
+"   * fzf#vim#with_preview([[options], preview window, [toggle keys...]])
+"     * For syntax-highlighting, Ruby and any of the following tools are required:
+"       - Highlight: http://www.andre-simon.de/doku/highlight/en/highlight.php
+"       - CodeRay: http://coderay.rubychan.de/
+"       - Rouge: https://github.com/jneen/rouge
+"
+"   :Ag  - Start fzf with hidden preview window that can be enabled with "?" key
+"   :Ag! - Start fzf in fullscreen and display the preview window above
+command! -bang -nargs=* Ag
+  \ call fzf#vim#ag(<q-args>,
+  \                 <bang>0 ? fzf#vim#with_preview('up:60%')
+  \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \                 <bang>0)
+" }}}
+" vim-slash config {{{
+noremap <plug>(slash-after) zz
+" }}}
+" Fugitive {{{
+autocmd BufReadPost fugitive://* set bufhidden=delete
+nnoremap <Leader>gs :Gstatus<CR>
+nnoremap <Leader>gd :Gdiff<CR>
+nnoremap <Leader>gl :Silent Glog<CR>
+nnoremap <Leader>gb :Gblame<CR>
 " }}}
 
 " vim:foldmethod=marker:foldlevel=0
