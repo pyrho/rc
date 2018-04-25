@@ -9,3 +9,4 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 export JIRA_PREFIX=""
 export JIRA_RAPID_BOARD=true
+export VAULT_ADDR=https://auth.dashlane.com:8200
