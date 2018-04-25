@@ -353,6 +353,7 @@ if has('nvim')
     "colorscheme onedark
     set background=dark
     "colorscheme one
+    colorscheme base16-onedark
 endif
 
 highlight OverLength ctermbg=red ctermfg=white guibg=#592929
@@ -567,5 +568,7 @@ nnoremap <silent> <Plug>unimpairedBlankDown :<C-U>call <SID>BlankDown(v:count1)<
 call s:map('n', '[<Space>', '<Plug>unimpairedBlankUp')
 call s:map('n', ']<Space>', '<Plug>unimpairedBlankDown')
 " }}}
+
+let g:python_host_prog = '/usr/local/bin/python2'
 
 " vim:foldmethod=marker:foldlevel=0

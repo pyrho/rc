@@ -51,7 +51,7 @@ DISABLE_AUTO_UPDATE="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git ssh-agent thefuck jira gulp)
+plugins=(git ssh-agent z zsh-autosuggestions osx brew yarn zsh-iterm-touchbar)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -87,4 +87,4 @@ source $ZSH/oh-my-zsh.sh
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 
-source "/home/pyrho/.oh-my-zsh/custom/themes/spaceship.zsh-theme"
+source "/Users/damien/.oh-my-zsh/custom/themes/spaceship.zsh-theme"
