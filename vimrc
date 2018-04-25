@@ -57,8 +57,11 @@ call dein#add('kchmck/vim-coffee-script')
 call dein#add('tomlion/vim-solidity')
 call dein#add('funcodeio/lz4.vim')
 call dein#add('junegunn/vim-slash')
-call dein#add('junegunn/rainbow_parentheses.vim')
 call dein#add('elzr/vim-json')
+call dein#add('editorconfig/editorconfig-vim')
+call dein#add('tpope/vim-obsession') " automatic session management
+call dein#add('dhruvasagar/vim-prosession') " complement to vim-obsession to handle sessions dir-wise.
+call dein#add('junegunn/vim-peekaboo') " Peek at registers
 " Required:
 call dein#end()
 call dein#save_state()
@@ -127,6 +130,7 @@ let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#neomake#enabled = 1
 let g:airline#extensions#tabline#fnamemod = ':.'
 let g:airline#extensions#tabline#fnamecollapse = 0
+let g:airline#extensions#tabline#formatter = 'jsformatter'
 " }}}
 
 if has("win32")
@@ -357,12 +361,13 @@ set colorcolumn=80
 " }}}
 " Trailing whitespace {{{
 highlight ExtraWhitespace ctermbg=red ctermfg=white guibg=red
-autocmd FileType vimfiler highlight clear ExtraWhitespace
-match ExtraWhitespace /\s\+$/
-autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
-autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
-autocmd InsertLeave * match ExtraWhitespace /\s\+$/
-autocmd BufWinLeave * call clearmatches()
+autocmd FileType vimfiler highlight clear OverLength
+autocmd FileType startify highlight clear OverLength
+"match ExtraWhitespace /\s\+$/
+autocmd BufWinEnter *.ts match ExtraWhitespace /\s\+$/
+autocmd InsertEnter *.ts match ExtraWhitespace /\s\+\%#\@<!$/
+autocmd InsertLeave *.ts match ExtraWhitespace /\s\+$/
+autocmd BufWinLeave *.ts call clearmatches()
 " }}}
 " NeoVim Config {{{
 let g:python_host_prog = '/usr/bin/python'
@@ -371,7 +376,7 @@ let g:python_host_prog = '/usr/bin/python'
 let g:startify_change_to_vcs_root = 1
 let g:startify_bookmarks = [
             \ { 't': '~/.config/nvim/init.vim' },
-            \ { 'n': '~/mtmp/notes' },
+            \ { 'n': '~/ownCloud/notes.md' },
             \ { 'r': '~/repos' },
             \ ]
 
@@ -466,6 +471,101 @@ nnoremap <Leader>gs :Gstatus<CR>
 nnoremap <Leader>gd :Gdiff<CR>
 nnoremap <Leader>gl :Silent Glog<CR>
 nnoremap <Leader>gb :Gblame<CR>
+" }}}
+" EditorConfig {{{
+let g:EditorConfig_exclude_patterns = [ 'fugitive://.*', 'scp://.*' ]
+" }}}
+" Listchars {{{
+"set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:.
+"set list
+set listchars=space:·
+set list
+" }}}
+" Prosession config {{{
+let g:prosession_on_startup = 0
+" }}}
+" Startify config {{{
+let g:asciidashlane2 = [
+\'                           `-.                              ',
+\'                     `-/shmMMMNmyo/.                        ',
+\'               .:+sdNMMMMmyo//shmMMMMmyo/-`                 ',
+\'        `./+ydNMMMNds+:.         `-/ohmNMMMNhs+-.           ',
+\'     :ymMMMMNds+:`                      .:oydNMMMNdy.       ',
+\'     sMMh/-`                -                 `-+mMM:       ',
+\'     sMM/                   /hhhs/-`             mMM-       ',
+\'     oMM+                      ./yMMNh+          NMM        ',
+\'     -MMy                    `sdhdMd:-.          NMM        ',
+\'     -MMy                       -NM/            `NMM        ',
+\'     `NMm                     .yMMMh`           .oo:        ',
+\'      mMM`                 `/yMMMMMMm:-                      ',
+\'      oMM+           `.-/shNMMMMMMMMmdhhMMsssmmmmsssso`     ',
+\'      .MMd       `oNMMMMMMMMMdy+/-`            .MMd         ',
+\'       hMM:        -MMMMmy+-                   yMM/         ',
+\'       .MMm`     `:dMdo-                      :MMd          ',
+\'        oMMy   -sNd+.                        `mMN-          ',
+\'         yMMsodmo.                          `mMM/           ',
+\'         `mMNs:                            -mMN+            ',
+\'       :smy:  :-                          +MMN:             ',
+\'       o/`  `dMMy`                      :dMMy`              ',
+\'              oNMNo.                  :dMMd:                ',
+\'               `sNMMh/`            .+dMMd:                  ',
+\'                  +dMMNy/`      .odMMNy:                    ',
+\'                    .+hMMMms+oyNMMNy/`                      ',
+\'                       `/sdNMMNy+-                          ',
+\'                            ``                              ',
+\]
+let g:startify_custom_header =
+            \ 'map(startify#fortune#boxed() + g:asciidashlane2, "\"   \".v:val")'
+"
+"let g:startify_custom_header =
+        "\ map(split(system('fortune | cowsay -f stegosaurus'), '\n'), '"   ". v:val')
+
+" }}}
+" }
+" vim-unimpaired inspired mappings {{{
+function! s:map(mode, lhs, rhs, ...) abort
+  let flags = (a:0 ? a:1 : '') . (a:rhs =~# '^<Plug>' ? '' : '<script>')
+  let head = a:lhs
+  let tail = ''
+  let keys = get(g:, a:mode.'remap', {})
+  if type(keys) != type({})
+    return
+  endif
+  while !empty(head)
+    if has_key(keys, head)
+      let head = keys[head]
+      if empty(head)
+        return
+      endif
+      break
+    endif
+    let tail = matchstr(head, '<[^<>]*>$\|.$') . tail
+    let head = substitute(head, '<[^<>]*>$\|.$', '', '')
+  endwhile
+  exe a:mode.'map' flags head.tail a:rhs
+endfunction
+map [q :cp<CR>
+map ]q :cn<CR>
+
+map [l :lprev<CR>
+map ]l :lnext<CR>
+function! s:BlankUp(count) abort
+  put!=repeat(nr2char(10), a:count)
+  ']+1
+  silent! call repeat#set("\<Plug>unimpairedBlankUp", a:count)
+endfunction
+
+function! s:BlankDown(count) abort
+  put =repeat(nr2char(10), a:count)
+  '[-1
+  silent! call repeat#set("\<Plug>unimpairedBlankDown", a:count)
+endfunction
+
+nnoremap <silent> <Plug>unimpairedBlankUp   :<C-U>call <SID>BlankUp(v:count1)<CR>
+nnoremap <silent> <Plug>unimpairedBlankDown :<C-U>call <SID>BlankDown(v:count1)<CR>
+
+call s:map('n', '[<Space>', '<Plug>unimpairedBlankUp')
+call s:map('n', ']<Space>', '<Plug>unimpairedBlankDown')
 " }}}
 
 " vim:foldmethod=marker:foldlevel=0
