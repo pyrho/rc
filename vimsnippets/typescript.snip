@@ -1,0 +1,19 @@
+snippet newprom
+    return new Promise((resolve, reject) => {
+        ${1}
+    });
+
+snippet tslintdnl
+    // tslint:disable-next-line
+    
+snippet debuglog
+    console.log('==============' + JSON.stringify(${1}, null, 2));
+
+snippet import
+    import { ${1} } from '${2}'
+
+snippet clog
+    console.log(${1});
+
+snippet clogj
+    console.log(JSON.stringify(${1}, null, 2));

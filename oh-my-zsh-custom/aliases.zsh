@@ -46,3 +46,27 @@ gbranches() {
 alias tldr="tldr -t base16"
 alias ranger='ranger --choosedir=$HOME/rangerdir; LASTDIR=`cat $HOME/rangerdir`; cd "$LASTDIR"'
 alias minvim='nvim -u ~/.config/nvim/init_minimal.vim'
+
+bindkey "[D" backward-word
+bindkey "[C" forward-word
+bindkey "^[a" beginning-of-line
+bindkey "^[e" end-of-line
+
+alias notifyOk="osascript -e 'display notification \"That thing you just launched is done!\" with title \"Hey you!\"'"
+
+chunkwmhelp() {
+    cat ~/.skhdrc | grep -A 5 "^#.*$1*."
+}
+
+function vimr() {
+    open -a VimR.app "$@"
+}
+
+ciao () {
+  nvim -p $(git status --short | awk '{print $2}'
+            git show --pretty="format:" --name-only)
+}
+
+yscripts() {
+    cat package.json | jq -C .scripts | grep $1
+}

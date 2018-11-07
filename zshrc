@@ -51,7 +51,7 @@ DISABLE_AUTO_UPDATE="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git ssh-agent z zsh-autosuggestions osx brew yarn zsh-iterm-touchbar)
+plugins=(git ssh-agent zsh-autosuggestions osx brew)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -87,4 +87,8 @@ source $ZSH/oh-my-zsh.sh
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 
-source "/Users/damien/.oh-my-zsh/custom/themes/spaceship.zsh-theme"
+#source "/Users/damien/.oh-my-zsh/custom/themes/spaceship.zsh-theme"
+eval "$(fasd --init auto)"
+#[ -n "$PS1" ] && sh ~/.vimspectr-shell/vimspectr270-dark
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
