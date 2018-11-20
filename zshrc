@@ -60,7 +60,7 @@ source $ZSH/oh-my-zsh.sh
 # export MANPATH="/usr/local/man:$MANPATH"
 
 # You may need to manually set your language environment
-# export LANG=en_US.UTF-8
+export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
 # if [[ -n $SSH_CONNECTION ]]; then
@@ -88,7 +88,7 @@ source $ZSH/oh-my-zsh.sh
 
 
 #source "/Users/damien/.oh-my-zsh/custom/themes/spaceship.zsh-theme"
-eval "$(fasd --init auto)"
+eval "$(/usr/local/bin/fasd --init auto)"
 #[ -n "$PS1" ] && sh ~/.vimspectr-shell/vimspectr270-dark
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"

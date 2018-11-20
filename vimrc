@@ -4,71 +4,66 @@ endif
  
 " VimPlug config {{{
 call plug#begin('~/.vim/plugged')
-Plug 'nightsense/vimspectr'
-Plug 'Shougo/unite.vim' "Required for vimfiler
-Plug 'Shougo/vimfiler.vim' " Filemanager ala vim-vinegar
-Plug 'HerringtonDarkholme/yats.vim' " TS syntax file (better than typescript-vim)
-Plug 'simnalamburt/vim-mundo' " Visual Undo
-Plug 'Shougo/deoplete.nvim' " Asynchronous completion manager
-Plug 'mhartington/nvim-typescript', { 'do': './install.sh > /tmp/log 2>&1' }
-Plug 'justinmk/vim-sneak' "Smart motions
-Plug 'vim-airline/vim-airline' " Powerline fork
-Plug 'vim-airline/vim-airline-themes'
-Plug 'Shougo/neosnippet.vim' "Snippets
-Plug 'tpope/vim-commentary' " Commenting
-Plug 'jason0x43/vim-js-indent' " Syntax for js
-" Plug 'neomake/neomake' "Syntastic replacement to run tslint etc.
-Plug 'Yggdroot/vim-mark' " Mark words with color
-Plug 'ervandew/supertab' " Tab completion
-Plug 'airblade/vim-gitgutter' " Left gutter with modification indication (git)
-Plug 'tpope/vim-fugitive' " Git management
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all'} " Fzf fuzzy finder (ala CtrlP)
-Plug 'junegunn/fzf.vim', {'depends': 'fzf'} " Fzf fuzzy finder (ala CtrlP)
-Plug 'mhinz/vim-startify' " Welcome page
-Plug 'chrisbra/NrrwRgn' " Narrow to a region of a buffer
-Plug 'godlygeek/tabular' " Align stuff easily (must come before vim-markdown)
-Plug 'plasticboy/vim-markdown'
 
-" Using my fork until this gets merged
-" See https://github.com/MattesGroeger/vim-bookmarks/pull/147#issuecomment-413355679
-"Plug 'pyrho/vim-bookmarks', { 'branch': 'fzf-with-preview' } " Bookmarks manager
-Plug 'Yilin-Yang/vim-markbar' " Bookmarks that make sense
-Plug 'chriskempson/base16-vim' "Colorscheme
-Plug 'vimlab/mdn.vim' " Mozilla Developper Network integration
-Plug 'ryanoasis/vim-devicons' " Have nice icons attached to files
+Plug 'junegunn/seoul256.vim'                      " A colorscheme
+Plug 'Shougo/unite.vim'                           " Required for vimfiler
+Plug 'Shougo/vimfiler.vim'                        " Filemanager ala vim-vinegar
+Plug 'HerringtonDarkholme/yats.vim'               " TS syntax file (better than typescript-vim)
+Plug 'simnalamburt/vim-mundo'                     " Visual Undo
+Plug 'Shougo/deoplete.nvim'                       " Asynchronous completion manager
+Plug 'mhartington/nvim-typescript', {
+            \'do': './install.sh > /tmp/log 2>&1'
+            \}
+Plug 'justinmk/vim-sneak'                         " Smart motions
+Plug 'vim-airline/vim-airline'                    " Powerline fork
+Plug 'vim-airline/vim-airline-themes'
+Plug 'Shougo/neosnippet.vim'                      " Snippets
+Plug 'tpope/vim-commentary'                       " Commenting
+Plug 'jason0x43/vim-js-indent'                    " Syntax for js
+Plug 'Yggdroot/vim-mark'                          " Mark words with color
+Plug 'ervandew/supertab'                          " Tab completion
+Plug 'airblade/vim-gitgutter'                     " Left gutter with modification indication (git)
+Plug 'tpope/vim-fugitive'                         " Git management
+Plug 'junegunn/fzf', {
+            \'dir': '~/.fzf',
+            \'do': './install --all'}             " Fzf fuzzy finder (ala CtrlP)
+Plug 'junegunn/fzf.vim', {'depends': 'fzf'}       " Fzf fuzzy finder (ala CtrlP)
+Plug 'mhinz/vim-startify'                         " Welcome page
+Plug 'chrisbra/NrrwRgn'                           " Narrow to a region of a buffer
+Plug 'godlygeek/tabular'                          " Align stuff easily (must come before vim-markdown)
+Plug 'plasticboy/vim-markdown'
+Plug 'Yilin-Yang/vim-markbar'                     " Bookmarks that make sense
+Plug 'chriskempson/base16-vim'                    " Colorscheme
+Plug 'ryanoasis/vim-devicons'                     " Have nice icons attached to files
 Plug 'pangloss/vim-javascript'
 Plug 'davidhalter/jedi-vim'
-Plug 'kchmck/vim-coffee-script'
 Plug 'tomlion/vim-solidity'
-Plug 'funcodeio/lz4.vim'
 Plug 'junegunn/vim-slash'
 Plug 'elzr/vim-json'
 Plug 'editorconfig/editorconfig-vim'
-Plug 'tpope/vim-obsession' " automatic session management
-Plug 'dhruvasagar/vim-prosession' " complement to vim-obsession to handle sessions dir-wise.
-Plug 'junegunn/vim-peekaboo' " Peek at registers
+Plug 'tpope/vim-obsession'                        " automatic session management
+Plug 'dhruvasagar/vim-prosession'                 " complement to vim-obsession to handle sessions dir-wise.
+Plug 'junegunn/vim-peekaboo'                      " Peek at registers
 Plug 'kien/rainbow_parentheses.vim'
-Plug 'tpope/vim-fireplace' " Clojure support
+Plug 'tpope/vim-fireplace'                        " Clojure support
 Plug 'guns/vim-clojure-static'
-Plug 'tpope/vim-surround' " Do stuff around text objects
-Plug 'junegunn/goyo.vim' " Zen editor
-Plug 'andymass/vim-tradewinds' " Easily move window splits
-Plug 'andymass/vim-matchup' " Better matching of pairs
+Plug 'tpope/vim-surround'                         " Do stuff around text objects
+Plug 'junegunn/goyo.vim'                          " Zen editor
+Plug 'junegunn/limelight.vim'                     " Goyo extension to focus on a paragraph
+Plug 'andymass/vim-tradewinds'                    " Easily move window splits
+Plug 'andymass/vim-matchup'                       " Better matching of pairs
 Plug 'eraserhd/parinfer-rust', {'do':
         \  'cargo build --release'}
-Plug 'janko-m/vim-test' " Test runner
-Plug 'w0rp/ale' " Lint manager (like syntastic)
-Plug 'metakirby5/codi.vim' " Code playground
-Plug 'altercation/vim-colors-solarized' 
+Plug 'janko-m/vim-test'                           " Test runner
+Plug 'w0rp/ale'                                   " Lint manager (like syntastic)
+Plug 'metakirby5/codi.vim'                        " Code playground
 
-" Initialize plugin system
 call plug#end()
 " }}}
 
 if has("unix")
   set shell=bash
 endif
-let hostname = substitute(system('hostname'), '\n', '', '')
 
 " Deopplete Config {{{
 let g:deoplete#enable_at_startup = 1
@@ -158,54 +153,28 @@ if (empty($TMUX))
   endif
 endif
 " }}}
-" Vim Bookmarks config {{{
-let g:bookmark_save_per_working_dir = 1
-let g:bookmark_auto_save = 1
-let g:bookmark_prefer_fzf = 1
-let g:bookmark_fzf_preview = 1
-highlight BookmarkSign ctermfg=160
-highlight BookmarkLine ctermbg=194 ctermfg=NONE
-let g:bookmark_sign = '😍'
-let g:bookmark_annotation_sign = '📖'
-
-let g:bookmark_highlight_lines = 1
-" }}}
 " nvim-typescript config {{{
-
 let g:nvim_typescript#javascript_support = 1
 let g:nvim_typescript#loc_list_item_truncate_after = -1
 let g:nvim_typescript#max_completion_detail = 100
 let g:nvim_typescript#diagnostics_enable = 0
-
-
-
-" run TSSyncErr on write
-" autocmd! BufWritePost *.ts,*.tsx TSSyncErr
 " }}}
 " Supertab config {{{
 let g:SuperTabDefaultCompletionType = "context"
 " }}}
 " Airline config {{{
 let g:airline#extensions#tabline#enabled = 1
-"let g:airline#extensions#neomake#enabled = 1
 let g:airline#extensions#tabline#fnamemod = ':.'
 let g:airline#extensions#tabline#fnamecollapse = 0
 let g:airline#extensions#tabline#formatter = 'jsformatter'
 let g:airline_powerline_fonts = 1
 let g:airline_theme='violet'
 " }}}
-" Neomake config {{{
-"call neomake#configure#automake('w')
-" let g:neomake_error_sign = {
-"             \ 'text': '😵',
-"             \ 'texthl': 'ErrorMsg',
-"             \ }
-" }}}
 " Neosnippets config {{{
 " Plugin key-mappings.
-imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-smap <C-k>     <Plug>(neosnippet_expand_or_jump)
-xmap <C-k>     <Plug>(neosnippet_expand_target)
+imap <C-y>     <Plug>(neosnippet_expand_or_jump)
+smap <C-y>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-y>     <Plug>(neosnippet_expand_target)
 
 " SuperTab like snippets behavior.
 "imap <expr><TAB>
@@ -234,35 +203,46 @@ if has("unix")
     set directory=~/.vimswap
 endif
 " }}}
+
+" GitGutter config {{{
+let g:gitgutter_map_keys = 0
+" }}}
+
 " Misc {{{
 set makeef=error.err
-let g:gitgutter_map_keys = 0
 set backspace=indent,eol,start
-" autocmd BufWritePre * %s/\s\+$//e "Automatically Remove trailing whitespaces
 let g:matchparen_timeout = 20
 let g:matchparen_insert_timeout = 20
 " }}}
+
 " Abbreviations {{{
 :iab cdate <c-r>=strftime("%Y-%m-%d")<CR>
 :iab chour <c-r>=strftime("%H:%M")<CR>
 " }}}
-" Filetype Settings [require autocmd] {{{
+
+" Filetype Settings {{{
 if has("autocmd")
   autocmd BufEnter *.c,*.h set formatoptions=croql comments=sr:/*,mb:**,el:*/ cpt=k~/.complete-c,i,k nowrap cindent smartindent
   autocmd BufEnter *.C,*.cpp,*.hh,*.cc,*.hxx set formatoptions=croql comments=sr:/*,mb:**,el:*/ cpt=k~/.complete-cpp,i,k cindent smartindent
   autocmd BufEnter, *.handlebars,*.hbs set ft=html syntax=handlebars
+
+  " Underline current line with -
   autocmd BufEnter, *.md nnoremap <Leader>- YpVr-
+
+  " Underline current line with =
   autocmd BufEnter, *.md nnoremap <Leader>= YpVr=
   autocmd BufEnter, *.md set tw=80
   autocmd BufEnter, *.ts map <F5> :TSGetDiagnostics<CR>
 endif
 " }}}
+
 " Tabs & spaces {{{
 set tabstop=4
 set expandtab
 set softtabstop=4
 set shiftwidth=4
 " }}}
+
 " Options {{{
 set selection=old
 set nowrap
@@ -315,8 +295,10 @@ autocmd FileType typescript,javascript
 " Mark mappings {{{
 nmap <Leader>N <Plug>MarkAllClear
 " }}}
-nnoremap - :m .+1<CR> " Move current line one line down
-nnoremap _ :m .-2<CR> " Move current line one line up
+ " Move current line one line down
+nnoremap - :m .+1<CR>
+" Move current line one line up
+nnoremap _ :m .-2<CR>
 map <Leader>a :Ag
 nnoremap gV `[v`]
 nmap <Tab> :bn<CR>
@@ -348,22 +330,15 @@ inoremap {<CR> {<CR>}<ESC>O
 inoremap =>{ => {<CR>});<ESC>O
 " }}}
 " Colorscheme {{{
-if has("gui_running")
-    colorscheme badwolf
-endif
 
 if has('nvim')
-    "colorscheme neonwave
-    "colorscheme happy_hacking
-    " colorscheme duotone-darkearth
-    "colorscheme PaperColor
-    "colorscheme onedark
-    "colorscheme base16-onedark
-    "colorscheme one
-    "colorscheme vimspectr270-dark
-    set background=dark
-    "colorscheme solarized
-    colorscheme base16-onedark
+    if has("gui_vimr")
+        colorscheme seoul256-light
+        let g:airline_theme='sol'
+    else
+        set background=dark
+        colorscheme base16-onedark
+    endif
 endif
 
 highlight OverLength ctermbg=red ctermfg=white guibg=#592929
@@ -383,15 +358,7 @@ autocmd BufWinLeave *.ts call clearmatches()
 " NeoVim Config {{{
 let g:python_host_prog = '/usr/bin/python'
 " }}}
-" Startify config {{{
-let g:startify_change_to_vcs_root = 1
-let g:startify_bookmarks = [
-            \ { 'w': '~/Library/Lima/wikis/vimwiki/index.md' },
-            \ { 't': '~/.config/nvim/init.vim' },
-            \ { 'r': '~/repos' },
-            \ ]
 
-" }}}
 " Vimfiler config {{{
 
 function s:define_vimfiler_mappings()
@@ -429,9 +396,11 @@ autocmd FileType vimfiler call s:define_vimfiler_mappings()
 
 
 " }}}
+
 " vim-slash config {{{
 noremap <plug>(slash-after) zz
 " }}}
+
 " Fugitive {{{
 autocmd BufReadPost fugitive://* set bufhidden=delete
 nnoremap <Leader>gs :Gstatus<CR>
@@ -452,6 +421,20 @@ set list
 let g:prosession_on_startup = 0
 " }}}
 " Startify config {{{
+let g:startify_lists = [
+            \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
+            \ { 'type': 'files',     'header': ['   MRU']            },
+            \ { 'type': 'sessions',  'header': ['   Sessions']       },
+            \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
+            \ { 'type': 'commands',  'header': ['   Commands']       },
+            \ ]
+
+let g:startify_change_to_vcs_root = 1
+let g:startify_bookmarks = [
+            \ { 'w': '~/Library/Lima/wikis/vimwiki/index.md' },
+            \ { 't': '~/.config/nvim/init.vim' },
+            \ { 'r': '~/repos' },
+            \ ]
 let g:asciidashlane2 = [
 \'                           `-.                              ',
 \'                     `-/shmMMMNmyo/.                        ',
@@ -481,8 +464,7 @@ let g:asciidashlane2 = [
 \'                       `/sdNMMNy+-                          ',
 \'                            ``                              ',
 \]
-let g:startify_custom_header =
-            \ 'map(startify#fortune#boxed() + g:asciidashlane2, "\"   \".v:val")'
+"let g:startify_custom_header = 'map(startify#fortune#boxed() + g:asciidashlane2, "\"   \".v:val")'
 "
 "let g:startify_custom_header =
         "\ map(split(system('fortune | cowsay -f stegosaurus'), '\n'), '"   ". v:val')
@@ -533,9 +515,6 @@ nnoremap <silent> <Plug>unimpairedBlankDown :<C-U>call <SID>BlankDown(v:count1)<
 call s:map('n', '[<Space>', '<Plug>unimpairedBlankUp')
 call s:map('n', ']<Space>', '<Plug>unimpairedBlankDown')
 " }}}
-" vim-test config {{{
-let test#typesript#minitest#file_pattern = '\.test\.js' " the default is '_test\.rb'
-" }}}
 " Misc {{{
 
 " Fix for python2 neovim support
@@ -551,7 +530,11 @@ let g:ale_linters = {
 let g:ale_set_quickfix = 1
 " }
 " }}}
-" 
+
+" Limelight config {{{
+autocmd! User GoyoEnter Limelight
+autocmd! User GoyoLeave Limelight!
+" }}}
 
 " vim-markbar settings {{{
 map <F2> <Plug>ToggleMarkbar 
