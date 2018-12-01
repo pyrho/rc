@@ -6,8 +6,12 @@ endif
 call plug#begin('~/.vim/plugged')
 
 Plug 'junegunn/seoul256.vim'                      " A colorscheme
-Plug 'Shougo/unite.vim'                           " Required for vimfiler
-Plug 'Shougo/vimfiler.vim'                        " Filemanager ala vim-vinegar
+if has('nvim')
+  Plug 'Shougo/defx.nvim', { 
+              \'do': ':UpdateRemotePlugins' }     " File browser (vim-vinegar like)
+endif
+Plug 'mhartington/defx-devicons'                  " vim-devicons plugin for defx
+Plug 'kristijanhusak/defx-git'                    " git icon integration for defx
 Plug 'HerringtonDarkholme/yats.vim'               " TS syntax file (better than typescript-vim)
 Plug 'simnalamburt/vim-mundo'                     " Visual Undo
 Plug 'Shougo/deoplete.nvim'                       " Asynchronous completion manager
@@ -57,6 +61,7 @@ Plug 'eraserhd/parinfer-rust', {'do':
 Plug 'janko-m/vim-test'                           " Test runner
 Plug 'w0rp/ale'                                   " Lint manager (like syntastic)
 Plug 'metakirby5/codi.vim'                        " Code playground
+Plug 'fatih/vim-go'                               " Go support
 
 call plug#end()
 " }}}
@@ -136,6 +141,7 @@ let g:fzf_colors =
   \ 'header':  ['fg', 'Comment'] }
 
 " }}}
+
 " True color fix {{{
 "Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
 "If you're using tmux version 2.2 or later, you can remove the outermost $TMUX check and use tmux's 24-bit color support
@@ -305,8 +311,8 @@ nmap <Tab> :bn<CR>
 nmap <S-Tab> :bp<CR>
 map te :tabedit %<CR>
 map tc :tabclose<CR>
-map <F1> :VimFilerExplorer -find<CR>
-nmap <Leader>f :VimFilerBufferDir -force-quit -find<CR>
+map <silent><F1> :Defx -columns=git:devicons:mark:filename:type -split=vertical -winwidth=50 -direction=topleft<CR>
+nmap <silent><Leader>f :Defx -columns=git:devicons:mark:filename:type `expand('%:p:h')` -search=`expand('%:p')`<CR>
 map <M-LEFT> gT
 map <M-RIGHT> gt
 map <silent> <F7> :!xterm<CR>
@@ -347,7 +353,6 @@ set colorcolumn=80
 " }}}
 " Trailing whitespace {{{
 highlight ExtraWhitespace ctermbg=red ctermfg=white guibg=red
-autocmd FileType vimfiler highlight clear OverLength
 autocmd FileType startify highlight clear OverLength
 "match ExtraWhitespace /\s\+$/
 autocmd BufWinEnter *.ts match ExtraWhitespace /\s\+$/
@@ -355,44 +360,63 @@ autocmd InsertEnter *.ts match ExtraWhitespace /\s\+\%#\@<!$/
 autocmd InsertLeave *.ts match ExtraWhitespace /\s\+$/
 autocmd BufWinLeave *.ts call clearmatches()
 " }}}
+
 " NeoVim Config {{{
 let g:python_host_prog = '/usr/bin/python'
 " }}}
 
-" Vimfiler config {{{
-
-function s:define_vimfiler_mappings()
-    nmap <buffer> <Enter> <Plug>(vimfiler_cd_or_edit)
-    nmap <buffer> o <Plug>(vimfiler_expand_or_edit)
-    nmap <buffer> h <Plug>(vimfiler_smart_h)
-    nmap <buffer> <Left> <Plug>(vimfiler_smart_h)
-    nmap <buffer> l <Plug>(vimfiler_smart_l)
-    nmap <buffer> <Right> <Plug>(vimfiler_smart_l)
-    nmap <buffer> cd <Plug>(vimfiler_make_directory)
-    nmap <buffer> cf <Plug>(vimfiler_new_file)
-    nmap <buffer> sm <Plug>(vimfiler_toggle_safe_mode)
-    nmap <buffer> r <Plug>(vimfiler_rename_file)
-    nmap <buffer> c <Plug>(vimfiler_copy_file)
-    nmap <buffer> m <Plug>(vimfiler_move_file)
-    nmap <buffer> q <Plug>(vimfiler_hide)
-    nmap <buffer> v <Plug>(vimfiler_preview_file)
-    nmap <buffer> yy <Plug>(vimfiler_yank_full_path)
-    nmap <buffer> t <Plug>(vimfiler_expand_tree)
-    nmap <buffer> T <Plug>(vimfiler_expand_tree_recursive)
-    nmap <buffer> d <Plug>(vimfiler_delete_file)
-    nmap <buffer> i <Plug>(vimfiler_cd_input_directory)
-    nmap <buffer> j <Plug>(vimfiler_loop_cursor_down)
-    nmap <buffer> k <Plug>(vimfiler_loop_cursor_up)
-    nmap <buffer> <Down> <Plug>(vimfiler_loop_cursor_down)
-    nmap <buffer> <Up> <Plug>(vimfiler_loop_cursor_up)
-    nnoremap <silent><buffer><expr> sp vimfiler#do_switch_action('split')
-    nnoremap <silent><buffer><expr> vs vimfiler#do_switch_action('vsplit')
+" Defx config {{{
+autocmd FileType defx call s:defx_my_settings()
+function! s:defx_my_settings() abort
+    " Define mappings
+    nnoremap <silent><buffer><expr> <CR> defx#do_action('drop')
+    nnoremap <silent><buffer><expr> c
+                \ defx#do_action('copy')
+    nnoremap <silent><buffer><expr> m
+                \ defx#do_action('move')
+    nnoremap <silent><buffer><expr> p
+                \ defx#do_action('paste')
+    nnoremap <silent><buffer><expr> l
+                \ defx#do_action('open')
+    nnoremap <silent><buffer><expr> E
+                \ defx#do_action('open', 'vsplit')
+    nnoremap <silent><buffer><expr> P
+                \ defx#do_action('open', 'pedit')
+    nnoremap <silent><buffer><expr> K
+                \ defx#do_action('new_directory')
+    nnoremap <silent><buffer><expr> N
+                \ defx#do_action('new_file')
+    nnoremap <silent><buffer><expr> d
+                \ defx#do_action('remove')
+    nnoremap <silent><buffer><expr> r
+                \ defx#do_action('rename')
+    nnoremap <silent><buffer><expr> x
+                \ defx#do_action('execute_system')
+    nnoremap <silent><buffer><expr> yy
+                \ defx#do_action('yank_path')
+    nnoremap <silent><buffer><expr> .
+                \ defx#do_action('toggle_ignored_files')
+    nnoremap <silent><buffer><expr> h
+                \ defx#do_action('cd', ['..'])
+    nnoremap <silent><buffer><expr> ~
+                \ defx#do_action('cd')
+    nnoremap <silent><buffer><expr> q
+                \ defx#do_action('quit')
+    nnoremap <silent><buffer><expr> <Space>
+                \ defx#do_action('toggle_select') . 'j'
+    nnoremap <silent><buffer><expr> *
+                \ defx#do_action('toggle_select_all')
+    nnoremap <silent><buffer><expr> j
+                \ line('.') == line('$') ? 'gg' : 'j'
+    nnoremap <silent><buffer><expr> k
+                \ line('.') == 1 ? 'G' : 'k'
+    nnoremap <silent><buffer><expr> <C-l>
+                \ defx#do_action('redraw')
+    nnoremap <silent><buffer><expr> <C-g>
+                \ defx#do_action('print')
+    nnoremap <silent><buffer><expr> cd
+                \ defx#do_action('change_vim_cwd')
 endfunction
-
-let g:vimfiler_no_default_key_mappings = 1
-let g:vimfiler_as_default_explorer = 1
-
-autocmd FileType vimfiler call s:define_vimfiler_mappings()
 
 
 " }}}
@@ -431,7 +455,7 @@ let g:startify_lists = [
 
 let g:startify_change_to_vcs_root = 1
 let g:startify_bookmarks = [
-            \ { 'w': '~/Library/Lima/wikis/vimwiki/index.md' },
+            \ { 'w': '~/CloudStation/wikis/vimwiki/index.md' },
             \ { 't': '~/.config/nvim/init.vim' },
             \ { 'r': '~/repos' },
             \ ]
@@ -541,7 +565,7 @@ map <F2> <Plug>ToggleMarkbar
 " }}}
 
 " Perso wiki and diary stuff {{{
-nnoremap <Leader>w<Leader>w :e ~/Library/Lima/wikis/vimwiki/diary/`date +\%Y-\%m-\%d`.md<CR>
+nnoremap <Leader>w<Leader>w :e ~/CloudStation/wikis/vimwiki/diary/`date +\%Y-\%m-\%d`.md<CR>
 " }}}
 
 " vim:foldmethod=marker:foldlevel=0
