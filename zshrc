@@ -51,7 +51,7 @@ DISABLE_AUTO_UPDATE="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git ssh-agent thefuck jira gulp)
+plugins=(git ssh-agent zsh-autosuggestions osx brew)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -60,7 +60,7 @@ source $ZSH/oh-my-zsh.sh
 # export MANPATH="/usr/local/man:$MANPATH"
 
 # You may need to manually set your language environment
-# export LANG=en_US.UTF-8
+export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
 # if [[ -n $SSH_CONNECTION ]]; then
@@ -87,4 +87,8 @@ source $ZSH/oh-my-zsh.sh
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 
-source "/home/pyrho/.oh-my-zsh/custom/themes/spaceship.zsh-theme"
+#source "/Users/damien/.oh-my-zsh/custom/themes/spaceship.zsh-theme"
+eval "$(/usr/local/bin/fasd --init auto)"
+#[ -n "$PS1" ] && sh ~/.vimspectr-shell/vimspectr270-dark
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
