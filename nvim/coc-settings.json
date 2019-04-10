@@ -1,0 +1,15 @@
+{
+    "typescript.preferences.quoteStyle": "single",
+    "typescript.suggest.autoImports": true,
+    "diagnostic.warningSign": "😗",
+    "diagnostic.errorSign": "😓",
+    "diagnostic.hintSign": "📎",
+    "diagnostic.infoSign": "💁",
+    "codeLens.enable": false,
+    "diagnostic.messageTarget": "float",
+    "coc.preferences.currentFunctionSymbolAutoUpdate": true,
+    "snippets.ultisnips.directories": [
+        "snippets"
+    ]
+
+}
