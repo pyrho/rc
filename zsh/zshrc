@@ -1,7 +1,5 @@
 #!/bin/zsh
 
-#Static, antibody bundle < ~/.zsh_plugins.txt > ~/.zsh_plugins.sh, source ~/.zsh_plugins.sh
-
 # shortcut to this dotfiles path is $DOTFILES
 export DOTFILES="$HOME/rc"
 
@@ -13,11 +11,8 @@ typeset -U config_files
 config_files=($DOTFILES/zsh/*.zsh)
 
 # This is needed to load OMZ plugins
-export ZSH=`antibody home`/https-COLON--SLASH--SLASH-github.com-SLASH-robbyrussell-SLASH-oh-my-zsh
+export ZSH=`/usr/local/bin/antibody home`/https-COLON--SLASH--SLASH-github.com-SLASH-robbyrussell-SLASH-oh-my-zsh
 export ZSH_CACHE_DIR=$ZSH/cache
-
-# load antibody plugins
-source ~/.zsh_plugins.sh
 
 # load everything but the path and completion files
 for file in ${config_files:#*/completion.zsh}; do
@@ -37,8 +32,16 @@ for file in ${(M)config_files:#*/completion.zsh}; do
   source "$file"
 done
 
+# FASD deson't work if this line is before the for above it...
+# load antibody plugins
+bindkey '^R' fzf-history-widget
+source ~/.zsh_plugins.sh
+# source "/Users/damien/.fzf/shell/key-bindings.zsh"
+
 unset config_files updated_at
 
 # use .localrc for SUPER SECRET CRAP that you don't
 # want in your public, versioned repo.
 [ -f ~/.localrc ] && . ~/.localrc
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

@@ -8,11 +8,9 @@ let g:coc_force_debug = 1
 
 let g:EditorConfig_exclude_patterns = [ 'fugitive://.*', 'scp://.*' ]
 
-let g:goyo_height = "70%"
-
-" Limelight config {{{
-autocmd! User GoyoEnter Limelight
-autocmd! User GoyoLeave Limelight!
-" }}}
-
 let g:python_host_prog = '/usr/local/bin/python2'
+
+let g:nuake_position = 'right'
+let g:nuake_size = 0.4
+
+

@@ -1,8 +1,8 @@
 " FZF config {{{
-let $FZF_DEFAULT_COMMAND = 'ag --hidden -l -g ""'
-
+let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow -g "!{.git,node_modules}/*" 2> /dev/null'
+" Files + devicons
 function! Fzf_dev()
-  let l:fzf_files_options = '--preview "rougify {2..-1} | head -'.&lines.'"'
+  let l:fzf_files_options = '--preview "bat --theme="OneHalfDark" --style=numbers,changes --color always {2..-1} | head -'.&lines.'"'
 
   function! s:files()
     let l:files = split(system($FZF_DEFAULT_COMMAND), '\n')
@@ -30,23 +30,14 @@ function! Fzf_dev()
         \ 'source': <sid>files(),
         \ 'sink':   function('s:edit_file'),
         \ 'options': '-m ' . l:fzf_files_options,
-        \ 'down':    '40%' })
+        \ 'down':    '60%' })
 endfunction
 
-" Augmenting Ag command using fzf#vim#with_preview function
-"   * fzf#vim#with_preview([[options], preview window, [toggle keys...]])
-"     * For syntax-highlighting, Ruby and any of the following tools are required:
-"       - Highlight: http://www.andre-simon.de/doku/highlight/en/highlight.php
-"       - CodeRay: http://coderay.rubychan.de/
-"       - Rouge: https://github.com/jneen/rouge
-"
-"   :Ag  - Start fzf with hidden preview window that can be enabled with "?" key
-"   :Ag! - Start fzf in fullscreen and display the preview window above
-command! -bang -nargs=* Ag
-  \ call fzf#vim#ag(<q-args>,
-  \                 <bang>0 ? fzf#vim#with_preview('up:60%')
-  \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
-  \                 <bang>0)
+command! -nargs=* S
+  \ call fzf#vim#grep(
+  \  'rg --column -g "!{.git,node_modules}/*" --line-number --ignore-case --no-heading --color=always '.shellescape(<q-args>), 1,
+  \   fzf#vim#with_preview('up:80%'),
+  \   1)
 " Customize fzf colors to match your color scheme
 let g:fzf_colors =
 \ { 'fg':      ['fg', 'Normal'],
@@ -64,3 +55,5 @@ let g:fzf_colors =
   \ 'header':  ['fg', 'Comment'] }
 
 " }}}
+
+autocmd * fzf setlocal nornu

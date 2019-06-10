@@ -1,3 +1,4 @@
+" Plugins {{{
 call plug#begin('~/.vim/plugged-vimr')
 Plug 'mhinz/vim-startify'                                      " Welcome page
 Plug 'junegunn/seoul256.vim'
@@ -6,36 +7,65 @@ Plug 'junegunn/limelight.vim'                                  " Goyo extension 
 Plug 'godlygeek/tabular'                                       " Align stuff easily (must come before vim-markdown)
 Plug 'plasticboy/vim-markdown',
 call plug#end()
+" }}}
 
-let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-set termguicolors
+" Misc {{{
 let g:vim_markdown_folding_disabled = 1
-set nowrap
-colorscheme seoul256-light
-
 let g:startify_bookmarks = [
             \ { 'w': '~/SynologyDrive/wikis/vimwiki/index.md' },
             \ ]
+" }}}
 
-set tw=70
+" Options {{{
+colorscheme seoul256-light
+let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+set termguicolors
+set nowrap
+set textwidth=70
+set shiftwidth=4
+set laststatus=0
+" }}}
+
+
+" Goyo/Limelight config {{{
 let g:goyo_height = "70%"
-
-" Limelight config {{{
 autocmd! User GoyoEnter Limelight
 autocmd! User GoyoLeave Limelight!
 " }}}
 
+" Mappings {{{
 let mapleader = "\<Space>"
-" Perso wiki and diary stuff {{{
 nnoremap <Leader>w<Leader>w :e ~/SynologyDrive/wikis/vimwiki/diary/`date +\%Y-\%m-\%d`.md<CR>
-
-" Markdown Specific {{{
 autocmd BufEnter, *.md nnoremap <Leader>- YpVr-
-" Underline current line with =
 autocmd BufEnter, *.md nnoremap <Leader>= YpVr=
+nnoremap <Leader>f :e %:h<CR>
+nnoremap <Leader>s :Startify<CR>
+nnoremap <Leader>l <C-w>l
+nnoremap <Leader>h <C-w>h
+nnoremap <Leader>j <C-w>j
+nnoremap <Leader>k <C-w>k
 " }}}
 
-" Custom bindings {{{
-set laststatus=0
+" Abbrev {{{
 :iab cdate <c-r>=strftime("%Y-%m-%d")<CR>
 :iab chour <c-r>=strftime("%H:%M")<CR>
+" }}}
+
+" syntax match Normal '\[X\]' conceal cchar=☑
+" syntax match Normal '\[_\]' conceal cchar=☐
+set conceallevel=2
+if has('conceal')
+  if &termencoding ==# "utf-8" || &encoding ==# "utf-8"
+    let s:checkbox_unchecked = "◻"
+    let s:checkbox_checked = "✔"
+    " let s:checkbox_checked = "✅"
+  else
+    let s:checkbox_unchecked = ' '
+    let s:checkbox_checked = 'x'
+  endif
+  syntax match markdownCheckbox "^\s*\([-\*] \[[ x]\]\|--\|++\) " contains=markdownCheckboxChecked,markdownCheckboxUnchecked
+  execute 'syntax match markdownCheckboxUnchecked "\([-\*] \[ \]\|--\)" contained conceal cchar='.s:checkbox_unchecked
+  execute 'syntax match markdownCheckboxChecked "\([-\*] \[x\]\|++\)" contained conceal cchar='.s:checkbox_checked
+endif
+hi clear Conceal
+set concealcursor=n

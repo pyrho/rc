@@ -6,8 +6,8 @@ Plug 'kristijanhusak/defx-icons'                               " Nice icons in d
 Plug 'kristijanhusak/defx-git'                                 " git icon integration for defx
 Plug 'HerringtonDarkholme/yats.vim',
             \ { 'for': 'typescript' }                          " TS syntax file (better than typescript-vim)
-Plug 'neoclide/coc.nvim',
-            \ {'tag': '*',
+Plug 'neoclide/coc.nvim',                                      " Completion engine, best in class
+            \ {'tag': '',
             \  'do': 'yarn'
             \}
 Plug 'tpope/vim-commentary'                                    " Commenting
@@ -39,8 +39,8 @@ Plug 'editorconfig/editorconfig-vim'
 " Plug 'tpope/vim-obsession'                                     " automatic session management
 Plug 'benknoble/vim-obsession', { 'branch': 'this_session' }     " Waiting on #47
 Plug 'junegunn/vim-peekaboo'                                   " Peek at registers
-Plug 'kien/rainbow_parentheses.vim',
-            \ { 'for': 'clojure' }
+Plug 'amdt/vim-niji'                                             " Rainbow
+
 Plug 'tpope/vim-salve',                                        " Clojure static support
             \ { 'for': 'clojure' }
 Plug 'tpope/vim-classpath',                                    " More clojure stuff i don't understand
@@ -50,7 +50,8 @@ Plug 'tpope/vim-fireplace',                                    " Clojure support
 Plug 'guns/vim-clojure-static',                                " And even more clojure stuff
             \ { 'for': 'clojure' }
 Plug 'guns/vim-clojure-highlight',                             " Clojure: extended highliting
-            \ { 'for': 'clojure' }
+             \ { 'for': 'clojure' }
+
 Plug 'tpope/vim-surround'                                      " Do stuff around text objects
 Plug 'junegunn/goyo.vim',                                      " Zen editor
             \ { 'for': 'markdown' }
@@ -69,5 +70,18 @@ Plug 'pyrho/lightline-gitdiff', { 'branch': 'fix/git-rebase' } " Git diff integr
 Plug 'NovaDev94/lightline-onedark'                             " Lightline colorscheme
 Plug 'Lenovsky/nuake'                                          " Quake style terminal
 Plug 'romainl/vim-devdocs'                                     " devdocs.io bindings
+Plug 'Yggdroot/indentLine'                                     " Show indent
+Plug 'jiangmiao/auto-pairs'                                    " Automatically inserts pairs
+Plug 'chrisbra/colorizer'                                      " Show colors inline
+Plug 'sirtaj/vim-openscad',
+            \ {'for': 'openscad'}
+Plug 'mbbill/undotree'
+Plug 'guns/vim-sexp'                                           " Clojure
+Plug 'jonase/eastwood',                                        " Clojure linting
+            \ {'for': 'clojure'} 
+Plug 'tpope/vim-sexp-mappings-for-regular-people',
+            \ {'for': 'clojure'} 
+Plug 'tpope/vim-repeat',
+            \ {'for': 'clojure'} 
 
 call plug#end()

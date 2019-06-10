@@ -6,6 +6,7 @@ autocmd BufEnter, *.md nnoremap <Leader>= YpVr=
 
 " Custom bindings {{{
 let mapleader = "\<Space>"
+let maplocalleader = "\<BS>"
 " Mark mappings {{{
 nmap <Leader>N <Plug>MarkAllClear
 " }}}
@@ -13,7 +14,7 @@ nmap <Leader>N <Plug>MarkAllClear
 nnoremap - :m .+1<CR>
 " Move current line one line up
 nnoremap _ :m .-2<CR>
-map <Leader>A :Ag <C-r><C-w><CR>
+map <Leader>A :S <C-r><C-w><CR>
 nnoremap gV `[v`]
 nmap <Tab> :bn<CR>
 nmap <S-Tab> :bp<CR>
@@ -35,11 +36,6 @@ nnoremap <Leader>h :wincmd h<CR>
 nnoremap <Leader>j :wincmd j<CR>
 nnoremap <Leader>q :q<CR>
 nnoremap <Leader>S :Startify<CR>
-inoremap {,<CR> {<CR>},<ESC>O
-inoremap {;<CR> {<CR>};<ESC>O
-inoremap {<CR> {<CR>}<ESC>O
-inoremap =>{ => {<CR>});<ESC>O
-inoremap ({<CR> ({<CR>});<ESC>O
 " }}}
 " vim-slash config {{{
 noremap <plug>(slash-after) zz
@@ -117,3 +113,7 @@ nnoremap <Leader>w<Leader>w :e ~/SynologyDrive/wikis/vimwiki/diary/`date +\%Y-\%
 " }}}
 nnoremap <Leader>b :Buffers<CR>
 nnoremap <Leader>o :call Fzf_dev()<CR>
+
+inoremap <Esc> <Esc>:w<CR>
+nnoremap tn :tabnext<CR>
+nnoremap tp :tabprev<CR>

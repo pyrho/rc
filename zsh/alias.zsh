@@ -49,6 +49,8 @@ alias gp='git push'
 alias gpf='git push --force-with-lease'
 alias gss='git status -s'
 alias gpsup='git push --set-upstream origin $(git_current_branch)'
+alias grt='cd $(git rev-parse --show-toplevel || echo ".")'
 # }}}
 #
-alias l='ls -la'
+alias l='ls -lha'
+

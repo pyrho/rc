@@ -1,6 +1,7 @@
 #!/bin/zsh
 export LSCOLORS='exfxcxdxbxegedabagacad'
 export CLICOLOR=true
+export WORDCHARS=""
 
 autoload -U up-line-or-beginning-search
 autoload -U down-line-or-beginning-search
@@ -47,10 +48,10 @@ zle -N down-line-or-beginning-search
 bindkey -v
 
 # fuzzy find: start to type
-bindkey "$terminfo[kcuu1]" up-line-or-beginning-search
-bindkey "$terminfo[kcud1]" down-line-or-beginning-search
-bindkey "$terminfo[cuu1]" up-line-or-beginning-search
-bindkey "$terminfo[cud1]" down-line-or-beginning-search
+# bindkey "$terminfo[kcuu1]" up-line-or-beginning-search
+# bindkey "$terminfo[kcud1]" down-line-or-beginning-search
+# bindkey "$terminfo[cuu1]" up-line-or-beginning-search
+# bindkey "$terminfo[cud1]" down-line-or-beginning-search
 
 # backward and forward word with option+left/right
 bindkey '^[^[[D' backward-word
@@ -71,12 +72,7 @@ bindkey '^?' backward-delete-char
 # delete word with ctrl+backspace
 bindkey '^[[3;5~' backward-delete-word
 # bindkey '^[[3~' backward-delete-word
-
-# search history with fzf if installed, default otherwise
-if test -d $HOME/.fzf/shell; then
-	# shellcheck disable=SC1091
-	. $HOME/.fzf/shell/key-bindings.zsh
-else
-	bindkey '^R' history-incremental-search-backward
-fi
-
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+bindkey -M vicmd 'k' history-substring-search-up
+bindkey -M vicmd 'j' history-substring-search-down
