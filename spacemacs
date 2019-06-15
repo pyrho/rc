@@ -59,7 +59,9 @@ This function should only modify configuration layer settings."
      syntax-checking
      typescript
      (clojure :variables
-              clojure-enable-fancify-symbols t)
+              clojure-enable-fancify-symbols t
+              clojure-enable-linters t
+              clojure-enable-clj-refactor t)
      ;; treemacs
      neotree
      emoji
@@ -75,11 +77,12 @@ This function should only modify configuration layer settings."
    ;; '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages '(kibit-helper
-                                      undo-propose
                                       writeroom-mode
                                       flycheck-clojure
                                       doom-themes
-
+                                      rebecca-theme
+                                      atom-one-dark-theme
+                                      project-shells
                                       org-plus-contrib)
 
    ;; A list of packages that cannot be updated.
@@ -499,12 +502,13 @@ before packages are loaded."
 
   (setq-default dotspacemacs-configuration-layers '((org :variables org-enable-github-support t)))
 
+  (setq evil-move-beyond-eol t)
   (setq projectile-project-search-path '("/Users/damien/repos/dashlane/" "/Users/damien/repos/perso"))
 
   (with-eval-after-load 'tide
     (setq tide-navto-item-filter (defun tide-navto-item-filter (navto-items)
-                          (-filter
-                           (lambda (navto-item) (member (plist-get navto-item :kind) '("class" "interface" "type" "enum" "function"))) navto-items))))
+                                   (-filter
+                                    (lambda (navto-item) (member (plist-get navto-item :kind) '("class" "interface" "type" "enum" "function"))) navto-items))))
 
   (spaceline-define-segment buffer-id
     (if (buffer-file-name)
@@ -518,8 +522,12 @@ before packages are loaded."
   (with-eval-after-load 'flycheck
     (setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages))
 
+  ;; (eval-after-load 'flycheck
+  ;;   '(add-hook 'flycheck-mode-hook #'flycheck-typescript-tslint-setup))
+
   (setq org-directory "/Users/damien/SynologyDrive/wikis/org/")
   (setq org-default-notes-file (concat org-directory "/notes.org"))
+  (global-project-shells-mode)
 
   (load-theme 'doom-dracula t)
 
@@ -534,6 +542,37 @@ before packages are loaded."
 
   (global-undo-tree-mode)
 
+  (add-hook 'org-mode-hook '(lambda () (setq fill-column 80)))
+  (add-hook 'org-mode-hook 'auto-fill-mode)
+
+  (defun ediff-copy-both-to-C ()
+    (interactive)
+    (ediff-copy-diff ediff-current-difference nil 'C nil
+                     (concat
+                      (ediff-get-region-contents ediff-current-difference 'A ediff-control-buffer)
+                      (ediff-get-region-contents ediff-current-difference 'B ediff-control-buffer))))
+  (defun add-d-to-ediff-mode-map () (define-key ediff-mode-map "d" 'ediff-copy-both-to-C))
+
+  (add-hook 'ediff-keymap-setup-hook 'add-d-to-ediff-mode-map)
+
+  (defun kill-other-buffers ()
+    "Kill all other buffers."
+    (interactive)
+    (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
+
+  (defun eshell/j (&rest query)
+    (require 's)
+    (let* ((fasd (executable-find "fasd"))
+           (matches (thread-last (s-join " " query)
+                      (format "%s -ld %s" fasd)
+                      (shell-command-to-string)
+                      (s-trim)
+                      (s-lines)
+                      (mapcar 's-trim))))
+      (message "Matches: %s" matches)
+      (when-let (dir (first matches))
+        (eshell/cd dir))))
+
 
   (setq undo-tree-auto-save-history t)
   (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
@@ -541,19 +580,6 @@ before packages are loaded."
   (setq org-agenda-files (append ""  (org-projectile-todo-files) (list "~/SynologyDrive/wikis/org/")))
   (setq org-refile-targets '(("~/SynologyDrive/wikis/org/work.org" :maxlevel . 1) ("~/SynologyDrive/wikis/org/personal.org" :maxlevel . 1) ("~/SynologyDrive/wikis/org/projects.org" :maxlevel . 1))))
 
-
-(defun eshell/j (&rest query)
-  (require 's)
-  (let* ((fasd (executable-find "fasd"))
-         (matches (thread-last (s-join " " query)
-                    (format "%s -ld %s" fasd)
-                    (shell-command-to-string)
-                    (s-trim)
-                    (s-lines)
-                    (mapcar 's-trim))))
-    (message "Matches: %s" matches)
-    (when-let (dir (first matches))
-      (eshell/cd dir))))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
@@ -568,31 +594,16 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(cider-enlighten-mode t)
+ '(cider-save-file-on-load t)
  '(custom-safe-themes
    (quote
-    ("fd944f09d4d0c4d4a3c82bd7b3360f17e3ada8adf29f28199d09308ba01cc092" "49ec957b508c7d64708b40b0273697a84d3fee4f15dd9fc4a9588016adee3dad" "6b2636879127bf6124ce541b1b2824800afc49c6ccd65439d6eb987dbf200c36" "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" default)))
+    ("6d589ac0e52375d311afaa745205abb6ccb3b21f6ba037104d71111e7e76a3fc" "cb9b1c007e61e0802b5ffe3df86188eded1d1cbd9f93a461130debc46bb4e1ac" "9954ed41d89d2dcf601c8e7499b6bb2778180bfcaeb7cdfc648078b8e05348c6" "5d75f9080a171ccf5508ce033e31dbf5cc8aa19292a7e0ce8071f024c6bcad2a" "2296db63b1de14e65390d0ded8e2b5df4b9e4186f3251af56807026542a58201" "6b289bab28a7e511f9c54496be647dc60f5bd8f9917c9495978762b99d8c96a0" "93a0885d5f46d2aeac12bf6be1754faa7d5e28b27926b8aa812840fe7d0b7983" "d986619578e8a8dabb846e91c54090b82d937672f54ffa0ef247c0428813d602" "f633d825e380caaaefca46483f7243ae9a663f6df66c5fad66d4cab91f731c86" "f0dc4ddca147f3c7b1c7397141b888562a48d9888f1595d69572db73be99a024" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "fd944f09d4d0c4d4a3c82bd7b3360f17e3ada8adf29f28199d09308ba01cc092" "49ec957b508c7d64708b40b0273697a84d3fee4f15dd9fc4a9588016adee3dad" "6b2636879127bf6124ce541b1b2824800afc49c6ccd65439d6eb987dbf200c36" "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" default)))
  '(evil-escape-key-sequence "jk")
  '(evil-want-Y-yank-to-eol nil)
- '(magit-blame-styles
-   (quote
-    (quote
-     ((headings
-       (heading-format . "%-20a%C|%s
-"))
-      (margin
-       (margin-format " %s%f" " %C %a" " %H")
-       (margin-width . 42)
-       (margin-face . magit-blame-margin)
-       (margin-body-face magit-blame-dimmed))
-      (highlight
-       (highlight-face . magit-blame-highlight))
-      (lines
-       (show-lines . t)
-       (show-message . t))))))
  '(neo-theme (quote icons))
  '(org-agenda-files
    (quote
-    ("~/repos/perso/cad/TODO.org" "~/repos/perso/blog2/TODO.org" "~/repos/perso/blog/TODO.org" "~/repos/perso/base16-vim-lightline/TODO.org" "~/repos/perso/alacritty/TODO.org" "~/repos/perso/aerc2/TODO.org" "~/repos/perso/GergoDocs/TODO.org" "~/repos/dashlane/webui/TODO.org" "~/repos/dashlane/web-authn-wrapper/TODO.org" "~/repos/dashlane/url-parser/TODO.org" "~/repos/dashlane/ts-event-bus/TODO.org" "~/repos/dashlane/sxg-test/TODO.org" "~/repos/dashlane/simple-dashlane/TODO.org" "~/repos/dashlane/maverick/TODO.org" "~/repos/dashlane/localization/TODO.org" "~/repos/dashlane/leeloo/TODO.org" "~/repos/dashlane/learning/TODO.org" "~/repos/dashlane/kr-u2f/TODO.org" "~/repos/dashlane/joseph2/TODO.org" "~/repos/dashlane/it-ansible/TODO.org" "~/repos/dashlane/injectedts/TODO.org" "~/repos/dashlane/injectedjs/TODO.org" "~/repos/dashlane/injected-gitlab/TODO.org" "~/repos/dashlane/injectdemaster/TODO.org" "~/repos/dashlane/extensionmaster/TODO.org" "~/repos/dashlane/extension/TODO.org" "~/repos/dashlane/desktop/TODO.org" "~/repos/dashlane/communication/TODO.org" "~/repos/dashlane/carbon/TODO.org" "~/repos/dashlane/build-essentials/TODO.org" "~/.emacs.d/TODO.org" "~/rc/TODO.org" "/Users/damien/SynologyDrive/wikis/org/mobileorg.org" "/Users/damien/SynologyDrive/wikis/org/notes.org" "/Users/damien/SynologyDrive/wikis/org/personal.org" "/Users/damien/SynologyDrive/wikis/org/projects.org" "/Users/damien/SynologyDrive/wikis/org/work.org"  "/Users/damien/SynologyDrive/wikis/org/habit.org")))
+    ("~/repos/perso/cad/TODO.org" "~/repos/perso/blog2/TODO.org" "~/repos/perso/blog/TODO.org" "~/repos/perso/base16-vim-lightline/TODO.org" "~/repos/perso/alacritty/TODO.org" "~/repos/perso/aerc2/TODO.org" "~/repos/perso/GergoDocs/TODO.org" "~/repos/dashlane/webui/TODO.org" "~/repos/dashlane/web-authn-wrapper/TODO.org" "~/repos/dashlane/url-parser/TODO.org" "~/repos/dashlane/ts-event-bus/TODO.org" "~/repos/dashlane/sxg-test/TODO.org" "~/repos/dashlane/simple-dashlane/TODO.org" "~/repos/dashlane/maverick/TODO.org" "~/repos/dashlane/localization/TODO.org" "~/repos/dashlane/leeloo/TODO.org" "~/repos/dashlane/learning/TODO.org" "~/repos/dashlane/kr-u2f/TODO.org" "~/repos/dashlane/joseph2/TODO.org" "~/repos/dashlane/it-ansible/TODO.org" "~/repos/dashlane/injectedts/TODO.org" "~/repos/dashlane/injectedjs/TODO.org" "~/repos/dashlane/injected-gitlab/TODO.org" "~/repos/dashlane/injectdemaster/TODO.org" "~/repos/dashlane/extensionmaster/TODO.org" "~/repos/dashlane/extension/TODO.org" "~/repos/dashlane/desktop/TODO.org" "~/repos/dashlane/communication/TODO.org" "~/repos/dashlane/carbon/TODO.org" "~/repos/dashlane/build-essentials/TODO.org" "~/.emacs.d/TODO.org" "~/rc/TODO.org" "/Users/damien/SynologyDrive/wikis/org/mobileorg.org" "/Users/damien/SynologyDrive/wikis/org/notes.org" "/Users/damien/SynologyDrive/wikis/org/personal.org" "/Users/damien/SynologyDrive/wikis/org/projects.org" "/Users/damien/SynologyDrive/wikis/org/work.org" "/Users/damien/SynologyDrive/wikis/org/habit.org")))
  '(org-agenda-skip-unavailable-files t)
  '(org-contacts-files (quote ("~/SynologyDrive/wikis/org/contacts.org")))
  '(org-log-into-drawer t)
@@ -602,7 +613,7 @@ This function is called at the very end of Spacemacs initialization."
  '(org-refile-targets (quote (org-agenda-files)))
  '(package-selected-packages
    (quote
-    (orgit neotree doom-themes helm-rg web-mode tagedit slim-mode scss-mode sass-mode pug-mode impatient-mode helm-css-scss haml-mode emmet-mode counsel-css company-web web-completion-data add-node-modules-path undo-propose rainbow-mode rainbow-identifiers color-identifiers-mode underwater-theme subatomic-theme yaml-mode kibit-helper git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter diff-hl browse-at-remote emojify vmd-mode mmm-mode markdown-toc markdown-mode gh-md emoji-cheat-sheet-plus company-emoji yasnippet-snippets helm-company helm-c-yasnippet fuzzy company-tern dash-functional company-statistics company clojure-snippets auto-yasnippet ac-ispell auto-complete ws-butler writeroom-mode visual-fill-column winum web-beautify volatile-highlights vi-tilde-fringe uuidgen treemacs-projectile treemacs-evil treemacs ht pfuture toc-org tide typescript-mode tern symon symbol-overlay string-inflection spaceline-all-the-icons spaceline powerline smeargle restart-emacs rainbow-delimiters prettier-js popwin persp-mode password-generator paradox overseer org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download org-cliplink org-bullets org-brain open-junk-file nameless move-text macrostep lorem-ipsum livid-mode skewer-mode simple-httpd link-hint json-navigator hierarchy json-mode json-snatcher json-reformat js2-refactor yasnippet multiple-cursors js2-mode js-doc indent-guide hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-xref helm-themes helm-swoop helm-purpose window-purpose imenu-list helm-projectile helm-org-rifle helm-mode-manager helm-make helm-gitignore request helm-git-grep helm-flx helm-descbinds helm-ag google-translate golden-ratio gnuplot gitignore-templates gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck-package package-lint flycheck flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit magit transient git-commit with-editor evil-lisp-state evil-lion evil-indent-plus evil-iedit-state iedit evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens smartparens paredit evil-args evil-anzu anzu elisp-slime-nav editorconfig dumb-jump doom-modeline shrink-path all-the-icons memoize f dash s devdocs define-word counsel-projectile projectile counsel swiper ivy column-enforce-mode clean-aindent-mode cider-eval-sexp-fu eval-sexp-fu cider sesman spinner queue pkg-info parseedn clojure-mode parseclj a epl centered-cursor-mode auto-highlight-symbol auto-dictionary auto-compile packed aggressive-indent ace-window ace-link ace-jump-helm-line helm avy helm-core popup which-key use-package pcre2el org-plus-contrib hydra lv font-lock+ evil goto-chg undo-tree dotenv-mode diminish bind-map bind-key async)))
+    (project-shells seoul256-theme avk-emacs-themes atom-one-dark-theme rebecca-theme orgit neotree doom-themes helm-rg web-mode tagedit slim-mode scss-mode sass-mode pug-mode impatient-mode helm-css-scss haml-mode emmet-mode counsel-css company-web web-completion-data add-node-modules-path undo-propose rainbow-mode rainbow-identifiers color-identifiers-mode underwater-theme subatomic-theme yaml-mode kibit-helper git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter diff-hl browse-at-remote emojify vmd-mode mmm-mode markdown-toc markdown-mode gh-md emoji-cheat-sheet-plus company-emoji yasnippet-snippets helm-company helm-c-yasnippet fuzzy company-tern dash-functional company-statistics company clojure-snippets auto-yasnippet ac-ispell auto-complete ws-butler writeroom-mode visual-fill-column winum web-beautify volatile-highlights vi-tilde-fringe uuidgen treemacs-projectile treemacs-evil treemacs ht pfuture toc-org tide typescript-mode tern symon symbol-overlay string-inflection spaceline-all-the-icons spaceline powerline smeargle restart-emacs rainbow-delimiters prettier-js popwin persp-mode password-generator paradox overseer org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download org-cliplink org-bullets org-brain open-junk-file nameless move-text macrostep lorem-ipsum livid-mode skewer-mode simple-httpd link-hint json-navigator hierarchy json-mode json-snatcher json-reformat js2-refactor yasnippet multiple-cursors js2-mode js-doc indent-guide hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-xref helm-themes helm-swoop helm-purpose window-purpose imenu-list helm-projectile helm-org-rifle helm-mode-manager helm-make helm-gitignore request helm-git-grep helm-flx helm-descbinds helm-ag google-translate golden-ratio gnuplot gitignore-templates gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck-package package-lint flycheck flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit magit transient git-commit with-editor evil-lisp-state evil-lion evil-indent-plus evil-iedit-state iedit evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens smartparens paredit evil-args evil-anzu anzu elisp-slime-nav editorconfig dumb-jump doom-modeline shrink-path all-the-icons memoize f dash s devdocs define-word counsel-projectile projectile counsel swiper ivy column-enforce-mode clean-aindent-mode cider-eval-sexp-fu eval-sexp-fu cider sesman spinner queue pkg-info parseedn clojure-mode parseclj a epl centered-cursor-mode auto-highlight-symbol auto-dictionary auto-compile packed aggressive-indent ace-window ace-link ace-jump-helm-line helm avy helm-core popup which-key use-package pcre2el org-plus-contrib hydra lv font-lock+ evil goto-chg undo-tree dotenv-mode diminish bind-map bind-key async)))
  '(safe-local-variable-values
    (quote
     ((cider-ns-refresh-after-fn . "integrant.repl/resume")
