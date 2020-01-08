@@ -6,10 +6,8 @@ Plug 'kristijanhusak/defx-icons'                               " Nice icons in d
 Plug 'kristijanhusak/defx-git'                                 " git icon integration for defx
 Plug 'HerringtonDarkholme/yats.vim',
             \ { 'for': 'typescript' }                          " TS syntax file (better than typescript-vim)
-Plug 'neoclide/coc.nvim',                                      " Completion engine, best in class
-            \ {'tag': '',
-            \  'do': 'yarn'
-            \}
+
+Plug 'neoclide/coc.nvim', {'tag': '*', 'branch': 'release'}
 Plug 'tpope/vim-commentary'                                    " Commenting
 Plug 'jason0x43/vim-js-indent',
             \ { 'for': 'javascript' }                          " Syntax for js
@@ -68,7 +66,6 @@ Plug 'joecridge/vim-kinesis', { 'for': 'kinesis' }             " Kinesis syntax 
 Plug 'itchyny/lightline.vim'                                   " Lightweight statusline
 Plug 'pyrho/lightline-gitdiff', { 'branch': 'fix/git-rebase' } " Git diff integration in lightline
 Plug 'NovaDev94/lightline-onedark'                             " Lightline colorscheme
-Plug 'Lenovsky/nuake'                                          " Quake style terminal
 Plug 'romainl/vim-devdocs'                                     " devdocs.io bindings
 Plug 'Yggdroot/indentLine'                                     " Show indent
 Plug 'jiangmiao/auto-pairs'                                    " Automatically inserts pairs
@@ -83,5 +80,18 @@ Plug 'tpope/vim-sexp-mappings-for-regular-people',
             \ {'for': 'clojure'} 
 Plug 'tpope/vim-repeat',
             \ {'for': 'clojure'} 
+Plug 'hashivim/vim-terraform', 
+            \ {'for': 'terraform'}
 
+Plug 'liuchengxu/space-vim-dark'
+Plug 'liuchengxu/vim-which-key'
+Plug 'stephpy/vim-yaml'
+Plug 'lifepillar/pgsql.vim'
+Plug 'voldikss/vim-floaterm'
+Plug 'liuchengxu/vim-clap'
+Plug 't9md/vim-choosewin'                                       " Move between windows & tabs fast
+
+" The do hook is highly recommended.
+" It will try to build all the optional dependency if cargo exists on your system.
+Plug 'liuchengxu/vim-clap', { 'do': function('clap#helper#build_all') }
 call plug#end()

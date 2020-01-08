@@ -1,7 +1,8 @@
 " Lightline config {{{
 set showtabline=2
 let g:lightline = {}
-let g:lightline.colorscheme = 'base16_onedark'
+"let g:lightline.colorscheme = 'base16_onedark'
+let g:lightline.colorscheme = 'one'
 let g:lightline.separator = { 'left': "\ue0b8", 'right': "\ue0be" }
 let g:lightline.subseparator = { 'left': "\ue0b9", 'right': "\ue0b9" }
 let g:lightline.tabline_separator = { 'left': "\ue0bc", 'right': "\ue0ba" }
@@ -65,7 +66,7 @@ let g:lightline.component = {
 function! LightlineFugitive()
     if exists('*fugitive#head')
         let branch = fugitive#head()
-        return branch !=# '' ? ''.branch : ''
+        return branch !=# '' ? ' '.branch : ''
     endif
     return ''
 endfunction

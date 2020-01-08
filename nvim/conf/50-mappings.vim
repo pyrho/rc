@@ -10,11 +10,6 @@ let maplocalleader = "\<BS>"
 " Mark mappings {{{
 nmap <Leader>N <Plug>MarkAllClear
 " }}}
- " Move current line one line down
-nnoremap - :m .+1<CR>
-" Move current line one line up
-nnoremap _ :m .-2<CR>
-map <Leader>A :S <C-r><C-w><CR>
 nnoremap gV `[v`]
 nmap <Tab> :bn<CR>
 nmap <S-Tab> :bp<CR>
@@ -94,9 +89,9 @@ call s:map('n', ']<Space>', '<Plug>unimpairedBlankDown')
 " }}}
 
 " Nuake Config {{{
-nnoremap <F7> :Nuake<CR>
-inoremap <F7> <C-\><C-n>:Nuake<CR>
-tnoremap <F7> <C-\><C-n>:Nuake<CR>
+nnoremap <F7> :FloatermToggle<CR>
+inoremap <F7> <C-\><C-n>:FloatermToggle<CR>
+tnoremap <F7> <C-\><C-n>:FloatermToggle<CR>
 " }}}
 
 " EasyMotion config {{{
@@ -111,9 +106,16 @@ map <F12> :GitGutterNextHunk<CR>
 " Perso wiki and diary stuff {{{
 nnoremap <Leader>w<Leader>w :e ~/SynologyDrive/wikis/vimwiki/diary/`date +\%Y-\%m-\%d`.md<CR>
 " }}}
-nnoremap <Leader>b :Buffers<CR>
-nnoremap <Leader>o :call Fzf_dev()<CR>
+"nnoremap <Leader>b :Buffers<CR>
+"nnoremap <Leader>o :call Fzf_dev()<CR>
+
+nnoremap <Leader>b :Clap buffers<CR>
+nnoremap <Leader>o :Clap files<CR>
+nnoremap <Leader>A :Clap grep ++query=<cword><CR>
+nnoremap <Leader>s :Clap grep <C-r><C-w><CR>
 
 inoremap <Esc> <Esc>:w<CR>
 nnoremap tn :tabnext<CR>
 nnoremap tp :tabprev<CR>
+inoremap fj <Esc>
+inoremap jf <Esc>

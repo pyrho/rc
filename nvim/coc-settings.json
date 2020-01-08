@@ -10,5 +10,11 @@
     "coc.preferences.currentFunctionSymbolAutoUpdate": true,
     "snippets.ultisnips.directories": [
         "snippets"
-    ]
+    ],
+    "yaml": {
+        "schemas": {
+            "http://json.schemastore.org/kustomization": "/kustomization.yaml",
+            "kubernetes": "/*.yaml"
+        }
+    }
 }

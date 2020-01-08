@@ -55,17 +55,12 @@ nnoremap <Leader>k <C-w>k
 " syntax match Normal '\[_\]' conceal cchar=☐
 set conceallevel=2
 if has('conceal')
-  if &termencoding ==# "utf-8" || &encoding ==# "utf-8"
     let s:checkbox_unchecked = "◻"
     let s:checkbox_checked = "✔"
     " let s:checkbox_checked = "✅"
-  else
-    let s:checkbox_unchecked = ' '
-    let s:checkbox_checked = 'x'
-  endif
-  syntax match markdownCheckbox "^\s*\([-\*] \[[ x]\]\|--\|++\) " contains=markdownCheckboxChecked,markdownCheckboxUnchecked
-  execute 'syntax match markdownCheckboxUnchecked "\([-\*] \[ \]\|--\)" contained conceal cchar='.s:checkbox_unchecked
-  execute 'syntax match markdownCheckboxChecked "\([-\*] \[x\]\|++\)" contained conceal cchar='.s:checkbox_checked
+    au BufEnter, *.md :syntax match markdownCheckbox "^\s*\([-\*] \[[ x]\]\|--\|++\) " contains=markdownCheckboxChecked,markdownCheckboxUnchecked
+    au BufEnter, *.md :execute 'syntax match markdownCheckboxUnchecked "\([-\*] \[ \]\|--\)" contained conceal cchar='.s:checkbox_unchecked
+    au BufEnter, *.md :execute 'syntax match markdownCheckboxChecked "\([-\*] \[x\]\|++\)" contained conceal cchar='.s:checkbox_checked
 endif
 hi clear Conceal
 set concealcursor=n
