@@ -3,7 +3,9 @@ if has('nvim')
         colorscheme seoul256-light
     else
         set background=dark
-        colorscheme base16-onedark
+        colorscheme dogrun
+        " colorscheme base16-onedark
+        "colorscheme base16-onedark
         "color space-vim-dark
         "colorscheme dracula
         "hi Comment cterm=italic

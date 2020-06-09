@@ -1,6 +1,7 @@
 {
     "typescript.preferences.quoteStyle": "single",
     "typescript.suggest.autoImports": true,
+    "typescript.preferences.importModuleSpecifier": "relative",
     "diagnostic.warningSign": "😗",
     "diagnostic.errorSign": "😓",
     "diagnostic.hintSign": "📎",
@@ -9,12 +10,30 @@
     "diagnostic.messageTarget": "float",
     "coc.preferences.currentFunctionSymbolAutoUpdate": true,
     "snippets.ultisnips.directories": [
-        "snippets"
+        "~/rc/nvim/snippets"
     ],
     "yaml": {
         "schemas": {
             "http://json.schemastore.org/kustomization": "/kustomization.yaml",
             "kubernetes": "/*.yaml"
         }
-    }
+    },
+     "coc.preferences.formatOnSaveFiletypes": ["json", "typescript"],
+     "prettier.singleQuote": true,
+     "prettier.trailingComma": "all",
+     "prettier.tslintIntegration": true,
+     "prettier.tabWidth": 4,
+     "prettier.printWidth": 95,
+     "prettier.arrowParens": "avoid",
+     "languageserver": {
+         "purescript": {
+             "command": "purescript-language-server",
+             "args": ["--stdio"],
+             "filetypes": ["purescript"],
+             "rootPatterns": ["bower.json", "psc-package.json", "spago.dhall"]
+         }
+     },
+     "eslint.filetypes": ["javascript", "javascript-react"],
+     "sql.database": "postgresql"
+
 }

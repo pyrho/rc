@@ -59,32 +59,27 @@ endfunction
 
 " }}}
 
-" Replace NetRW with Defx {{{
-augroup defx
-  autocmd BufEnter,VimEnter,BufNew,BufWinEnter,BufRead,BufCreate
-        \ * call s:browse_check(expand('<amatch>'))
-augroup END
-
+" " Replace NetRW with Defx {{{
+autocmd BufEnter,BufRead,BufNew,BufCreate * call s:browse_check(expand('<amatch>'))
 function! s:browse_check(path) abort
-  " Disable netrw.
-  augroup FileExplorer
-    autocmd!
-  augroup END
+    if a:path ==# '' || bufnr('%') != expand('<abuf>')
+        return
+    endif
 
-  let path = a:path
-  " For ":edit ~".
-  if fnamemodify(path, ':t') ==# '~'
-    let path = '~'
-  endif
+    " Disable netrw.
+    augroup FileExplorer
+        autocmd!
+    augroup END
 
-  if &filetype ==# 'defx' && line('$') != 1
-    return
-  endif
+    if &filetype ==# 'defx' && line('$') != 1
+        return
+    endif
 
-  if isdirectory(path)
-    bd
-    exe 'Defx -columns=git:icons:filename:type ' . path
-  else
-  endif
+    " For ":edit ~".
+    let l:path = fnamemodify(a:path, ':t') ==# '~' ? '~' : a:path
+
+    if isdirectory(l:path)
+        call execute('Defx -columns=git:icons:filename:type ' . l:path)
+    endif
 endfunction
-" }}}
+" " }}}

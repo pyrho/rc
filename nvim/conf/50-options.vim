@@ -3,6 +3,7 @@ set shell=zsh
 set scrolloff=4                     " Show 4 lines after/before the cursor
 set noshowmode                      " No need to repeat the mode in the command line
 set pumblend=20                     " Transparent pum
+
 set wildoptions=pum                 " Use pum for the wildmenu
 set selection=old
 set nowrap

@@ -2,7 +2,7 @@
 set showtabline=2
 let g:lightline = {}
 "let g:lightline.colorscheme = 'base16_onedark'
-let g:lightline.colorscheme = 'one'
+let g:lightline.colorscheme = 'dogrun'
 let g:lightline.separator = { 'left': "\ue0b8", 'right': "\ue0be" }
 let g:lightline.subseparator = { 'left': "\ue0b9", 'right': "\ue0b9" }
 let g:lightline.tabline_separator = { 'left': "\ue0bc", 'right': "\ue0ba" }
@@ -20,9 +20,10 @@ let g:lightline.active = {
             \            [ 'obsession' ],
             \            [ 'coc_error', 'coc_warning' ] ]
             \}
+
 let g:lightline.tabline = {
             \ 'left': [ [ 'vim_logo', 'tabs' ] ],
-            \ 'right': [ ['fugitive'  ],
+            \ 'right': [ ['myCurrentDir'],
             \            [ 'gitstatus' ] ]
             \ }
 function! ObsessionStatusEnhance() 
@@ -35,6 +36,7 @@ function! ObsessionStatusEnhance()
 endfunction
 
 let g:lightline.component = {
+            \ 'myCurrentDir': '🗂  %{fnamemodify(getcwd(), ":t")}',
             \ 'currentFunc': '%{CocCurrentFunction()}',
             \ 'obsession': '%{ObsessionStatusEnhance()}',
             \ 'gitstatus': '%{lightline_gitdiff#get_status()}',

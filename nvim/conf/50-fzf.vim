@@ -62,7 +62,7 @@ autocmd * fzf setlocal nornu
 "From https://github.com/camspiers/dotfiles/blob/master/files/.config/nvim/init.vim#L446-L468
 "Configures ripgrep with fzf
 command! -bang -nargs=* FzfRg call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, {'options': '--delimiter : --nth 4..'}, <bang>0)
-command! -bang -nargs=* Rgg call fzf#vim#grep("rg --no-ignore --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, {'options': '--delimiter : --nth 4..'}, <bang>0)
+command! -bang -nargs=* Rgg   call fzf#vim#grep("rg --no-ignore --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, {'options': '--delimiter : --nth 4..'}, <bang>0)
 
 " Allow Ripgrep to work with quick list
 command! -nargs=* -complete=file Ripgrep :call s:Rg(<q-args>)

@@ -11,24 +11,24 @@ let maplocalleader = "\<BS>"
 nmap <Leader>N <Plug>MarkAllClear
 " }}}
 nnoremap gV `[v`]
-nmap <Tab> :bn<CR>
-nmap <S-Tab> :bp<CR>
 map te :exec 'tabedit' '+'.line('.') '%'<CR>
 map tc :tabclose<CR>
 map <silent><F1> :Defx -columns=git:icons:filename:type -split=vertical -winwidth=50 -direction=topleft<CR>
 nmap <silent><Leader>f :Defx -columns=git:icons:filename:type `expand('%:p:h')` -search=`expand('%:p')`<CR>
 map <M-LEFT> gT
 map <M-RIGHT> gt
-nnoremap <Leader>no :nohlsearch<CR>
 vmap v <Plug>(expand_region_expand)
 vmap <C-v> <Plug>(expand_region_shrink)
 map <Leader>y "+yy
 map <Leader>p "+p
 nnoremap <Leader>w :wa<CR>
-nnoremap <Leader>l :wincmd l<CR>
-nnoremap <Leader>k :wincmd k<CR>
+
+" Colemak specific
 nnoremap <Leader>h :wincmd h<CR>
 nnoremap <Leader>j :wincmd j<CR>
+nnoremap <Leader>k :wincmd k<CR>
+nnoremap <Leader>l :wincmd l<CR>
+
 nnoremap <Leader>q :q<CR>
 nnoremap <Leader>S :Startify<CR>
 " }}}
@@ -95,26 +95,28 @@ tnoremap <F7> <C-\><C-n>:FloatermToggle<CR>
 " }}}
 
 " EasyMotion config {{{
-map <Leader><Leader>j <Plug>(easymotion-j)
-map <Leader><Leader>k <Plug>(easymotion-k)
-map s <Plug>(easymotion-s)
+"map <Leader><Leader>j <Plug>(easymotion-j)
+"map <Leader><Leader>k <Plug>(easymotion-k)
+"map s <Plug>(easymotion-s)
 " }}}
 
 map <F11> :GitGutterPrevHunk<CR>
 map <F12> :GitGutterNextHunk<CR>
 
-" Perso wiki and diary stuff {{{
-nnoremap <Leader>w<Leader>w :e ~/SynologyDrive/wikis/vimwiki/diary/`date +\%Y-\%m-\%d`.md<CR>
 " }}}
 "nnoremap <Leader>b :Buffers<CR>
 "nnoremap <Leader>o :call Fzf_dev()<CR>
 
 nnoremap <Leader>b :Clap buffers<CR>
-nnoremap <Leader>o :Clap files<CR>
-nnoremap <Leader>A :Clap grep ++query=<cword><CR>
-nnoremap <Leader>s :Clap grep <C-r><C-w><CR>
+nnoremap <Leader>y :Clap yanks<CR>
 
-inoremap <Esc> <Esc>:w<CR>
+nnoremap <Leader>o :Clap files .<CR>
+" Better handing of exclusion patterns
+" But does not work because icons are missing
+"nnoremap <Leader>o :Clap files ++externalfilter=fzf +async . <CR>
+nnoremap <Leader>A :Clap grep ++query=<cword> .<CR>
+nnoremap <Leader>s :Clap grep . <CR>
+
 nnoremap tn :tabnext<CR>
 nnoremap tp :tabprev<CR>
 inoremap fj <Esc>

@@ -27,7 +27,7 @@
 priority 90 
 
 snippet cl "console.log" b
-console.log(\`<<DIDIDEBUG>> \$\{${1:JSON.stringify(${2:${VISUAL}}, null, 2)}\}\`);
+console.log(${1})
 endsnippet
 
 snippet clj "console.log JSON.stringify" b
@@ -43,5 +43,18 @@ endsnippet
 snippet fat "Fat arrow function" b
 (${1:e}: ${2:any}) => {
   $0
+}
+endsnippet
+
+snippet pd "package doc" b
+/**
+ * $0
+ * @packageDocumentation
+ */
+endsnippet
+
+snippet cai "create arguments interface"
+interface ${1:${VISUAL}}Args {
+	$0
 }
 endsnippet
