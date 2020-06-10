@@ -6,7 +6,7 @@ autocmd BufEnter, *.md nnoremap <Leader>= YpVr=
 
 " Custom bindings {{{
 let mapleader = "\<Space>"
-let maplocalleader = "\<BS>"
+let maplocalleader = ","
 " Mark mappings {{{
 nmap <Leader>N <Plug>MarkAllClear
 " }}}

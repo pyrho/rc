@@ -79,5 +79,6 @@ Plug 'yuki-ycino/fzf-preview.vim'
 Plug 'wadackel/vim-dogrun'                                      " Colorscheme
 Plug 'raichoo/purescript-vim'
 Plug 'dbeniamine/todo.txt-vim'
+Plug 'lambdalisue/gina.vim'
 
 call plug#end()
