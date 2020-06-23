@@ -1,2 +1,2 @@
 #!/bin/zsh
-export PURE_PROMPT_SYMBOL="λ"
+#export PURE_PROMPT_SYMBOL="λ"

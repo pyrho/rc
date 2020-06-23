@@ -7,8 +7,8 @@ autoload -U up-line-or-beginning-search
 autoload -U down-line-or-beginning-search
 
 HISTFILE=~/.zsh_history
-HISTSIZE=10000
-SAVEHIST=10000
+HISTSIZE=40000
+SAVEHIST=40000
 
 # don't nice background tasks
 setopt NO_BG_NICE
@@ -76,3 +76,7 @@ bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
 bindkey -M vicmd 'k' history-substring-search-up
 bindkey -M vicmd 'j' history-substring-search-down
+
+# ability to comment on cmd line
+setopt interactivecomments
+HISTORY_IGNORE="(pwd|cd|cd ..|ls|l|nvim|kill*|rm *|z *|gss|gd)"

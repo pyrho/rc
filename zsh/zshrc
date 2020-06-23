@@ -45,3 +45,6 @@ unset config_files updated_at
 [ -f ~/.localrc ] && . ~/.localrc
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Broot stuff
+source /Users/pyrho/Library/Preferences/org.dystroy.broot/launcher/bash/br

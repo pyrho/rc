@@ -52,5 +52,26 @@ alias gpsup='git push --set-upstream origin $(git_current_branch)'
 alias grt='cd $(git rev-parse --show-toplevel || echo ".")'
 # }}}
 #
-alias l='ls -lha'
+alias l='exa --group-directories-first -lgm'
+alias lt='l --sort=time'
+alias la='l -a'
+alias ls='exa -F'
+alias k='kubectl'
+alias kdo='kubectl --context do'
+alias kmi='kubectl --context minikube'
 
+alias ffcontstartw='docker run -d --name=firefox -p 5800:5800 --shm-size 4g -e "DISPLAY_WIDTH=3008" -e "DISPLAY_HEIGHT=1692" jlesage/firefox && open http://localhost:5800'
+alias ffcontstartn='docker run -d --name=firefox -p 5800:5800 --shm-size 4g -e "DISPLAY_WIDTH=1920" -e "DISPLAY_HEIGHT=1080" jlesage/firefox && open http://localhost:5800'
+alias ffcontstop='docker stop firefox && docker rm firefox'
+alias sl='exa --icons -l'
+alias t='todo.sh'
+alias icat="kitty +kitten icat"
+alias coffee="curl https://coffee.25.wf -T"
+function obsess() {
+    kitty @ set-tab-title $@
+    fasd_cd -d "$@" && nvim -S Session.vim
+}
+function createfwd() {
+    gandi forward create -d ${MAIL_EMAIL} $@@${MAIL_FWD_DOMAIN}
+    echo $@@${MAIL_FWD_DOMAIN} | pbcopy
+}
