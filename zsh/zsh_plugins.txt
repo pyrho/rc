@@ -6,11 +6,15 @@ robbyrussell/oh-my-zsh path:plugins/fasd
 zsh-users/zsh-autosuggestions
 
 mafredri/zsh-async
-pyrho/pure
+#pyrho/pure
+romkatv/powerlevel10k
+
 
 larkery/zsh-histdb
 
 # zsh-users/zsh-syntax-highlighting
 zsh-users/zsh-history-substring-search
+
+trystan2k/zsh-tab-title
 
 # Run `antibody bundle < rc/zsh/zsh_plugins.txt > .zsh_plugins.sh` to update.

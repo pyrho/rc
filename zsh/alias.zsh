@@ -53,7 +53,7 @@ alias grt='cd $(git rev-parse --show-toplevel || echo ".")'
 # }}}
 #
 alias l='exa --group-directories-first -lgm'
-alias lt='l --sort=time'
+#alias lt='l --sort=time'
 alias la='l -a'
 alias ls='exa -F'
 alias k='kubectl'
