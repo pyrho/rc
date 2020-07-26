@@ -7,9 +7,9 @@ set pumblend=20                     " Transparent pum
 set wildoptions=pum                 " Use pum for the wildmenu
 set selection=old
 set nowrap
-set foldmethod=syntax
+"set foldmethod=syntax
 set foldenable
-set foldlevelstart=10               " Only fold nested stuff
+set foldlevelstart=20               " Only fold nested stuff
 set foldnestmax=10                  " Don't fold too deeply nested stuff
 set wildmenu                        " Visual autocomplete for command menu
 set completeopt=longest,menu,preview
@@ -24,8 +24,8 @@ set ignorecase
 set smartcase
 set laststatus=2
 set encoding=utf-8
-set nocursorline                    " Apparently this causes slowness.
-set nocursorcolumn                  " This too.
+set cursorline                    " Apparently this causes slowness.
+set cursorcolumn                  " This too. 2020-07-16 well im trying it again !
 set hlsearch
 set showmatch                       " Jump to matching [{()}] when inserting
 set undofile                        " Tell it to use an undo file

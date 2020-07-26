@@ -13,8 +13,9 @@ nmap <Leader>N <Plug>MarkAllClear
 nnoremap gV `[v`]
 map te :exec 'tabedit' '+'.line('.') '%'<CR>
 map tc :tabclose<CR>
-map <silent><F1> :Defx -columns=git:icons:filename:type -split=vertical -winwidth=50 -direction=topleft<CR>
-nmap <silent><Leader>f :Defx -columns=git:icons:filename:type `expand('%:p:h')` -search=`expand('%:p')`<CR>
+map <silent><F1> :Defx -columns=mark:indent:git:icons:filename:type -split=vertical -winwidth=50 -direction=topleft<CR>
+map <silent><F2> :Defx -columns=mark:indent:git:icons:filename:type -new -split=vertical<CR>
+nmap <silent><Leader>f :Defx -columns=mark:indent:git:icons:filename:type `expand('%:p:h')` -search=`expand('%:p')`<CR>
 map <M-LEFT> gT
 map <M-RIGHT> gt
 vmap v <Plug>(expand_region_expand)
@@ -35,13 +36,15 @@ nnoremap <Leader>S :Startify<CR>
 " vim-slash config {{{
 noremap <plug>(slash-after) zz
 " }}}
-" Fugitive {{{
+
+" Fugitive / GitGutter {{{
 autocmd BufReadPost fugitive://* set bufhidden=delete
 nnoremap <Leader>gs :Gstatus<CR>
-nnoremap <Leader>gd :Gdiff<CR>
-nnoremap <Leader>gl :Silent Glog<CR>
-nnoremap <Leader>gb :Gblame<CR>
+nnoremap <Leader>gd :GitGutterPreviewHunk<CR>
+nnoremap <Leader>gp :GitGutterPrevHunk<CR>
+nnoremap <Leader>gn :GitGutterNextHunk<CR>
 " }}}
+
 " vim-unimpaired inspired mappings {{{
 function! s:map(mode, lhs, rhs, ...) abort
   let flags = (a:0 ? a:1 : '') . (a:rhs =~# '^<Plug>' ? '' : '<script>')
@@ -89,9 +92,9 @@ call s:map('n', ']<Space>', '<Plug>unimpairedBlankDown')
 " }}}
 
 " Nuake Config {{{
-nnoremap <F7> :FloatermToggle<CR>
-inoremap <F7> <C-\><C-n>:FloatermToggle<CR>
-tnoremap <F7> <C-\><C-n>:FloatermToggle<CR>
+nnoremap <C-t> :FloatermToggle<CR>
+inoremap <C-t> <C-\><C-n>:FloatermToggle<CR>
+tnoremap <C-t> <C-\><C-n>:FloatermToggle<CR>
 " }}}
 
 " EasyMotion config {{{
@@ -100,24 +103,28 @@ tnoremap <F7> <C-\><C-n>:FloatermToggle<CR>
 "map s <Plug>(easymotion-s)
 " }}}
 
-map <F11> :GitGutterPrevHunk<CR>
-map <F12> :GitGutterNextHunk<CR>
 
 " }}}
 "nnoremap <Leader>b :Buffers<CR>
 "nnoremap <Leader>o :call Fzf_dev()<CR>
 
-nnoremap <Leader>b :Clap buffers<CR>
-nnoremap <Leader>y :Clap yanks<CR>
+"nnoremap <Leader>b :Clap buffers<CR>
+nnoremap <Leader>b :Buffers<CR>
+"nnoremap <Leader>y :Clap yanks<CR>
 
-nnoremap <Leader>o :Clap files .<CR>
+"nnoremap <Leader>o :Clap files .<CR>
+nnoremap <Leader>o :FilesWithDevicons .<CR>
 " Better handing of exclusion patterns
 " But does not work because icons are missing
 "nnoremap <Leader>o :Clap files ++externalfilter=fzf +async . <CR>
-nnoremap <Leader>A :Clap grep ++query=<cword> .<CR>
-nnoremap <Leader>s :Clap grep . <CR>
+nnoremap <Leader>A :RgWithDevicons <C-R><C-W><CR>
+nnoremap <Leader>s :RgWithDevicons<CR>
+"nnoremap <Leader>P :Clap sessions<CR>
 
 nnoremap tn :tabnext<CR>
 nnoremap tp :tabprev<CR>
 inoremap fj <Esc>
 inoremap jf <Esc>
+
+" Venter
+nmap <Leader>v :VenterToggle<CR>

@@ -62,7 +62,7 @@ autocmd * fzf setlocal nornu
 "From https://github.com/camspiers/dotfiles/blob/master/files/.config/nvim/init.vim#L446-L468
 "Configures ripgrep with fzf
 command! -bang -nargs=* FzfRg call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, {'options': '--delimiter : --nth 4..'}, <bang>0)
-command! -bang -nargs=* Rgg   call fzf#vim#grep("rg --no-ignore --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, {'options': '--delimiter : --nth 4..'}, <bang>0)
+command! -bang -nargs=* Rgg   call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, {'options': '--delimiter : --nth 4..'}, <bang>0)
 
 " Allow Ripgrep to work with quick list
 command! -nargs=* -complete=file Ripgrep :call s:Rg(<q-args>)
@@ -70,8 +70,8 @@ command! -nargs=* -complete=file Rg :call s:Rg(<q-args>)
 
 " Creates a floating window with a most recent buffer to be used
 function! CreateCenteredFloatingWindow()
-    let width = float2nr(&columns * 0.6)
-    let height = float2nr(&lines * 0.6)
+    let width = float2nr(&columns * 0.9)
+    let height = float2nr(&lines * 0.9)
     let top = ((&lines - height) / 2) - 1
     let left = (&columns - width) / 2
     let opts = {'relative': 'editor', 'row': top, 'col': left, 'width': width, 'height': height, 'style': 'minimal'}

@@ -40,7 +40,7 @@ nmap <silent> <localleader>y <Plug>(coc-type-definition)
 nmap <silent> <localleader>i <Plug>(coc-implementation)
 nmap <silent> <localleader>r <Plug>(coc-references)
 nmap <silent> <localleader>ag :CocList diagnostics<CR>
-nmap <silent> <localleader>s :CocList symbols<CR>
+nmap <silent> <localleader>s :CocList -I symbols<CR>
 nmap <localleader>ac  <Plug>(coc-codeaction)
 nmap <localleader>qf  <Plug>(coc-fix-current)
 
@@ -57,18 +57,19 @@ function! s:show_documentation()
 endfunction
 
 " Highlight symbol under cursor on CursorHold
-autocmd CursorHold *.ts silent call CocActionAsync('highlight')
+" 2020-07-16 disabling this, it's annoying because it messes with vim-mark
+" " autocmd CursorHold *.ts silent call CocActionAsync('highlight')
 
 " Remap for rename current word
 nmap <leader>rn <Plug>(coc-rename)
 
-" Remap for format selected region
-vmap <leader>f  <Plug>(coc-format-selected)
+" " Remap for format selected region
+" vmap <leader>f  <Plug>(coc-format-selected)
 
 augroup mygroup
   autocmd!
   " Setup formatexpr specified filetype(s).
-  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected') | set foldmethod=manual
+  "autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected') | set foldmethod=manual
   " Update signature help on jump placeholder
   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
   autocmd User CocDiagnosticChange call lightline#update()
@@ -77,17 +78,6 @@ augroup end
 " Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
 vmap <leader>a  <Plug>(coc-codeaction-selected)
 nmap <leader>a  <Plug>(coc-codeaction-selected)
-
-" Remap for do codeAction of current line
-nmap <leader>ac  <Plug>(coc-codeaction)
-" Fix autofix problem of current line
-nmap <leader>qf  <Plug>(coc-fix-current)
-
-" Use `:Format` for format current buffer
-command! -nargs=0 Format :call CocAction('format')
-
-" Use `:Fold` for fold current buffer
-command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 
 " Using CocList
 " Show all diagnostics
@@ -98,12 +88,12 @@ nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
 nnoremap <silent> <space>O  :<C-u>CocList outline<cr>
 " Search workspace symbols
 nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
-" Do default action for next item.
-nnoremap <silent> <space>J  :<C-u>CocNext<CR>
-" Do default action for previous item.
-nnoremap <silent> <space>K  :<C-u>CocPrev<CR>
-" Resume latest coc list
-nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+" " Do default action for next item.
+" nnoremap <silent> <space>J  :<C-u>CocNext<CR>
+" " Do default action for previous item.
+" nnoremap <silent> <space>K  :<C-u>CocPrev<CR>
+" " Resume latest coc list
+" nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 
 " }}}
 

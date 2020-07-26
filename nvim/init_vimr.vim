@@ -94,4 +94,5 @@ if has('conceal')
 endif
 hi clear Conceal
 set concealcursor=n
+hi Conceal guibg=NONE
 " }}}

@@ -2,7 +2,9 @@
 set showtabline=2
 let g:lightline = {}
 "let g:lightline.colorscheme = 'base16_onedark'
-let g:lightline.colorscheme = 'dogrun'
+"let g:lightline.colorscheme = 'dogrun'
+let g:lightline.colorscheme = 'embark'
+
 let g:lightline.separator = { 'left': "\ue0b8", 'right': "\ue0be" }
 let g:lightline.subseparator = { 'left': "\ue0b9", 'right': "\ue0b9" }
 let g:lightline.tabline_separator = { 'left': "\ue0bc", 'right': "\ue0ba" }
@@ -36,8 +38,9 @@ function! ObsessionStatusEnhance()
 endfunction
 
 let g:lightline.component = {
-            \ 'myCurrentDir': '🗂  %{fnamemodify(getcwd(), ":t")}',
+            \ 'myCurrentDir': ' %{fnamemodify(getcwd(), ":t")}',
             \ 'currentFunc': '%{CocCurrentFunction()}',
+            \ 'currentFunc2': '%{TreeSitterCurrentElement()}',
             \ 'obsession': '%{ObsessionStatusEnhance()}',
             \ 'gitstatus': '%{lightline_gitdiff#get_status()}',
             \ 'bufinfo': '%{bufname("%")}:%{bufnr("%")}',
@@ -84,6 +87,10 @@ function! CocCurrentFunction()
     return currentFunctionSymbol !=# '' ? "\ufb26 [" . currentFunctionSymbol . ']' : ''
 endfunction
 
+function! TreeSitterCurrentElement()
+    let x = luaeval("require'nvim-treesitter'.statusline(50)")
+    return "\uf450 [" . x . ']'
+endfunction
 
 function! CocError() abort
   let info = get(b:, 'coc_diagnostic_info', {})

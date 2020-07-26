@@ -55,6 +55,15 @@ function! s:defx_my_settings() abort
                 \ defx#do_action('change_vim_cwd')
     nnoremap <silent><buffer><expr> o
                 \ defx#do_action('execute_command', 'open -R ' . defx#get_candidate().action__path)
+    " Bookmarks
+    nnoremap <silent><buffer><expr> bd
+                \ defx#do_action('cd', ['/Users/pyrho/Desktop/'])
+    nnoremap <silent><buffer><expr> bD
+                \ defx#do_action('cd', ['/Users/pyrho/Downloads/'])
+    nnoremap <silent><buffer><expr> ba
+                \ defx#do_action('cd', ['/Users/pyrho/repos/marty/apps/'])
+    nnoremap <silent><buffer><expr> bt
+                \ defx#do_action('cd', ['/tmp'])
 endfunction
 
 " }}}
@@ -79,7 +88,11 @@ function! s:browse_check(path) abort
     let l:path = fnamemodify(a:path, ':t') ==# '~' ? '~' : a:path
 
     if isdirectory(l:path)
-        call execute('Defx -columns=git:icons:filename:type ' . l:path)
+        call execute('Defx -columns=mark:indent:git:icons:filename:type ' . l:path)
     endif
 endfunction
 " " }}}
+function TestPlease()
+    :Defx -columns=mark:indent:git:icons:filename:type<CR>
+    :Defx -columns=mark:indent:git:icons:filename:type -new -split=horizontal<CR>
+endfunction
