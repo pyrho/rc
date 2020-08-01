@@ -5,9 +5,10 @@ Plug 'Shougo/defx.nvim', {
             \ 'branch': 'master' }                    " File browser (vim-vinegar like)
 Plug 'kristijanhusak/defx-icons'                               " Nice icons in defx
 Plug 'kristijanhusak/defx-git'                                 " git icon integration for defx
-" Plug 'HerringtonDarkholme/yats.vim',                           " TS syntax file (better than typescript-vim)
+Plug 'HerringtonDarkholme/yats.vim',                           " TS syntax file (better than typescript-vim)
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'tpope/vim-commentary'                                    " Commenting
+"Plug 'tpope/vim-commentary'                                    " Commenting
+Plug 'tomtom/tcomment_vim'
 Plug 'jason0x43/vim-js-indent',
             \ { 'for': 'javascript' }                          " Syntax for js
 Plug 'Yggdroot/vim-mark'                                       " Mark words with color
@@ -94,7 +95,7 @@ Plug 'JMcKiern/vim-venter'
 Plug 'coreyja/fzf.devicon.vim'
 Plug 'norcalli/nvim-colorizer.lua'                            " Show hex color codes
 Plug 'danilamihailov/beacon.nvim'                             " Show where the cursor jumped
-Plug 'nvim-treesitter/nvim-treesitter'
+" Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'skbolton/embark'
 Plug 'vim-scripts/Improved-AnsiEsc'                           " Display ansi color escapes
 

@@ -30,10 +30,6 @@ inoremap <silent><expr> <c-space> coc#refresh()
 " Coc only does snippet and additional edit on confirm.
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
-" Use `[c` and `]c` for navigate diagnostics
-nmap <silent> [c <Plug>(coc-diagnostic-prev)
-nmap <silent> ]c <Plug>(coc-diagnostic-next)
-
 " Remap keys for gotos
 nmap <silent> <localleader>d <Plug>(coc-definition)
 nmap <silent> <localleader>y <Plug>(coc-type-definition)
@@ -41,6 +37,8 @@ nmap <silent> <localleader>i <Plug>(coc-implementation)
 nmap <silent> <localleader>r <Plug>(coc-references)
 nmap <silent> <localleader>ag :CocList diagnostics<CR>
 nmap <silent> <localleader>s :CocList -I symbols<CR>
+nmap <silent> <localleader>c <Plug>(coc-diagnostic-next)
+nmap <silent> <localleader>C <Plug>(coc-diagnostic-prev)
 nmap <localleader>ac  <Plug>(coc-codeaction)
 nmap <localleader>qf  <Plug>(coc-fix-current)
 
