@@ -10,6 +10,8 @@ HISTFILE=~/.zsh_history
 HISTSIZE=40000
 SAVEHIST=40000
 
+# https://blog.confirm.ch/zsh-tips-changing-directories/
+setopt auto_cd
 # don't nice background tasks
 setopt NO_BG_NICE
 setopt NO_HUP
