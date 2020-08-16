@@ -20,6 +20,8 @@ set relativenumber
 set number                          " Shows the line # on the current line (with 'relativenumber)
 set incsearch
 set mouse=ar
+map <ScrollWheelUp> <C-Y>
+map <ScrollWheelDown> <C-E>
 set ignorecase
 set smartcase
 set laststatus=2

@@ -6,7 +6,11 @@ Plug 'junegunn/goyo.vim',                                      " Zen editor
 Plug 'junegunn/limelight.vim'                                  " Goyo extension to focus on a paragraph
 Plug 'godlygeek/tabular'                                       " Align stuff easily (must come before vim-markdown)
 Plug 'plasticboy/vim-markdown',
-Plug 'liuchengxu/vim-clap'
+"Plug 'liuchengxu/vim-clap'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'BurntSushi/ripgrep'
+Plug 'ihsanturk/neuron.vim'
 call plug#end()
 " }}}
 
@@ -15,6 +19,21 @@ let g:vim_markdown_folding_disabled = 1
 let g:startify_bookmarks = [
             \ { 'w': '~/SynologyDrive/wikis/vimwiki/index.md' },
             \ ]
+" Customize fzf colors to match your color scheme
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
 " }}}
 
 " Options {{{
@@ -49,15 +68,21 @@ inoremap fj <Esc>
 inoremap jf <Esc>
 
 " Clap
-nnoremap <Leader>b :Clap buffers<CR>
-nnoremap <Leader>o :Clap files<CR>
-nnoremap <Leader>A :Clap grep ++query=<cword><CR>
-nnoremap <Leader>s :Clap grep <C-r><C-w><CR>
+nnoremap <Leader>b :Buffers<CR>
+nnoremap <Leader>o :Files<CR>
+nnoremap <Leader>s :Rg<CR>
 " }}}
 
 " Abbrev {{{
 :iab cdate <c-r>=strftime("%Y-%m-%d")<CR>
 :iab chour <c-r>=strftime("%H:%M")<CR>
+" }}}
+
+" Zettle {{{
+let g:zkdir = $HOME . '/SynologyDrive/zettle/'
+let g:style_virtual_title = 'Title'
+let g:path_neuron = '/Users/pyrho/.nix-profile/bin/neuron'
+let g:path_jq = '/usr/local/bin/jq'
 " }}}
 
 " Fancy todo checkboxes {{{

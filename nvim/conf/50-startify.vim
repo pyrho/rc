@@ -16,7 +16,9 @@ let g:startify_bookmarks = [
             \ { 'z': '~/rc/zsh' },
             \ ]
 
-let g:startify_change_to_vcs_root = 1
-
+" Annoying when working on monorepo projects
+let g:startify_change_to_vcs_root = 0
+" Must have if the above is disabled
+let g:startify_change_to_dir = 0
 " }}}
 

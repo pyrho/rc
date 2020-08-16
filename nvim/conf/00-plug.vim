@@ -50,7 +50,8 @@ Plug 'joecridge/vim-kinesis', { 'for': 'kinesis' }             " Kinesis syntax 
 Plug 'itchyny/lightline.vim'                                   " Lightweight statusline
 Plug 'macthecadillac/lightline-gitdiff'                        " Git diff integration in lightline
 Plug 'Yggdroot/indentLine'                                     " Show indent
-Plug 'jiangmiao/auto-pairs'                                    " Automatically inserts pairs
+" More frustrating that anything..
+"Plug 'jiangmiao/auto-pairs'                                    " Automatically inserts pairs
 Plug 'chrisbra/colorizer'                                      " Show colors inline
 Plug 'amdt/vim-niji'                                           " Rainbow
 Plug 'sirtaj/vim-openscad',
@@ -76,7 +77,8 @@ Plug 'stephpy/vim-yaml'
 Plug 'lifepillar/pgsql.vim'
 Plug 'voldikss/vim-floaterm'                                   " A floating terminal
 "Plug 'liuchengxu/vim-clap', { 'do': ':Clap install-binary' }
-Plug 't9md/vim-choosewin'                                      " Move between windows & tabs fast
+" Not using this anymore, causes bugs and im not using it that much anyways.
+"Plug 't9md/vim-choosewin'                                      " Move between windows & tabs fast
 Plug 'yuki-ycino/fzf-preview.vim'
 Plug 'wadackel/vim-dogrun'                                     " Colorscheme
 Plug 'raichoo/purescript-vim'
@@ -97,7 +99,6 @@ Plug 'norcalli/nvim-colorizer.lua'                            " Show hex color c
 Plug 'danilamihailov/beacon.nvim'                             " Show where the cursor jumped
 " Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'skbolton/embark'
-Plug 'vim-scripts/Improved-AnsiEsc'                           " Display ansi color escapes
 
 " wayyyy too slow compared to coc-prettier 
 " Plug 'prettier/vim-prettier', {
@@ -106,10 +107,16 @@ Plug 'vim-scripts/Improved-AnsiEsc'                           " Display ansi col
 
 Plug 'chrisbra/nrrwrgn'
 
+
+" needed for neuron
+Plug 'BurntSushi/ripgrep'
+Plug 'ihsanturk/neuron.vim'
+
 Plug '~/repos/perso/nvim-geat'
 
 Plug 'neovimhaskell/nvim-hs.vim'
 Plug '~/repos/perso/my-nvim-hs'
+Plug '~/rc/nvim/manual_install/my-keywords'
 
 call plug#end()
 

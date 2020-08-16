@@ -120,6 +120,7 @@ nnoremap <Leader>o :FilesWithDevicons .<CR>
 nnoremap <Leader>A :RgWithDevicons <C-R><C-W><CR>
 nnoremap <Leader>s :RgWithDevicons<CR>
 "nnoremap <Leader>P :Clap sessions<CR>
+nnoremap <Leader>/ :BLines<CR>
 
 nnoremap tn :tabnext<CR>
 nnoremap tp :tabprev<CR>
@@ -128,3 +129,6 @@ inoremap jf <Esc>
 
 " Venter
 nmap <Leader>v :VenterToggle<CR>
+
+nmap <Leader>K :call coc#util#float_hide()<CR>
+nmap <Tab> :b #<CR>

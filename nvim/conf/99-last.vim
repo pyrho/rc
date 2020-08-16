@@ -11,5 +11,13 @@ hi CursorLine guibg=#2e2b4c
 hi CursorColumn guibg=#2e2b4c
 
 autocmd FileType typescript hi! link Function Operator
+" autocmd FileType typescript match NIK /WARNING\|NOCOMMIT/
+" autocmd FileType typescript hi! NIK Todo
+
+augroup vimrc_todo
+    au!
+    au Syntax * match MyTodo /@WARNING\|@NOCOMMIT\|@TODO|@OPTIMIZE|@FIXME/
+augroup END
+hi def link MyTodo Todo
 
 

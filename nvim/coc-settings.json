@@ -10,7 +10,8 @@
   "codeLens.enable": false,
   "diagnostic.messageTarget": "float",
   "coc.preferences.currentFunctionSymbolAutoUpdate": true,
-  "snippets.ultisnips.directories": ["~/rc/nvim/snippets"],
+  "snippets.ultisnips.directories": [],
+  "snippets.loadFromExtensions": false,
   "yaml.schemas": {
     "https://raw.githubusercontent.com/docker/cli/master/cli/compose/schema/data/config_schema_v3.0.json": "docker-compose.yml"
   },
