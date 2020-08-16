@@ -75,3 +75,5 @@ function createfwd() {
     gandi forward create -d ${MAIL_EMAIL} $@@${MAIL_FWD_DOMAIN}
     echo $@@${MAIL_FWD_DOMAIN} | pbcopy
 }
+
+alias neur='kitty +kitten ssh pyrho@neuromancer.lan'
