@@ -16,6 +16,19 @@ let g:space_before_virtual_text = 5
 lua <<EOF
 local lsp_status = require('lsp-status')
 lsp_status.register_progress()
+local kind_labels_mt = {__index = function(_, k) return k end}
+local kind_labels = {}
+lsp_status.config({
+  kind_labels = kind_labels,
+  indicator_errors = "×",
+  indicator_warnings = "!",
+  indicator_info = "i",
+  indicator_hint = "›",
+  -- the default is a wide codepoint which breaks absolute and relative
+  -- line counts if placed before airline's Z section
+  status_symbol = "",
+  kind_labels
+})
 EOF
 
 "" This is needed to update the lsp statuse in lightline.
