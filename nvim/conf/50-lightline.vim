@@ -20,7 +20,7 @@ let g:lightline.active = {
             \ 'right': [ [ 'lineinfo' ],
             \            [ 'devicons_filetype', 'devicons_fileformat'],
             \            [ 'obsession' ],
-            \            [ 'coc_error', 'coc_warning' ] ]
+            \            [ 'coc_warning' ] ]
             \}
 
 let g:lightline.tabline = {
@@ -102,6 +102,15 @@ function! CocError() abort
   endif
 endfunction
 
+
+" Statusline
+function! LspStatus() abort
+  if luaeval('#vim.lsp.buf_get_clients() > 0')
+    return luaeval("require('lsp-status').status()")
+  endif
+  return ''
+endfunction
+
 function! CocWarning() abort
   let info = get(b:, 'coc_diagnostic_info', {})
   if empty(info) | return '' | endif
@@ -121,7 +130,7 @@ let g:lightline.component_function = {
 
 let g:lightline.component_expand = {
             \ 'coc_error': 'CocError',
-            \ 'coc_warning': 'CocWarning'
+            \ 'coc_warning': 'LspStatus'
             \ }
 let g:lightline.component_type = {
             \ 'coc_error': 'error',
@@ -134,3 +143,4 @@ let g:lightline.component_visible_condition = {
             \ 'obsession': '1'
             \}
 " }}}
+autocmd CursorMoved call lightline#update()

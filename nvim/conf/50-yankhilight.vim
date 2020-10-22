@@ -1,4 +1,4 @@
 augroup highlight_yank
     autocmd!
-    autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank("IncSearch", 1000)
+    au TextYankPost * silent! lua vim.highlight.on_yank {higroup="IncSearch", timeout=300}
 augroup END

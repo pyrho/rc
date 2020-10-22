@@ -19,7 +19,9 @@
     "javascript",
     "typescript",
     "typescriptreact",
-    "json"
+    "html",
+    "json",
+    "fennel"
   ],
   "languageserver": {
     "haskell": {

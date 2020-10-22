@@ -1,4 +1,4 @@
-if has('unix')
+if has('nix')
     let g:clipboard = {
                 \   'name': 'myClipboard',
                 \   'copy': {

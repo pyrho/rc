@@ -30,36 +30,6 @@ inoremap <silent><expr> <c-space> coc#refresh()
 " Coc only does snippet and additional edit on confirm.
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
-" Remap keys for gotos
-nmap <silent> <localleader>d <Plug>(coc-definition)
-nmap <silent> <localleader>y <Plug>(coc-type-definition)
-nmap <silent> <localleader>i <Plug>(coc-implementation)
-nmap <silent> <localleader>r <Plug>(coc-references)
-nmap <silent> <localleader>ag :CocList diagnostics<CR>
-nmap <silent> <localleader>s :CocList -I symbols<CR>
-nmap <silent> <localleader>c <Plug>(coc-diagnostic-next)
-nmap <silent> <localleader>C <Plug>(coc-diagnostic-prev)
-nmap <localleader>ac  <Plug>(coc-codeaction)
-nmap <localleader>qf  <Plug>(coc-fix-current)
-
-
-" Use K for show documentation in preview window
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-  if &filetype == 'vim'
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
-
-" Highlight symbol under cursor on CursorHold
-" 2020-07-16 disabling this, it's annoying because it messes with vim-mark
-" " autocmd CursorHold *.ts silent call CocActionAsync('highlight')
-
-" Remap for rename current word
-nmap <leader>rn <Plug>(coc-rename)
 
 " " Remap for format selected region
 " vmap <leader>f  <Plug>(coc-format-selected)
@@ -73,27 +43,6 @@ augroup mygroup
   autocmd User CocDiagnosticChange call lightline#update()
 augroup end
 
-" Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
-vmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
-
-" Using CocList
-" Show all diagnostics
-nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
-" Show commands
-nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
-" Find symbol of current document
-nnoremap <silent> <space>O  :<C-u>CocList outline<cr>
-" Search workspace symbols
-nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
-" " Do default action for next item.
-" nnoremap <silent> <space>J  :<C-u>CocNext<CR>
-" " Do default action for previous item.
-" nnoremap <silent> <space>K  :<C-u>CocPrev<CR>
-" " Resume latest coc list
-" nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
-
-" }}}
 
 " CocSnippets config {{{
 " Use <C-l> for trigger snippet expand.

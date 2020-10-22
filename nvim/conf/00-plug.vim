@@ -6,7 +6,7 @@ Plug 'Shougo/defx.nvim', {
 Plug 'kristijanhusak/defx-icons'                               " Nice icons in defx
 Plug 'kristijanhusak/defx-git'                                 " git icon integration for defx
 Plug 'HerringtonDarkholme/yats.vim',                           " TS syntax file (better than typescript-vim)
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+"Plug 'neoclide/coc.nvim', {'branch': 'release'}
 "Plug 'tpope/vim-commentary'                                    " Commenting
 Plug 'tomtom/tcomment_vim'
 Plug 'jason0x43/vim-js-indent',
@@ -43,7 +43,7 @@ Plug 'junegunn/limelight.vim'                                  " Goyo extension 
 Plug 'andymass/vim-matchup'                                    " Better matching of pairs
 Plug 'eraserhd/parinfer-rust',                                 " Automatic paren handling in lisp-y languages
             \ {'do': 'cargo build --release',
-            \  'for': 'clojure' }
+            \  'for': [ 'fennel', 'clojure' ]}
 Plug 'justinmk/vim-sneak'                                      " Smart f motions
 Plug 'rbong/vim-flog'                                          " Git graph log (integrates with fugitive)
 Plug 'joecridge/vim-kinesis', { 'for': 'kinesis' }             " Kinesis syntax files
@@ -51,7 +51,8 @@ Plug 'itchyny/lightline.vim'                                   " Lightweight sta
 Plug 'macthecadillac/lightline-gitdiff'                        " Git diff integration in lightline
 Plug 'Yggdroot/indentLine'                                     " Show indent
 " More frustrating that anything..
-"Plug 'jiangmiao/auto-pairs'                                    " Automatically inserts pairs
+" 2020-08-25 Well I disabled it for some time and I miss it!
+Plug 'jiangmiao/auto-pairs'                                    " Automatically inserts pairs
 Plug 'chrisbra/colorizer'                                      " Show colors inline
 Plug 'amdt/vim-niji'                                           " Rainbow
 Plug 'sirtaj/vim-openscad',
@@ -60,7 +61,7 @@ Plug 'guns/vim-sexp'                                           " Clojure
 Plug 'jonase/eastwood',                                        " Clojure linting
             \ {'for': 'clojure'}
 Plug 'tpope/vim-sexp-mappings-for-regular-people',
-            \ {'for': 'clojure'}
+            \ {'for': ['clojure', 'fennel']}
 Plug 'tpope/vim-repeat',
             \ {'for': 'clojure'}
 Plug 'tpope/vim-salve',                                        " Clojure static support
@@ -87,7 +88,8 @@ Plug 'lambdalisue/gina.vim'
 Plug 'junegunn/vim-plug'                                       " Just to have the docs
 Plug 'neovimhaskell/haskell-vim'                               " Haskell support
 Plug 'alx741/vim-stylishask'                                   " Haskell auto prettyfier
-Plug 'terryma/vim-expand-region'                               " Expand visual selections
+" Never works how I expect it to
+"Plug 'terryma/vim-expand-region'                               " Expand visual selections
 Plug 'elixir-editors/vim-elixir'
 Plug 'JMcKiern/vim-venter'
 " Messes up the bindings sometimes.
@@ -97,8 +99,11 @@ Plug 'JMcKiern/vim-venter'
 Plug 'coreyja/fzf.devicon.vim'
 Plug 'norcalli/nvim-colorizer.lua'                            " Show hex color codes
 Plug 'danilamihailov/beacon.nvim'                             " Show where the cursor jumped
-" Plug 'nvim-treesitter/nvim-treesitter'
-Plug 'skbolton/embark'
+Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'nvim-treesitter/nvim-treesitter-textobjects'
+Plug 'nvim-treesitter/nvim-treesitter-refactor'
+Plug 'embark-theme/vim', { 'as': 'embark' }
+
 
 " wayyyy too slow compared to coc-prettier 
 " Plug 'prettier/vim-prettier', {
@@ -107,16 +112,45 @@ Plug 'skbolton/embark'
 
 Plug 'chrisbra/nrrwrgn'
 
-
 " needed for neuron
 Plug 'BurntSushi/ripgrep'
-Plug 'ihsanturk/neuron.vim'
+" The original maintainer is awol (2020-09-15) fiatjaf's one is better
+"Plug 'ihsanturk/neuron.vim'
+" Startup bug fixed by MaienM's fork ...
+"Plug 'fiatjaf/neuron.vim'
+Plug 'MaienM/neuron.vim', 
+            \ { 'branch': 'patch-1' }
 
 Plug '~/repos/perso/nvim-geat'
 
-Plug 'neovimhaskell/nvim-hs.vim'
-Plug '~/repos/perso/my-nvim-hs'
-Plug '~/rc/nvim/manual_install/my-keywords'
+" Haskell plugin experiment
+" Plug 'neovimhaskell/nvim-hs.vim'
+" Plug '~/repos/perso/my-nvim-hs'
+
+Plug 'neovim/nvim-lsp'
+Plug 'neovim/nvim-lspconfig'
+Plug 'nvim-lua/completion-nvim'
+Plug 'nvim-lua/diagnostic-nvim'
+Plug 'mhartington/formatter.nvim'
+Plug 'nvim-lua/lsp-status.nvim'
+
+
+Plug 'aquach/vim-http-client'
+Plug 'tpope/vim-dadbod'
+Plug 'kamykn/popup-menu.nvim'
+
+" Fennel > Lua plugin experiment
+" Plug 'Olical/aniseed', { 'tag': 'v3.6.2' }
+" Plug 'bakpakin/fennel.vim'
+" Plug 'Olical/conjure', {'tag': 'v4.4.0'}
+" Plug '~/repos/perso/nvim-neuron'
+
+
+" As of 2020-08-24 the state is barely usable
+"Plug 'mhartington/nvim-typescript', {'do': './install.sh'}
+
+Plug 'norcalli/snippets.nvim'
 
 call plug#end()
+
 

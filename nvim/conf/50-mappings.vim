@@ -130,5 +130,4 @@ inoremap jf <Esc>
 " Venter
 nmap <Leader>v :VenterToggle<CR>
 
-nmap <Leader>K :call coc#util#float_hide()<CR>
-nmap <Tab> :b #<CR>
+" nmap <Tab> :b #<CR>

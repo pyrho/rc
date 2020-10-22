@@ -1,3 +1,6 @@
+" Must be here before the neuron plug is loaded !
+let g:zkdir = $HOME.'/SynologyDrive/zettle/'
+
 " Plugins {{{
 call plug#begin('~/.vim/plugged-vimr')
 Plug 'mhinz/vim-startify'                                      " Welcome page
@@ -10,7 +13,7 @@ Plug 'plasticboy/vim-markdown',
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'BurntSushi/ripgrep'
-Plug 'ihsanturk/neuron.vim'
+Plug 'MaienM/neuron.vim', { 'branch': 'patch-1' }
 call plug#end()
 " }}}
 
@@ -49,8 +52,8 @@ set laststatus=0
 
 " Goyo/Limelight config {{{
 let g:goyo_height = "70%"
-autocmd! User GoyoEnter Limelight
-autocmd! User GoyoLeave Limelight!
+" autocmd! User GoyoEnter Limelight
+" autocmd! User GoyoLeave Limelight!
 " }}}
 
 " Mappings {{{
@@ -102,22 +105,23 @@ if has('conceal')
     au BufEnter, *.md :execute 'syntax match markdownCheckboxUnchecked "\([-\*] \[ \]\|--\)" contained conceal cchar='.s:checkbox_unchecked
     au BufEnter, *.md :execute 'syntax match markdownCheckboxChecked "\([-\*] \[x\]\|++\)" contained conceal cchar='.s:checkbox_checked
 
-    au BufEnter, *.md :syntax match markdownBullet1 "^-\s[^[]" contains=markdownBullet1_1
+    au BufEnter, *.md :syntax match markdownBullet1 "^-\s" contains=markdownBullet1_1
     au BufEnter, *.md :execute 'syntax match markdownBullet1_1 "-" contained conceal cchar='.s:bullet_point_1
 
-    au BufEnter, *.md :syntax match markdownBullet2 "^\s\{4\}-\s[^[]" contains=markdownBullet2_2
+    au BufEnter, *.md :syntax match markdownBullet2 "^\s\{4\}-\s" contains=markdownBullet2_2
     au BufEnter, *.md :execute 'syntax match markdownBullet2_2 "-" contained conceal cchar='.s:bullet_point_2
 
-    au BufEnter, *.md :syntax match markdownBullet3 "^\s\{8\}-\s[^[]" contains=markdownBullet3_3
+    au BufEnter, *.md :syntax match markdownBullet3 "^\s\{8\}-\s" contains=markdownBullet3_3
     au BufEnter, *.md :execute 'syntax match markdownBullet3_3 "-" contained conceal cchar='.s:bullet_point_3
 
-    au BufEnter, *.md :syntax match markdownBullet4 "^\s\{12\}-\s[^[]" contains=markdownBullet4_4
+    au BufEnter, *.md :syntax match markdownBullet4 "^\s\{12\}-\s" contains=markdownBullet4_4
     au BufEnter, *.md :execute 'syntax match markdownBullet4_4 "-" contained conceal cchar='.s:bullet_point_4
 
-    au BufEnter, *.md :syntax match markdownBullet5 "^\s\{16\}-\s[^[]" contains=markdownBullet5_5
+    au BufEnter, *.md :syntax match markdownBullet5 "^\s\{16\}-\s" contains=markdownBullet5_5
     au BufEnter, *.md :execute 'syntax match markdownBullet5_5 "-" contained conceal cchar='.s:bullet_point_5
 endif
 hi clear Conceal
 set concealcursor=n
 hi Conceal guibg=NONE
+let g:style_virtual_title = 'Comment'
 " }}}

@@ -9,15 +9,16 @@
 
 hi CursorLine guibg=#2e2b4c
 hi CursorColumn guibg=#2e2b4c
+hi link TSVariable Identifier
 
-autocmd FileType typescript hi! link Function Operator
-" autocmd FileType typescript match NIK /WARNING\|NOCOMMIT/
-" autocmd FileType typescript hi! NIK Todo
+autocmd FileType typescript hi! link Function PreProc
 
 augroup vimrc_todo
     au!
-    au Syntax * match MyTodo /@WARNING\|@NOCOMMIT\|@TODO|@OPTIMIZE|@FIXME/
+    au Syntax * match MyTodo /@WARNING\|@NOCOMMIT\|@TODO\|@OPTIMIZE\|@FIXME\|@NOTE\|@IMPORTANT\|@IDEA/
 augroup END
 hi def link MyTodo Todo
 
+let g:conjure#client#fennel#aniseed#aniseed_module_prefix = "aniseed."
 
+hi link LspDiagnosticsUnderline Underlined

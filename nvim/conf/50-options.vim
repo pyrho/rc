@@ -12,7 +12,6 @@ set foldenable
 set foldlevelstart=20               " Only fold nested stuff
 set foldnestmax=10                  " Don't fold too deeply nested stuff
 set wildmenu                        " Visual autocomplete for command menu
-set completeopt=longest,menu,preview
 set lazyredraw                      " Redraw only when we need to.
 set modelines=1                     " Process file specific options
 set guioptions=                     " Disabled all GUI chrome
@@ -26,8 +25,8 @@ set ignorecase
 set smartcase
 set laststatus=2
 set encoding=utf-8
-set cursorline                    " Apparently this causes slowness.
-set cursorcolumn                  " This too. 2020-07-16 well im trying it again !
+set nocursorline                    " Apparently this causes slowness.
+set nocursorcolumn                  " This too. 2020-07-16 well im trying it again !
 set hlsearch
 set showmatch                       " Jump to matching [{()}] when inserting
 set undofile                        " Tell it to use an undo file
@@ -88,3 +87,12 @@ autocmd BufEnter, *.md set tw=80
 set shiftround
 
 set diffopt+=iwhiteall,algorithm:patience
+set signcolumn=yes
+set completeopt=menuone,noinsert,noselect
+let g:python3_host_prog = '/usr/local/bin/python3'
+
+" See https://github.com/neovim/neovim/issues/13018
+" This is likely a bug in vim/nvim
+set siso=1
+
+set updatetime=500
