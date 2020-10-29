@@ -24,8 +24,8 @@ _gen_fzf_default_opts() {
     # local color0E='#c678dd'
     # local color0F='#be5046'
 
-    export FZF_DEFAULT_OPTS="--height 40% --border"
-
+    # export FZF_DEFAULT_OPTS="--height 40% --border"
+    export FZF_DEFAULT_OPTS="--height 40% --border --color=fg:15,bg+:-1,fg+:-1,hl:01,info:07,prompt:06,pointer:06"
 }
 
 _gen_fzf_default_opts

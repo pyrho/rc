@@ -41,6 +41,8 @@ setopt HIST_VERIFY
 setopt HIST_EXPIRE_DUPS_FIRST
 # dont ask for confirmation in rm globs*
 setopt RM_STAR_SILENT
+setopt AUTO_PUSHD
+setopt PUSHD_IGNORE_DUPS
 
 zle -N up-line-or-beginning-search
 zle -N down-line-or-beginning-search

@@ -6,6 +6,9 @@ export JIRA_RAPID_BOARD=true
 export NPM_PACKAGES="${HOME}/.npm-packages"
 export NODE_PATH="$NPM_PACKAGES/lib/node_modules:$NODE_PATH"
 export PATH="/usr/local/sbin:/Users/pyrho/.local/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$NPM_PACKAGES/bin:${HOME}/bin:$PATH:${HOME}/go/bin:${HOME}/neovim/bin:${HOME}/.vim/plugged/vim-iced/bin"
+
+# For Gnu Tar
+export PATH="/usr/local/opt/gnu-tar/libexec/gnubin:$PATH"
 # Haskell
 source /Users/pyrho/.ghcup/env
 
