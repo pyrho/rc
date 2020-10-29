@@ -50,9 +50,15 @@ Plug 'joecridge/vim-kinesis', { 'for': 'kinesis' }             " Kinesis syntax 
 Plug 'itchyny/lightline.vim'                                   " Lightweight statusline
 Plug 'macthecadillac/lightline-gitdiff'                        " Git diff integration in lightline
 Plug 'Yggdroot/indentLine'                                     " Show indent
+
 " More frustrating that anything..
 " 2020-08-25 Well I disabled it for some time and I miss it!
-Plug 'jiangmiao/auto-pairs'                                    " Automatically inserts pairs
+" 2020-10-29 Disabling again, hard to solve conflict with completion.nvim with
+" regards to imap <CR>, trying another plugin to see..
+" Also this has been unmaintained for quite some years now.
+" Plug 'jiangmiao/auto-pairs'                                    " Automatically inserts pairs
+Plug 'cohama/lexima.vim'
+
 Plug 'chrisbra/colorizer'                                      " Show colors inline
 Plug 'amdt/vim-niji'                                           " Rainbow
 Plug 'sirtaj/vim-openscad',

@@ -20,7 +20,7 @@ let g:lightline.active = {
             \ 'right': [ [ 'lineinfo' ],
             \            [ 'devicons_filetype', 'devicons_fileformat'],
             \            [ 'obsession' ],
-            \            [ 'coc_warning' ] ]
+            \            [ 'lsp_status' ] ]
             \}
 
 let g:lightline.tabline = {
@@ -39,8 +39,6 @@ endfunction
 
 let g:lightline.component = {
             \ 'myCurrentDir': ' %{fnamemodify(getcwd(), ":t")}',
-            \ 'currentFunc': '%{CocCurrentFunction()}',
-            \ 'currentFunc2': '%{TreeSitterCurrentElement()}',
             \ 'obsession': '%{ObsessionStatusEnhance()}',
             \ 'gitstatus': '%{lightline_gitdiff#get_status()}',
             \ 'bufinfo': '%{bufname("%")}:%{bufnr("%")}',
@@ -68,6 +66,7 @@ let g:lightline.component = {
             \ 'close': '%999X X ',
             \ 'winnr': '%{winnr()}'
             \ }
+
 function! LightlineFugitive()
     if exists('*fugitive#head')
         let branch = fugitive#head()
@@ -75,6 +74,7 @@ function! LightlineFugitive()
     endif
     return ''
 endfunction
+
 let g:lightline_gitdiff#indicator_added = "\uf067"
 let g:lightline_gitdiff#indicator_deleted = "\uf068"
 let g:lightline_gitdiff#indicator_modified = "\uf12a"
@@ -87,22 +87,6 @@ function! CocCurrentFunction()
     return currentFunctionSymbol !=# '' ? "\ufb26 [" . currentFunctionSymbol . ']' : ''
 endfunction
 
-function! TreeSitterCurrentElement()
-    let x = luaeval("require'nvim-treesitter'.statusline(50)")
-    return "\uf450 [" . x . ']'
-endfunction
-
-function! CocError() abort
-  let info = get(b:, 'coc_diagnostic_info', {})
-  if empty(info) | return '' | endif
-  if get(info, 'error', 0)
-    return "\u2716 " . info['error']
-  else
-    return ''
-  endif
-endfunction
-
-
 " Statusline
 function! LspStatus() abort
   if luaeval('#vim.lsp.buf_get_clients() > 0')
@@ -111,35 +95,19 @@ function! LspStatus() abort
   return ''
 endfunction
 
-function! CocWarning() abort
-  let info = get(b:, 'coc_diagnostic_info', {})
-  if empty(info) | return '' | endif
-  if get(info, 'warning', 0)
-    return "\uf071 " . info['warning']
-  else
-    return ''
-  endif
-endfunction
-
 let g:lightline.component_function = {
             \ 'fugitive': 'LightlineFugitive',
             \ 'devicons_filetype': 'WebDevIconsGetFileTypeSymbol',
             \ 'devicons_fileformat': 'WebDevIconsGetFileFormatSymbol',
             \ }
-            " \ 'currentFunc': 'CocCurrentFunction'
 
 let g:lightline.component_expand = {
-            \ 'coc_error': 'CocError',
-            \ 'coc_warning': 'LspStatus'
+            \ 'lsp_status': 'LspStatus'
             \ }
-let g:lightline.component_type = {
-            \ 'coc_error': 'error',
-            \ 'coc_warning': 'warning'
-            \}
 
-            " \ 'obsession': 'ObsessionStatus() !=# ""'
 let g:lightline.component_visible_condition = {
             \ 'gitstatus': 'lightline_gitdiff#get_status() !=# ""',
+            \ 'lsp_status': 'luaeval("#vim.lsp.buf_get_clients() > 0")',
             \ 'obsession': '1'
             \}
 " }}}

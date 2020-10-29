@@ -34,14 +34,17 @@ EOF
 "" This is needed to update the lsp statuse in lightline.
 autocmd User LspDiagnosticsChanged call lightline#update()
 
+
 " TSServer setup
 lua <<EOF
 local lsp_status = require('lsp-status')
+local nvim_lsp = require("nvim_lsp")
 require'nvim_lsp'.tsserver.setup{
     on_attach = function(opts)
         require'diagnostic'.on_attach(opts)
         require'completion'.on_attach(opts)
         require'lsp-status'.on_attach(opts)
+        vim.api.nvim_command("au BufWritePost <buffer> silent! lua require'format.formatter'.format()")
     end,
     capabilities = lsp_status.capabilities
 }

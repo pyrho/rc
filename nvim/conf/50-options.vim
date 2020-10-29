@@ -88,7 +88,6 @@ set shiftround
 
 set diffopt+=iwhiteall,algorithm:patience
 set signcolumn=yes
-set completeopt=menuone,noinsert,noselect
 let g:python3_host_prog = '/usr/local/bin/python3'
 
 " See https://github.com/neovim/neovim/issues/13018
