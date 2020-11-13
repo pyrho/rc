@@ -88,11 +88,58 @@ function! CocCurrentFunction()
 endfunction
 
 " Statusline
-function! LspStatus() abort
+function! LspStatusOLD() abort
   if luaeval('#vim.lsp.buf_get_clients() > 0')
     return luaeval("require('lsp-status').status()")
   endif
   return ''
+endfunction
+
+function! LspStatus() abort
+    let sl = ''
+    if luaeval('not vim.tbl_isempty(vim.lsp.buf_get_clients(0))')
+       let errors = luaeval("vim.lsp.diagnostic.get_count(vim.fn.bufnr('%'), [[Error]])")
+       let warnings = luaeval("vim.lsp.diagnostic.get_count(vim.fn.bufnr('%'), [[Warning]])")
+       let info = luaeval("vim.lsp.diagnostic.get_count(vim.fn.bufnr('%'), [[Hint]])")
+       " let warnings = luaeval("vim.lsp.diagnostic.get_count(vim.fn.bufnr('%'), [[Warning]])")
+       if errors == 0 && warnings == 0
+           return '  '
+       endif
+       "' ×  '.errors . '!' . warnings
+       return '  × '.errors . ' ! ' . warnings . ' i ' . info
+        " return luaeval("require('lsp-status').status()")
+        " let sl.='%#MyStatuslineLSP#E:'
+        " let sl.='%#MyStatuslineLSPErrors#%{luaeval("vim.lsp.diagnostic.get_count([[Error]])")}'
+        " let sl.='%#MyStatuslineLSP# W:'
+        " let sl.='%#MyStatuslineLSPWarnings#%{luaeval("vim.lsp.diagnostic.get_count([[Warning]])")}'
+    else
+        return ''
+    endif
+    return sl
+endfunction
+
+function WebDevIconsGetFileTypeSymbol() 
+    return luaeval("require'nvim-web-devicons'.get_icon(vim.fn.expand('%:t'), vim.fn.expand('%:e'), { default = true })")
+endfunction
+
+
+" Stolen from https://github.com/cj/vim-webdevicons/blob/master/plugin/webdevicons.vim
+function! WebDevIconsGetFileFormatSymbol(...)
+  let fileformat = ""
+
+  if &fileformat == "dos"
+	  let fileformat = ""
+	elseif &fileformat == "unix"
+		let fileformat = ""
+	elseif &fileformat == "mac"
+		let fileformat = ""
+  endif
+
+  " Temporary (hopefully) fix for glyph issues in gvim (proper fix is with the
+  " actual font patcher)
+  let artifactFix = "\u00A0"
+
+  return &enc . " " . fileformat . artifactFix
 endfunction
 
 let g:lightline.component_function = {
@@ -107,7 +154,7 @@ let g:lightline.component_expand = {
 
 let g:lightline.component_visible_condition = {
             \ 'gitstatus': 'lightline_gitdiff#get_status() !=# ""',
-            \ 'lsp_status': 'luaeval("#vim.lsp.buf_get_clients() > 0")',
+            \ 'lsp_status': 'not vim.tbl_isempty(vim.lsp.buf_get_clients(0))',
             \ 'obsession': '1'
             \}
 " }}}

@@ -109,18 +109,18 @@ tnoremap <C-t> <C-\><C-n>:FloatermToggle<CR>
 "nnoremap <Leader>o :call Fzf_dev()<CR>
 
 "nnoremap <Leader>b :Clap buffers<CR>
-nnoremap <Leader>b :Buffers<CR>
+" nnoremap <Leader>b :Buffers<CR>
 "nnoremap <Leader>y :Clap yanks<CR>
 
 "nnoremap <Leader>o :Clap files .<CR>
-nnoremap <Leader>o :FilesWithDevicons .<CR>
+" nnoremap <Leader>o :FilesWithDevicons .<CR>
 " Better handing of exclusion patterns
 " But does not work because icons are missing
 "nnoremap <Leader>o :Clap files ++externalfilter=fzf +async . <CR>
-nnoremap <Leader>A :RgWithDevicons <C-R><C-W><CR>
-nnoremap <Leader>s :RgWithDevicons<CR>
+" nnoremap <Leader>A :RgWithDevicons <C-R><C-W><CR>
+" nnoremap <Leader>s :RgWithDevicons<CR>
 "nnoremap <Leader>P :Clap sessions<CR>
-nnoremap <Leader>/ :BLines<CR>
+" nnoremap <Leader>/ :BLines<CR>
 
 nnoremap tn :tabnext<CR>
 nnoremap tp :tabprev<CR>

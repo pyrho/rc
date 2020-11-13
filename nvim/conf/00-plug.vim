@@ -5,7 +5,12 @@ Plug 'Shougo/defx.nvim', {
             \ 'branch': 'master' }                    " File browser (vim-vinegar like)
 Plug 'kristijanhusak/defx-icons'                               " Nice icons in defx
 Plug 'kristijanhusak/defx-git'                                 " git icon integration for defx
-Plug 'HerringtonDarkholme/yats.vim',                           " TS syntax file (better than typescript-vim)
+
+" Neovim now ships with TS synthax files, also YATS has been overstepping it's
+" purpose (see https://github.com/HerringtonDarkholme/yats.vim/issues/218).
+" So let's try without it
+"Plug 'HerringtonDarkholme/yats.vim',                           " TS syntax file (better than typescript-vim)
+"
 "Plug 'neoclide/coc.nvim', {'branch': 'release'}
 "Plug 'tpope/vim-commentary'                                    " Commenting
 Plug 'tomtom/tcomment_vim'
@@ -14,6 +19,7 @@ Plug 'jason0x43/vim-js-indent',
 Plug 'Yggdroot/vim-mark'                                       " Mark words with color
 Plug 'airblade/vim-gitgutter'                                  " Left gutter with modification indication (git)
 Plug 'tpope/vim-fugitive'                                      " Git management
+Plug 'shumphrey/fugitive-gitlab.vim'
 Plug 'junegunn/fzf', {
             \'dir': '~/.fzf',
             \'do': './install --all'}                          " Fzf fuzzy finder (ala CtrlP)
@@ -26,7 +32,7 @@ Plug 'chriskempson/base16-vim'                                 " Colorscheme
 Plug 'pyrho/base16-vim-lightline', {
             \ 'branch': 'bold-mode'}
 Plug 'junegunn/seoul256.vim'                                   " A colorscheme
-Plug 'ryanoasis/vim-devicons'                                  " Have nice icons attached to files
+" Plug 'ryanoasis/vim-devicons'                                  " Have nice icons attached to files
 Plug 'pangloss/vim-javascript',
             \ { 'for': 'javascript' }
 Plug 'junegunn/vim-slash'                                      " Better / * # search mappings
@@ -102,13 +108,14 @@ Plug 'JMcKiern/vim-venter'
 " Eg. in tmux or k9s the binding is not longer intercepted by kitty 
 " and passed on to the app instead.
 "Plug 'knubie/vim-kitty-navigator'
-Plug 'coreyja/fzf.devicon.vim'
+" Plug 'coreyja/fzf.devicon.vim'
 Plug 'norcalli/nvim-colorizer.lua'                            " Show hex color codes
 Plug 'danilamihailov/beacon.nvim'                             " Show where the cursor jumped
 Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 Plug 'nvim-treesitter/nvim-treesitter-refactor'
-Plug 'embark-theme/vim', { 'as': 'embark' }
+"Plug 'embark-theme/vim', { 'as': 'embark' }
+Plug '~/repos/perso/forks/embark', { 'as': 'embark-pyrho' }
 
 
 " wayyyy too slow compared to coc-prettier 
@@ -136,10 +143,8 @@ Plug '~/repos/perso/nvim-geat'
 Plug 'neovim/nvim-lsp'
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/completion-nvim'
-Plug 'nvim-lua/diagnostic-nvim'
 Plug 'mhartington/formatter.nvim'
-Plug 'nvim-lua/lsp-status.nvim'
-
+"Plug 'nvim-lua/lsp-status.nvim'
 
 Plug 'aquach/vim-http-client'
 Plug 'tpope/vim-dadbod'
@@ -156,6 +161,14 @@ Plug 'kamykn/popup-menu.nvim'
 "Plug 'mhartington/nvim-typescript', {'do': './install.sh'}
 
 Plug 'norcalli/snippets.nvim'
+
+" Telescop.nvim {{{
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-lua/telescope.nvim'
+Plug 'kyazdani42/nvim-web-devicons'
+" }}}
+
 
 call plug#end()
 
