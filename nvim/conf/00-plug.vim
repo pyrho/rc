@@ -119,9 +119,9 @@ Plug 'embark-theme/vim', { 'as': 'embark' }
 
 
 " wayyyy too slow compared to coc-prettier 
-" Plug 'prettier/vim-prettier', {
-"   \ 'do': 'yarn install',
-"   \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
+Plug 'prettier/vim-prettier', {
+  \ 'do': 'yarn install',
+  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
 
 Plug 'chrisbra/nrrwrgn'
 
@@ -142,7 +142,7 @@ Plug '~/repos/perso/nvim-geat'
 Plug 'neovim/nvim-lsp'
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/completion-nvim'
-Plug 'mhartington/formatter.nvim'
+"Plug 'mhartington/formatter.nvim'
 "Plug 'nvim-lua/lsp-status.nvim'
 
 Plug 'aquach/vim-http-client'
