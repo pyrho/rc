@@ -13,7 +13,8 @@ Plug 'plasticboy/vim-markdown',
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'BurntSushi/ripgrep'
-Plug 'MaienM/neuron.vim', { 'branch': 'patch-1' }
+"Plug 'MaienM/neuron.vim', { 'branch': 'patch-1' }
+Plug 'fiatjaf/neuron.vim'
 call plug#end()
 " }}}
 
@@ -47,6 +48,10 @@ set nowrap
 set textwidth=70
 set shiftwidth=4
 set laststatus=0
+
+" So that the virtual titles in neuron show up readable
+hi clear TabLineFill 
+hi link TabLineFill Label
 " }}}
 
 
@@ -83,6 +88,7 @@ nnoremap <Leader>s :Rg<CR>
 
 " Zettle {{{
 let g:zkdir = $HOME . '/SynologyDrive/zettle/'
+let g:neuron_dir = $HOME . '/SynologyDrive/zettle/'
 let g:style_virtual_title = 'Title'
 let g:path_neuron = '/Users/pyrho/.nix-profile/bin/neuron'
 let g:path_jq = '/usr/local/bin/jq'
@@ -101,9 +107,6 @@ if has('conceal')
     " let s:checkbox_checked = "✔"
     let s:checkbox_checked = "✓"
     " let s:checkbox_checked = "✅"
-    au BufEnter, *.md :syntax match markdownCheckbox "^\s*\([-\*] \[[ x]\]\|--\|++\) " contains=markdownCheckboxChecked,markdownCheckboxUnchecked
-    au BufEnter, *.md :execute 'syntax match markdownCheckboxUnchecked "\([-\*] \[ \]\|--\)" contained conceal cchar='.s:checkbox_unchecked
-    au BufEnter, *.md :execute 'syntax match markdownCheckboxChecked "\([-\*] \[x\]\|++\)" contained conceal cchar='.s:checkbox_checked
 
     au BufEnter, *.md :syntax match markdownBullet1 "^-\s" contains=markdownBullet1_1
     au BufEnter, *.md :execute 'syntax match markdownBullet1_1 "-" contained conceal cchar='.s:bullet_point_1
@@ -119,9 +122,14 @@ if has('conceal')
 
     au BufEnter, *.md :syntax match markdownBullet5 "^\s\{16\}-\s" contains=markdownBullet5_5
     au BufEnter, *.md :execute 'syntax match markdownBullet5_5 "-" contained conceal cchar='.s:bullet_point_5
+
+    au BufEnter, *.md :syntax match markdownCheckbox "\(\[[ x]\]\) " contains=markdownCheckboxChecked,markdownCheckboxUnchecked
+    au BufEnter, *.md :execute 'syntax match markdownCheckboxUnchecked "\(\[ \]\)" contained conceal cchar='.s:checkbox_unchecked
+    au BufEnter, *.md :execute 'syntax match markdownCheckboxChecked "\(\[x\]\)" contained conceal cchar='.s:checkbox_checked
 endif
 hi clear Conceal
 set concealcursor=n
+set expandtab
 hi Conceal guibg=NONE
-let g:style_virtual_title = 'Comment'
+let g:style_virtual_title = 'Visual'
 " }}}

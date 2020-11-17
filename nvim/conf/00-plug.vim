@@ -114,8 +114,8 @@ Plug 'danilamihailov/beacon.nvim'                             " Show where the c
 Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 Plug 'nvim-treesitter/nvim-treesitter-refactor'
-"Plug 'embark-theme/vim', { 'as': 'embark' }
-Plug '~/repos/perso/forks/embark', { 'as': 'embark-pyrho' }
+Plug 'embark-theme/vim', { 'as': 'embark' }
+" Plug '~/repos/perso/forks/embark', { 'as': 'embark-pyrho' }
 
 
 " wayyyy too slow compared to coc-prettier 
@@ -130,9 +130,8 @@ Plug 'BurntSushi/ripgrep'
 " The original maintainer is awol (2020-09-15) fiatjaf's one is better
 "Plug 'ihsanturk/neuron.vim'
 " Startup bug fixed by MaienM's fork ...
-"Plug 'fiatjaf/neuron.vim'
-Plug 'MaienM/neuron.vim', 
-            \ { 'branch': 'patch-1' }
+Plug 'fiatjaf/neuron.vim'
+"Plug 'MaienM/neuron.vim', { 'branch': 'patch-1' }
 
 Plug '~/repos/perso/nvim-geat'
 
