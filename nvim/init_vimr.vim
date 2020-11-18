@@ -52,6 +52,10 @@ set laststatus=0
 " So that the virtual titles in neuron show up readable
 hi clear TabLineFill 
 hi link TabLineFill Label
+
+hi link htmlH2 TabLineFill
+hi link htmlH3 MoreMsg
+hi link htmlH4 rubyClass
 " }}}
 
 
