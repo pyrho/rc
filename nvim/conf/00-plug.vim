@@ -19,7 +19,8 @@ Plug 'jason0x43/vim-js-indent',
 Plug 'Yggdroot/vim-mark'                                       " Mark words with color
 Plug 'airblade/vim-gitgutter'                                  " Left gutter with modification indication (git)
 Plug 'tpope/vim-fugitive'                                      " Git management
-Plug 'shumphrey/fugitive-gitlab.vim'
+Plug 'shumphrey/fugitive-gitlab.vim'                           " Complement to fugitive 
+Plug 'tpope/vim-rhubarb'                                       " Complement to fugitive 
 Plug 'junegunn/fzf', {
             \'dir': '~/.fzf',
             \'do': './install --all'}                          " Fzf fuzzy finder (ala CtrlP)

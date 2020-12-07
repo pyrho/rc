@@ -130,7 +130,7 @@ function! WebDevIconsGetFileFormatSymbol(...)
   if &fileformat == "dos"
 	  let fileformat = ""
 	elseif &fileformat == "unix"
-		let fileformat = ""
+		let fileformat = ""
 	elseif &fileformat == "mac"
 		let fileformat = ""
   endif
@@ -139,7 +139,8 @@ function! WebDevIconsGetFileFormatSymbol(...)
   " actual font patcher)
   let artifactFix = "\u00A0"
 
-  return &enc . " " . fileformat . artifactFix
+  "return &enc . " " . fileformat . artifactFix
+  return fileformat
 endfunction
 
 let g:lightline.component_function = {

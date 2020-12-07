@@ -36,9 +36,9 @@ autocmd User LspDiagnosticsChanged call lightline#update()
 
 " TSServer setup
 lua <<EOF
---local lsp_status = require('lsp-status')
-local nvim_lsp = require("nvim_lsp")
-require'nvim_lsp'.tsserver.setup{
+require'lspconfig'.tsserver.setup{
+    cmd = { "/Users/pyrho/.cache/nvim/lspconfig/tsserver/node_modules/.bin/typescript-language-server", "--stdio" },
+    filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
     on_attach = function(opts)
         -- require'diagnostic'.on_attach(opts)
         require'completion'.on_attach(opts)

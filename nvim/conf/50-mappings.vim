@@ -105,8 +105,9 @@ tnoremap <C-t> <C-\><C-n>:FloatermToggle<CR>
 
 
 " }}}
-"nnoremap <Leader>b :Buffers<CR>
-"nnoremap <Leader>o :call Fzf_dev()<CR>
+nnoremap <Leader>b :Buffers<CR>
+nnoremap <Leader>o :Files<CR>
+nnoremap <Leader>s :Rgg<CR>
 
 "nnoremap <Leader>b :Clap buffers<CR>
 " nnoremap <Leader>b :Buffers<CR>
@@ -118,7 +119,7 @@ tnoremap <C-t> <C-\><C-n>:FloatermToggle<CR>
 " But does not work because icons are missing
 "nnoremap <Leader>o :Clap files ++externalfilter=fzf +async . <CR>
 " nnoremap <Leader>A :RgWithDevicons <C-R><C-W><CR>
-" nnoremap <Leader>s :RgWithDevicons<CR>
+"nnoremap <Leader>s :RgWithDevicons<CR>
 "nnoremap <Leader>P :Clap sessions<CR>
 " nnoremap <Leader>/ :BLines<CR>
 
