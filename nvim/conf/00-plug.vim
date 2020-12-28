@@ -169,6 +169,7 @@ Plug 'nvim-lua/telescope.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
 " }}}
 
+Plug 'google/vim-jsonnet'
 
 call plug#end()
 

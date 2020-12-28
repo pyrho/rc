@@ -76,4 +76,6 @@ function createfwd() {
     echo $@@${MAIL_FWD_DOMAIN} | pbcopy
 }
 
-alias neur='kitty +kitten ssh pyrho@neuromancer.lan'
+function klogs() {
+    kubectl --context do -n $1 logs -f deployment/$2 | fblog
+}
