@@ -1,2 +1,4 @@
 autoload -Uz add-zsh-hook
-add-zsh-hook precmd histdb-update-outcome
+# This is deprecated, see https://github.com/larkery/zsh-histdb
+# rhea should update to the latest version that that this can be commited to master
+#add-zsh-hook precmd histdb-update-outcome

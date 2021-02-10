@@ -77,5 +77,9 @@ function createfwd() {
 }
 
 function klogs() {
-    kubectl --context do -n $1 logs -f deployment/$2 | fblog
+    kubectl -n $1 logs -f deployment/$2 | fblog
+}
+
+function bwu(){
+    export BW_SESSION=$(bw unlock --raw $1)
 }

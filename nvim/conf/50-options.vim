@@ -88,7 +88,7 @@ set shiftround
 
 set diffopt+=iwhiteall,algorithm:patience
 set signcolumn=yes
-let g:python3_host_prog = '/usr/local/bin/python3'
+let g:python3_host_prog = '/usr/bin/python3'
 
 " See https://github.com/neovim/neovim/issues/13018
 " This is likely a bug in vim/nvim
