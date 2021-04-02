@@ -37,7 +37,7 @@ autocmd User LspDiagnosticsChanged call lightline#update()
 " TSServer setup
 lua <<EOF
 require'lspconfig'.tsserver.setup{
-    cmd = { "${HOME}/.cache/nvim/lspconfig/tsserver/node_modules/.bin/typescript-language-server", "--stdio" },
+    cmd = { "/home/pyrho/.npm-global/bin/typescript-language-server", "--stdio" },
     filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
     on_attach = function(opts)
         -- require'diagnostic'.on_attach(opts)
@@ -64,7 +64,7 @@ EOF
 nnoremap <silent> <c-]> <cmd>lua vim.lsp.buf.definition()<CR>
 nnoremap <silent> K     <cmd>lua vim.lsp.buf.hover()<CR>
 nnoremap <silent> gD    <cmd>lua vim.lsp.buf.implementation()<CR>
-nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
+"nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
 nnoremap <silent> 1gD   <cmd>lua vim.lsp.buf.type_definition()<CR>
 nnoremap <silent> gd    <cmd>lua vim.lsp.buf.declaration()<CR>
 nnoremap <silent> gW <cmd>lua require'telescope.builtin'.lsp_workspace_symbols{ shorten_path = true }<CR>

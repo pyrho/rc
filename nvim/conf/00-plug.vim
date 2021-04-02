@@ -57,6 +57,7 @@ Plug 'joecridge/vim-kinesis', { 'for': 'kinesis' }             " Kinesis syntax 
 Plug 'itchyny/lightline.vim'                                   " Lightweight statusline
 Plug 'macthecadillac/lightline-gitdiff'                        " Git diff integration in lightline
 Plug 'Yggdroot/indentLine'                                     " Show indent
+Plug 'mbbill/undotree'
 
 " More frustrating that anything..
 " 2020-08-25 Well I disabled it for some time and I miss it!
@@ -167,9 +168,13 @@ Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-lua/telescope.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
+Plug 'oberblastmeister/neuron.nvim'
 " }}}
 
 Plug 'google/vim-jsonnet'
+
+Plug 'hashivim/vim-terraform'
+Plug 'TimUntersberger/neogit'
 
 call plug#end()
 

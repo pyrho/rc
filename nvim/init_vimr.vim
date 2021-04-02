@@ -1,5 +1,5 @@
 " Must be here before the neuron plug is loaded !
-let g:zkdir = $HOME.'/SynologyDrive/zettle/'
+" let g:zkdir = $HOME.'/SynologyDrive/zettle/'
 
 " Plugins {{{
 call plug#begin('~/.vim/plugged-vimr')
@@ -14,7 +14,11 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'BurntSushi/ripgrep'
 "Plug 'MaienM/neuron.vim', { 'branch': 'patch-1' }
-Plug 'fiatjaf/neuron.vim'
+" Plug 'fiatjaf/neuron.vim'
+Plug 'nvim-lua/popup.nvim'
+Plug 'oberblastmeister/neuron.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
 call plug#end()
 " }}}
 
@@ -91,11 +95,12 @@ nnoremap <Leader>s :Rg<CR>
 " }}}
 
 " Zettle {{{
-let g:zkdir = $HOME . '/SynologyDrive/zettle/'
-let g:neuron_dir = $HOME . '/SynologyDrive/zettle/'
-let g:style_virtual_title = 'Title'
-let g:path_neuron = '/Users/pyrho/.nix-profile/bin/neuron'
-let g:path_jq = '/usr/local/bin/jq'
+" let g:zkdir = $HOME . '/SynologyDrive/zettle/'
+" let g:neuron_dir = '/home/pyrho/SynologyDrive/zettle/'
+" let g:style_virtual_title = 'Title'
+" let g:path_neuron = $HOME . '/.nix-profile/bin/neuron'
+" let g:neuron_executable = '/home/pyrho/.nix-profile/bin/neuron'
+" let g:path_jq = '/usr/bin/jq'
 " }}}
 
 " Fancy todo checkboxes {{{
@@ -136,4 +141,16 @@ set concealcursor=n
 set expandtab
 hi Conceal guibg=NONE
 let g:style_virtual_title = 'Visual'
+
+lua <<EOF
+-- these are all the default values
+require'neuron'.setup {
+    virtual_titles = true,
+    mappings = true,
+    run = nil, -- function to run when in neuron dir
+    neuron_dir = "/home/pyrho/SynologyDrive/zettle", -- the directory of all of your notes, expanded by default (currently supports only one directory for notes, find a way to detect neuron.dhall to use any directory)
+    leader = "gz", -- the leader key to for all mappings, remember with 'go zettel'
+}
+EOF
+
 " }}}

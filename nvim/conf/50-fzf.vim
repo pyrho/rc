@@ -55,7 +55,7 @@ let g:fzf_colors =
   \ 'header':  ['fg', 'Comment'] }
 " }}}
 
-autocmd * fzf setlocal nornu
+"#autocmd * fzf setlocal nornu
 
 
 "From https://github.com/camspiers/dotfiles/blob/master/files/.config/nvim/init.vim#L446-L468
