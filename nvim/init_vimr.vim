@@ -16,7 +16,8 @@ Plug 'BurntSushi/ripgrep'
 "Plug 'MaienM/neuron.vim', { 'branch': 'patch-1' }
 " Plug 'fiatjaf/neuron.vim'
 Plug 'nvim-lua/popup.nvim'
-Plug 'oberblastmeister/neuron.nvim'
+"Plug 'oberblastmeister/neuron.nvim'
+Plug 'chiefnoah/neuron-v2.vim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 call plug#end()
@@ -141,16 +142,5 @@ set concealcursor=n
 set expandtab
 hi Conceal guibg=NONE
 let g:style_virtual_title = 'Visual'
-
-lua <<EOF
--- these are all the default values
-require'neuron'.setup {
-    virtual_titles = true,
-    mappings = true,
-    run = nil, -- function to run when in neuron dir
-    neuron_dir = "/home/pyrho/SynologyDrive/zettle", -- the directory of all of your notes, expanded by default (currently supports only one directory for notes, find a way to detect neuron.dhall to use any directory)
-    leader = "gz", -- the leader key to for all mappings, remember with 'go zettel'
-}
-EOF
 
 " }}}

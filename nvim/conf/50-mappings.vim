@@ -106,8 +106,8 @@ tnoremap <C-t> <C-\><C-n>:FloatermToggle<CR>
 
 " }}}
 nnoremap <Leader>b :Buffers<CR>
-nnoremap <Leader>o :Files<CR>
-nnoremap <Leader>s :Rgg<CR>
+nnoremap <Leader>o :FZF<CR>
+nnoremap <Leader>s :FZFRg<CR>
 
 "nnoremap <Leader>b :Clap buffers<CR>
 " nnoremap <Leader>b :Buffers<CR>

@@ -25,6 +25,7 @@ Plug 'junegunn/fzf', {
             \'dir': '~/.fzf',
             \'do': './install --all'}                          " Fzf fuzzy finder (ala CtrlP)
 Plug 'junegunn/fzf.vim', {'depends': 'fzf'}                    " Fzf fuzzy finder (ala CtrlP)
+Plug 'chengzeyi/fzf-preview.vim'
 Plug 'mhinz/vim-startify'                                      " Welcome page
 Plug 'godlygeek/tabular'                                       " Align stuff easily (must come before vim-markdown)
 Plug 'plasticboy/vim-markdown',
@@ -94,7 +95,7 @@ Plug 'voldikss/vim-floaterm'                                   " A floating term
 "Plug 'liuchengxu/vim-clap', { 'do': ':Clap install-binary' }
 " Not using this anymore, causes bugs and im not using it that much anyways.
 "Plug 't9md/vim-choosewin'                                      " Move between windows & tabs fast
-Plug 'yuki-ycino/fzf-preview.vim'
+"Plug 'yuki-ycino/fzf-preview.vim'
 Plug 'wadackel/vim-dogrun'                                     " Colorscheme
 Plug 'raichoo/purescript-vim'
 Plug 'dbeniamine/todo.txt-vim'
@@ -127,13 +128,14 @@ Plug 'prettier/vim-prettier', {
 
 Plug 'chrisbra/nrrwrgn'
 
-" needed for neuron
-Plug 'BurntSushi/ripgrep'
+" Neuron integration
+"Plug 'BurntSushi/ripgrep'
 " The original maintainer is awol (2020-09-15) fiatjaf's one is better
 "Plug 'ihsanturk/neuron.vim'
 " Startup bug fixed by MaienM's fork ...
-Plug 'fiatjaf/neuron.vim'
+" Plug 'fiatjaf/neuron.vim'
 "Plug 'MaienM/neuron.vim', { 'branch': 'patch-1' }
+Plug 'chiefnoah/neuron-v2.vim'
 
 Plug '~/repos/perso/nvim-geat'
 
@@ -155,7 +157,6 @@ Plug 'kamykn/popup-menu.nvim'
 " Plug 'Olical/aniseed', { 'tag': 'v3.6.2' }
 " Plug 'bakpakin/fennel.vim'
 " Plug 'Olical/conjure', {'tag': 'v4.4.0'}
-" Plug '~/repos/perso/nvim-neuron'
 
 
 " As of 2020-08-24 the state is barely usable
@@ -167,9 +168,9 @@ Plug 'norcalli/snippets.nvim'
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-lua/telescope.nvim'
-Plug 'kyazdani42/nvim-web-devicons'
-Plug 'oberblastmeister/neuron.nvim'
 " }}}
+
+Plug 'kyazdani42/nvim-web-devicons'
 
 Plug 'google/vim-jsonnet'
 
