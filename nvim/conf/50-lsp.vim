@@ -1,8 +1,9 @@
 " Sign Customization
-sign define LspDiagnosticsSignError text=😓 texthl=LspDiagnosticsSignError linehl= numhl=
-sign define LspDiagnosticsSignWarning text=😗 texthl=LspDiagnosticsSignWarning linehl= numhl=
-sign define LspDiagnosticsSignInformation text=💁 texthl=LspDiagnosticsSignInformation linehl= numhl=
-sign define LspDiagnosticsSignHint text=📎 texthl=LspDiagnosticsSignHint linehl= numhl=
+"" 2021-05-24 Do not use emojis, as it messed up the terminal on 3Jane.
+sign define LspDiagnosticsSignError text=E texthl=LspDiagnosticsSignError linehl= numhl=
+sign define LspDiagnosticsSignWarning text=W texthl=LspDiagnosticsSignWarning linehl= numhl=
+sign define LspDiagnosticsSignInformation text=I texthl=LspDiagnosticsSignInformation linehl= numhl=
+sign define LspDiagnosticsSignHint text=H texthl=LspDiagnosticsSignHint linehl= numhl=
 
 " Diagnostics
 let g:diagnostic_enable_virtual_text = 1
@@ -31,7 +32,7 @@ let g:space_before_virtual_text = 5
 " EOF
 
 "" This is needed to update the lsp statuse in lightline.
-autocmd User LspDiagnosticsChanged call lightline#update()
+"autocmd User LspDiagnosticsChanged call lightline#update()
 
 
 " TSServer setup
@@ -47,6 +48,29 @@ require'lspconfig'.tsserver.setup{
     end,
     --capabilities = lsp_status.capabilities
 }
+
+-- local lspconfig = require'lspconfig'
+--
+-- require'lspconfig'.elmls.setup{
+--     cmd = { "elm-language-server" },
+--     filetypes = { "elm" },
+--     init_options = {
+--         elmAnalyseTrigger = "save",
+--         elmFormatPath = "elm-format",
+--         elmPath = "elm",
+--         elmTestPath = "elm-test"
+--     },
+--     root_dir = lspconfig.util.root_pattern("elm.json"),
+-- }
+local custom_attach = function(client)
+      if client.config.flags then
+        client.config.flags.allow_incremental_sync = true
+      end
+    end
+require('lspconfig').elmls.setup({
+   on_attach = custom_attach;
+})
+
 EOF
 
 " Mappings
@@ -67,8 +91,8 @@ nnoremap <silent> gD    <cmd>lua vim.lsp.buf.implementation()<CR>
 "nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
 nnoremap <silent> 1gD   <cmd>lua vim.lsp.buf.type_definition()<CR>
 nnoremap <silent> gd    <cmd>lua vim.lsp.buf.declaration()<CR>
-nnoremap <silent> gW <cmd>lua require'telescope.builtin'.lsp_workspace_symbols{ shorten_path = true }<CR>
-nnoremap <silent> gr <cmd>lua require'telescope.builtin'.lsp_references{ shorten_path = true }<CR>
+nnoremap <silent> gW <cmd>lua require'telescope.builtin'.lsp_dynamic_workspace_symbols{ shorten_path = true }<CR>
+" nnoremap <silent> gr <cmd>lua require'telescope.builtin'.lsp_references{ shorten_path = true }<CR>
 nnoremap <silent> g0 <cmd>lua require'telescope.builtin'.lsp_document_symbols{ shorten_path = true }<CR>
 
 
@@ -105,4 +129,9 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
     update_in_insert = false,
   }
 )
+EOF
+
+" https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md#hls
+lua << EOF
+require'lspconfig'.hls.setup{}
 EOF

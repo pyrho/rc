@@ -105,6 +105,8 @@ tnoremap <C-t> <C-\><C-n>:FloatermToggle<CR>
 
 
 " }}}
+
+" Replaced by telescope
 nnoremap <Leader>b :Buffers<CR>
 nnoremap <Leader>o :FZF<CR>
 nnoremap <Leader>s :FZFRg<CR>

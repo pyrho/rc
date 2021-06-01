@@ -9,14 +9,14 @@ let db = {
 call add(g:dadbods, db)
 let db = {
 		\"name": "AM Staging",
-		\"url": "postgres://$DO_DB_USER:$DO_DB_PASSWORD@$DO_DB_URL:25060/staging"
+		\"url": "postgres://$DO_DB_USER:$DO_DB_PASSWORD@$DO_DB_HOST:25060/staging"
 		\}
 
 call add(g:dadbods, db)
 
 let db = {
 		\"name": "AM Prod",
-		\"url": "postgres://$DO_DB_USER:$DO_DB_PASSWORD@$DO_DB_URL:25060/production"
+		\"url": "postgres://$DO_DB_USER:$DO_DB_PASSWORD@$DO_DB_HOST:25060/production"
 		\}
 
 call add(g:dadbods, db)

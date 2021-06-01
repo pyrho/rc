@@ -31,8 +31,8 @@ Plug 'godlygeek/tabular'                                       " Align stuff eas
 Plug 'plasticboy/vim-markdown',
             \ { 'for': 'markdown' }
 Plug 'chriskempson/base16-vim'                                 " Colorscheme
-Plug 'pyrho/base16-vim-lightline', {
-            \ 'branch': 'bold-mode'}
+" Plug 'pyrho/base16-vim-lightline', {
+"             \ 'branch': 'bold-mode'}
 Plug 'junegunn/seoul256.vim'                                   " A colorscheme
 " Plug 'ryanoasis/vim-devicons'                                  " Have nice icons attached to files
 Plug 'pangloss/vim-javascript',
@@ -55,8 +55,8 @@ Plug 'eraserhd/parinfer-rust',                                 " Automatic paren
 Plug 'justinmk/vim-sneak'                                      " Smart f motions
 Plug 'rbong/vim-flog'                                          " Git graph log (integrates with fugitive)
 Plug 'joecridge/vim-kinesis', { 'for': 'kinesis' }             " Kinesis syntax files
-Plug 'itchyny/lightline.vim'                                   " Lightweight statusline
-Plug 'macthecadillac/lightline-gitdiff'                        " Git diff integration in lightline
+" Plug 'itchyny/lightline.vim'                                   " Lightweight statusline
+" Plug 'macthecadillac/lightline-gitdiff'                        " Git diff integration in lightline
 Plug 'Yggdroot/indentLine'                                     " Show indent
 Plug 'mbbill/undotree'
 
@@ -120,11 +120,12 @@ Plug 'nvim-treesitter/nvim-treesitter-refactor'
 Plug 'embark-theme/vim', { 'as': 'embark' }
 " Plug '~/repos/perso/forks/embark', { 'as': 'embark-pyrho' }
 
+Plug 'folke/tokyonight.nvim'
 
 " wayyyy too slow compared to coc-prettier 
-Plug 'prettier/vim-prettier', {
-  \ 'do': 'yarn install',
-  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
+" Plug 'prettier/vim-prettier', {
+"   \ 'do': 'yarn install',
+"   \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
 
 Plug 'chrisbra/nrrwrgn'
 
@@ -177,6 +178,15 @@ Plug 'google/vim-jsonnet'
 Plug 'hashivim/vim-terraform'
 Plug 'TimUntersberger/neogit'
 
+Plug 'hoob3rt/lualine.nvim', { 'commit': '64ab49f5' }
+" If you want to have icons in your statusline choose one of these
+Plug 'kyazdani42/nvim-web-devicons'
+" Plug 'ryanoasis/vim-devicons'
+
+" Vim Script
+Plug 'kyazdani42/nvim-web-devicons'
+Plug 'folke/lsp-trouble.nvim'
+
+Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
+Plug 'akinsho/nvim-bufferline.lua'
 call plug#end()
-
-
