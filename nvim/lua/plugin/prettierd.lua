@@ -36,7 +36,7 @@ local function start_server()
   end)
 
   require('fsouza.lib.cleanup').register(function()
-    local block = cmd.run('pkill', {args = {'prettierd'}}, nil, function()
+    local block = cmd.run('pkill', {args = {'-f', 'prettierd'}}, nil, function()
     end)
     block(500)
   end)

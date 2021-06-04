@@ -20,6 +20,7 @@ local function setup_prettierd()
     'css';
     'html';
     'typescriptreact';
+    'typescript.tsx';
     'yaml';
   }
   helpers.augroup('auto_prettierd', {
