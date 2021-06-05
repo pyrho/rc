@@ -68,7 +68,7 @@ alias t='todo.sh'
 alias icat="kitty +kitten icat"
 alias coffee="curl https://coffee.25.wf -T"
 function obsess() {
-    kitty @ set-tab-title $@
+    #kitty @ set-tab-title $@
     fasd_cd -d "$@" && nvim -S Session.vim
 }
 function createfwd() {
@@ -77,9 +77,26 @@ function createfwd() {
 }
 
 function klogs() {
-    kubectl -n $1 logs -f deployment/$2 | fblog
+    if [[ $1 == "staging" ]]; then
+        kubectl --context do-fra1-fra1-staging -n staging logs -l app=$2 -f | fblog
+    elif [[ $1 == "production" ]]; then
+        kubectl --context do-fra1-production -n production logs -l app=$2 -f | fblog
+    else
+        echo "Unknown stage $1"
+    fi;
 }
+# ﬦ k -n staging logs -l app=monitoring -f |fblog
 
 function bwu(){
     export BW_SESSION=$(bw unlock --raw $1)
+}
+
+# $1: BookingID (mandatory)
+# $2: Bucket (default: am-emails)
+function amGetMail() {
+    ___bookingId=$1
+    ___bucket=${2:-am-emails}
+    ___path=`PGPASSWORD=$DO_DB_PASSWORD psql -U $DO_DB_USER -h $DO_DB_HOST -p $DO_DB_PORT -d production --set=sslmode=require --csv -A -t -c "select s3_path from bookings.bookings where id = $___bookingId;"`
+
+    cat /home/pyrho/buckets/$___bucket/$___path/mail.json | jq --raw-output '.["body-html"]' > /tmp/`echo $___path | tr '/' '_'`.html && firefox /tmp/`echo $___path | tr '/' '_'`.html
 }

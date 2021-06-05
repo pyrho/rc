@@ -26,7 +26,7 @@ n ()
     fi
 }
 
-export NNN_BMS='a:~/repos/marty/apps;t:/tmp;D:~/Downloads/;d:~/repos/marty/deploy'
+export NNN_BMS='a:/home/pyrho/repos/askmarty/apps;t:/tmp;D:~/Downloads/'
 export NNN_FIFO=/tmp/nnn.fifo
 export NNN_PLUG='p:preview-tui'
 export NNN_COLORS='1234'

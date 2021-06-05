@@ -29,4 +29,4 @@ export HISTDB_FILE="${HOME}/SynologyDrive/zsh_histdb/zsh-history.db"
 
 #export MANPAGER="nvim -u ~/rc/nvim/init_minimal.vim -c 'set ft=man' -"
 export sel=${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.selection
-
+export PRETTIERD_DEFAULT_CONFIG=${HOME}/.config/prettierrc.json
