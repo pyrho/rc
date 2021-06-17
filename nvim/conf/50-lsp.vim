@@ -37,17 +37,17 @@ let g:space_before_virtual_text = 5
 
 " TSServer setup
 lua <<EOF
-require'lspconfig'.tsserver.setup{
-    cmd = { "/home/pyrho/.npm-global/bin/typescript-language-server", "--stdio" },
-    filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
-    on_attach = function(opts)
-        -- require'diagnostic'.on_attach(opts)
-        require'completion'.on_attach(opts)
-        --require'lsp-status'.on_attach(opts)
-        -- vim.api.nvim_command("au BufWritePost <buffer> silent! lua require'format.formatter'.format()")
-    end,
-    --capabilities = lsp_status.capabilities
-}
+-- require'lspconfig'.tsserver.setup{
+--     cmd = { "/home/pyrho/.npm-global/bin/typescript-language-server", "--stdio" },
+--     filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
+--     on_attach = function(opts)
+--         -- require'diagnostic'.on_attach(opts)
+--         require'completion'.on_attach(opts)
+--         --require'lsp-status'.on_attach(opts)
+--         -- vim.api.nvim_command("au BufWritePost <buffer> silent! lua require'format.formatter'.format()")
+--     end,
+--     --capabilities = lsp_status.capabilities
+-- }
 
 -- local lspconfig = require'lspconfig'
 --
@@ -85,53 +85,53 @@ EOF
 " "nnoremap <silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
 
 
-nnoremap <silent> <c-]> <cmd>lua vim.lsp.buf.definition()<CR>
-nnoremap <silent> K     <cmd>lua vim.lsp.buf.hover()<CR>
-nnoremap <silent> gD    <cmd>lua vim.lsp.buf.implementation()<CR>
-"nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
-nnoremap <silent> 1gD   <cmd>lua vim.lsp.buf.type_definition()<CR>
-nnoremap <silent> gd    <cmd>lua vim.lsp.buf.declaration()<CR>
-nnoremap <silent> gW <cmd>lua require'telescope.builtin'.lsp_dynamic_workspace_symbols{ shorten_path = true }<CR>
-" nnoremap <silent> gr <cmd>lua require'telescope.builtin'.lsp_references{ shorten_path = true }<CR>
-nnoremap <silent> g0 <cmd>lua require'telescope.builtin'.lsp_document_symbols{ shorten_path = true }<CR>
-
-
-"nnoremap <silent><localleader>qf <cmd>lua vim.lsp.buf.code_action()<CR>
-nnoremap <silent><localleader>qf <cmd>lua require'telescope.builtin'.lsp_code_actions{}<CR>
-
-nnoremap <leader>J <cmd>lua vim.lsp.diagnostic.goto_next({ enable_popup = true })<CR>
-nnoremap <leader>K <cmd>lua vim.lsp.diagnostic.goto_prev({ enable_popup = true })<CR>
-nnoremap <leader>O <cmd>lua vim.lsp.diagnostic.set_loclist()<CR>
+" nnoremap <silent> <c-]> <cmd>lua vim.lsp.buf.definition()<CR>
+" nnoremap <silent> K     <cmd>lua vim.lsp.buf.hover()<CR>
+" nnoremap <silent> gD    <cmd>lua vim.lsp.buf.implementation()<CR>
+" "nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
+" nnoremap <silent> 1gD   <cmd>lua vim.lsp.buf.type_definition()<CR>
+" nnoremap <silent> gd    <cmd>lua vim.lsp.buf.declaration()<CR>
+" nnoremap <silent> gW <cmd>lua require'telescope.builtin'.lsp_dynamic_workspace_symbols{ shorten_path = true }<CR>
+" " nnoremap <silent> gr <cmd>lua require'telescope.builtin'.lsp_references{ shorten_path = true }<CR>
+" nnoremap <silent> g0 <cmd>lua require'telescope.builtin'.lsp_document_symbols{ shorten_path = true }<CR>
+"
+"
+" "nnoremap <silent><localleader>qf <cmd>lua vim.lsp.buf.code_action()<CR>
+" nnoremap <silent><localleader>qf <cmd>lua require'telescope.builtin'.lsp_code_actions{}<CR>
+"
+" nnoremap <leader>J <cmd>lua vim.lsp.diagnostic.goto_next({ enable_popup = true })<CR>
+" nnoremap <leader>K <cmd>lua vim.lsp.diagnostic.goto_prev({ enable_popup = true })<CR>
+" nnoremap <leader>O <cmd>lua vim.lsp.diagnostic.set_loclist()<CR>
 
 " See https://github.com/nvim-lua/diagnostic-nvim/issues/73 for more info
 lua << EOF
-vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-  vim.lsp.diagnostic.on_publish_diagnostics, {
-    -- Enable underline, use default values
-    underline = true,
-    -- Enable virtual text, override spacing to 4
-    virtual_text = {
-      spacing = 1,
-      prefix = '↩',
-    },
-    -- Use a function to dynamically turn signs off
-    -- and on, using buffer local variables
-    signs = function(bufnr, client_id)
-      local ok, result = pcall(vim.api.nvim_buf_get_var, bufnr, 'show_signs')
-      -- No buffer local variable set, so just enable by default
-      if not ok then
-        return true
-      end
-
-      return result
-    end,
-    -- Disable a feature
-    update_in_insert = false,
-  }
-)
+-- vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+  -- vim.lsp.diagnostic.on_publish_diagnostics, {
+    -- -- Enable underline, use default values
+    -- underline = true,
+    -- -- Enable virtual text, override spacing to 4
+    -- virtual_text = {
+      -- spacing = 1,
+      -- prefix = '↩',
+    -- },
+    -- -- Use a function to dynamically turn signs off
+    -- -- and on, using buffer local variables
+    -- signs = function(bufnr, client_id)
+      -- local ok, result = pcall(vim.api.nvim_buf_get_var, bufnr, 'show_signs')
+      -- -- No buffer local variable set, so just enable by default
+      -- if not ok then
+        -- return true
+      -- end
+-- 
+      -- return result
+    -- end,
+    -- -- Disable a feature
+    -- update_in_insert = false,
+  -- }
+-- )
 EOF
 
 " https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md#hls
 lua << EOF
-require'lspconfig'.hls.setup{}
+-- require'lspconfig'.hls.setup{}
 EOF

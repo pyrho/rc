@@ -189,4 +189,7 @@ Plug 'folke/lsp-trouble.nvim'
 
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 Plug 'akinsho/nvim-bufferline.lua'
+
+Plug 'ray-x/guihua.lua', {'do': 'cd lua/fzy && make' }
+Plug 'ray-x/navigator.lua'
 call plug#end()
