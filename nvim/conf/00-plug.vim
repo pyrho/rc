@@ -114,9 +114,18 @@ Plug 'JMcKiern/vim-venter'
 " Plug 'coreyja/fzf.devicon.vim'
 Plug 'norcalli/nvim-colorizer.lua'                            " Show hex color codes
 Plug 'danilamihailov/beacon.nvim'                             " Show where the cursor jumped
-Plug 'nvim-treesitter/nvim-treesitter'
+
+""" Tree Sitter {{{
+"Plug 'nvim-treesitter/nvim-treesitter'
+" Trying out this branch which re-enables the markdown parser (which is known
+" to cause segfaults)
+" - https://github.com/nvim-treesitter/nvim-treesitter/issues/872
+" - https://github.com/nvim-treesitter/nvim-treesitter/pull/1202
+Plug 'theHamsta/nvim-treesitter', { 'branch': 'try-out-markdown' }
 Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 Plug 'nvim-treesitter/nvim-treesitter-refactor'
+" }}}
+
 Plug 'embark-theme/vim', { 'as': 'embark' }
 " Plug '~/repos/perso/forks/embark', { 'as': 'embark-pyrho' }
 
@@ -128,21 +137,6 @@ Plug 'folke/tokyonight.nvim'
 "   \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
 
 Plug 'chrisbra/nrrwrgn'
-
-" Neuron integration
-"Plug 'BurntSushi/ripgrep'
-" The original maintainer is awol (2020-09-15) fiatjaf's one is better
-"Plug 'ihsanturk/neuron.vim'
-" Startup bug fixed by MaienM's fork ...
-" Plug 'fiatjaf/neuron.vim'
-"Plug 'MaienM/neuron.vim', { 'branch': 'patch-1' }
-Plug 'chiefnoah/neuron-v2.vim'
-
-Plug '~/repos/perso/nvim-geat'
-
-" Haskell plugin experiment
-" Plug 'neovimhaskell/nvim-hs.vim'
-" Plug '~/repos/perso/my-nvim-hs'
 
 Plug 'neovim/nvim-lsp'
 Plug 'neovim/nvim-lspconfig'
@@ -179,17 +173,13 @@ Plug 'hashivim/vim-terraform'
 Plug 'TimUntersberger/neogit'
 
 Plug 'hoob3rt/lualine.nvim', { 'commit': '64ab49f5' }
-" If you want to have icons in your statusline choose one of these
-Plug 'kyazdani42/nvim-web-devicons'
-" Plug 'ryanoasis/vim-devicons'
-
-" Vim Script
-Plug 'kyazdani42/nvim-web-devicons'
-Plug 'folke/lsp-trouble.nvim'
 
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 Plug 'akinsho/nvim-bufferline.lua'
 
 Plug 'ray-x/guihua.lua', {'do': 'cd lua/fzy && make' }
 Plug 'ray-x/navigator.lua'
+
+Plug 'anott03/nvim-lspinstall'
+Plug 'pyrho/nerveux.nvim'
 call plug#end()

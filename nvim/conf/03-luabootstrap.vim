@@ -42,6 +42,17 @@ end
 
 do
   local schedule = vim.schedule
+  --
+  schedule(function()
+    require 'nerveux'.setup {
+        neuron_dir = "/home/pyrho/Dropbox/zettelkasten/",
+        create_default_mappings = true,
+        start_daemon = true,
+        use_cache = true,
+        kill_daemon_at_exit = true
+    }
+  end)
+
   -- schedule(function()
   --   require('fsouza.vim-plug').setup_command()
   -- end)

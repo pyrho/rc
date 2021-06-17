@@ -15,11 +15,15 @@ Plug 'junegunn/fzf.vim'
 Plug 'BurntSushi/ripgrep'
 "Plug 'MaienM/neuron.vim', { 'branch': 'patch-1' }
 " Plug 'fiatjaf/neuron.vim'
-Plug 'nvim-lua/popup.nvim'
 "Plug 'oberblastmeister/neuron.nvim'
-Plug 'chiefnoah/neuron-v2.vim'
+"Plug 'chiefnoah/neuron-v2.vim'
+
+
+Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
+Plug 'pyrho/nerveux.nvim'
+
 call plug#end()
 " }}}
 
@@ -95,15 +99,6 @@ nnoremap <Leader>s :Rg<CR>
 :iab chour <c-r>=strftime("%H:%M")<CR>
 " }}}
 
-" Zettle {{{
-" let g:zkdir = $HOME . '/SynologyDrive/zettle/'
-" let g:neuron_dir = '/home/pyrho/SynologyDrive/zettle/'
-" let g:style_virtual_title = 'Title'
-" let g:path_neuron = $HOME . '/.nix-profile/bin/neuron'
-" let g:neuron_executable = '/home/pyrho/.nix-profile/bin/neuron'
-" let g:path_jq = '/usr/bin/jq'
-" }}}
-
 " Fancy todo checkboxes {{{
 set conceallevel=2
 if has('conceal')
@@ -141,6 +136,16 @@ hi clear Conceal
 set concealcursor=n
 set expandtab
 hi Conceal guibg=NONE
-let g:style_virtual_title = 'Visual'
 
 " }}}
+
+lua <<EOF
+    require 'nerveux'.setup {
+        neuron_dir = "/home/pyrho/Dropbox/zettelkasten",
+        create_default_mappings = true,
+        start_daemon = true,
+        use_cache = true,
+        virtual_titles = true,
+        kill_daemon_at_exit = true,
+    }
+EOF
