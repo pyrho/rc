@@ -23,6 +23,7 @@ Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'pyrho/nerveux.nvim'
+" Plug '~/repos/nerveux'
 
 call plug#end()
 " }}}
@@ -141,7 +142,8 @@ hi Conceal guibg=NONE
 
 lua <<EOF
     require 'nerveux'.setup {
-        neuron_dir = "/home/pyrho/Dropbox/zettelkasten",
+        -- neuron_dir = "/tmp/neuron/doc",
+        -- neuron_dir = "/home/pyrho/Dropbox/zettelkasten",
         create_default_mappings = true,
         start_daemon = true,
         use_cache = true,
