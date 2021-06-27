@@ -5,7 +5,7 @@ function M.mappings()
 end
 
 function M.config()
-  vim.api.nvim_set_keymap('n', '<Leader>f', ':Fern . -reveal=%<CR>', { noremap = true })
+  vim.api.nvim_set_keymap('n', '<Leader>f', ':Fern %:h -reveal=%<CR>', { noremap = true })
 
   vim.cmd [[
     augroup MyFernMaps
