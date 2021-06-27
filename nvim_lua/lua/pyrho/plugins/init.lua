@@ -22,7 +22,7 @@ return require("packer").startup(function()
         start_daemon = true,
         use_cache = true,
         virtual_titles = true,
-        kill_daemon_at_exit = true
+        kill_daemon_at_exit = true,
       }
     end
   }
@@ -167,16 +167,10 @@ return require("packer").startup(function()
                   │░░█░░█▀▄░█▀▀░█▀▀░░░▀▀█░░█░░░█░░░█░░█▀▀░█▀▄│
                   │░░▀░░▀░▀░▀▀▀░▀▀▀░░░▀▀▀░▀▀▀░░▀░░░▀░░▀▀▀░▀░▀│
                   └──────────────────────────────────────────┘
-
-    Trying out this branch which re-enables the markdown parser (which is known
-    to cause segfaults)
-    - https://github.com/nvim-treesitter/nvim-treesitter/issues/872
-    - https://github.com/nvim-treesitter/nvim-treesitter/pull/1202
   --]]
   use {
     {
-      "theHamsta/nvim-treesitter",
-      branch = "try-out-markdown",
+      "nvim-treesitter/nvim-treesitter",
       run = ":TSUpdate",
       config = require"pyrho.plugins.conf.treesitter".config
     }, {
