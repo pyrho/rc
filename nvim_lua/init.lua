@@ -174,23 +174,23 @@ local function highlight_yank_init()
   ]]
 end
 
+function _G.dump(...)
+  local objects = vim.tbl_map(vim.inspect, {...})
+  print(unpack(objects))
+end
 local function main()
   init_abbrev()
   highlight_yank_init()
   fancy_fold()
 
-  require"pyrho.plugins"
+  require "pyrho.plugins"
 
-  require"pyrho.snippets"
+  require "pyrho.snippets"
   require"pyrho.mappings".init()
-  require"pyrho.prettierd".setup_autofmt {types = {
-    "*.ts",
-    "*.js",
-  }}
+  require"pyrho.prettierd".setup_autofmt {types = {"*.ts", "*.js"}}
 end
 
 set_options()
 vim.schedule(main)
-
 
 -- vim: sw=2

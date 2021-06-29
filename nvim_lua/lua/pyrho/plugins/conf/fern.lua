@@ -1,16 +1,14 @@
 local M = {}
 
-function M.mappings()
-  vim.keymap.nnoremap {'q', '<Plug>(fern-action-cancel)', buffer = true}
-end
-
 function M.config()
-  vim.api.nvim_set_keymap('n', '<Leader>f', ':Fern %:h -reveal=%<CR>', { noremap = true })
+  vim.api.nvim_set_keymap('n', '<Leader>f', ':Fern %:h -reveal=%<CR>',
+                          {noremap = true})
+  vim.g["fern#renderer"] = "nerdfont"
 
   vim.cmd [[
-    augroup MyFernMaps
+    augroup MyFernStuff
         au!
-        au FileType fern lua require"pyrho.plugins.conf.fern".mappings()
+        autocmd FileType fern call glyph_palette#apply()
     augroup END
   ]]
 end

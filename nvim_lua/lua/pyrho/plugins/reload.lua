@@ -1,7 +1,7 @@
 local M = {}
 function M.setup_autocmd()
     vim.cmd [[
-        augroup wrewqr
+        augroup MyPackerAutocmd
             au!
             au BufWritePost */plugins/init.lua lua require 'pyrho.plugins.reload'.refresh_plugins()
         augroup END
