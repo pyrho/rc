@@ -47,7 +47,7 @@ local function set_options()
 
   -- Completion
   opt.completeopt = {"menuone", "noselect"}
-  if shortmess ~= nil then opt.shortmess = opt.shortmess .. "c" end
+  opt.shortmess = "filnxtToOFc"
 
   opt.ignorecase = true
   opt.smartcase = true
@@ -178,6 +178,7 @@ function _G.dump(...)
   local objects = vim.tbl_map(vim.inspect, {...})
   print(unpack(objects))
 end
+
 local function main()
   init_abbrev()
   highlight_yank_init()
