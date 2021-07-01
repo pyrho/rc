@@ -21,8 +21,8 @@ function M.config()
 
   require("lualine").setup {
     options = {
-      -- section_separators = {'', ''},
-      -- component_separators = {'', ''},
+      section_separators = {'', ''},
+      component_separators = {'', ''},
       theme = "tokyonight",
       extensions = {"fzf", "fugitive"},
       disabled_filetypes = {"dashboard"}

@@ -75,8 +75,12 @@ return require("packer").startup({
 
     use {
       "hoob3rt/lualine.nvim",
+      setup = function()
+          vim.g.tokyonight_lualine_bold = true
+      end,
       cond = function() return not require"pyrho.helpers".is_zen() end,
-      config = require"pyrho.plugins.conf.lualine".config
+      -- config = require"pyrho.plugins.conf.lualine".config
+      config = require"pyrho.plugins.conf.evil_lualine".config
     }
 
     use {"benknoble/vim-obsession", branch = "this_session"}
