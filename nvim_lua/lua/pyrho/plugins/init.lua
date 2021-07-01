@@ -45,7 +45,7 @@ return require("packer").startup({
       config = require"pyrho.plugins.conf.tokyonight".config
     }
 
-    use "tomtom/tcomment_vim"
+    use 'b3nj5m1n/kommentary'
 
     use {"jason0x43/vim-js-indent", ft = "javascript"}
 

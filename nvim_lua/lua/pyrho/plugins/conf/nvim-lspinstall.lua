@@ -11,7 +11,7 @@ function M.config()
       },
       diagnostics = {
         -- Get the language server to recognize the `vim` global
-        globals = {'vim', 'describe', 'it', 'dump'}
+        globals = {'vim', 'describe', 'it', 'dump', 'use'}
       },
       workspace = {
         -- Make the server aware of Neovim runtime files
