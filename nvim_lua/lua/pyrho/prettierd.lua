@@ -3,6 +3,9 @@ local Job = require"plenary.job"
 local helpers = require"pyrho.helpers"
 
 function M.format(bufnr, cb)
+    if vim.g['pyrho#prettierd#autoformat'] == 0 then
+        return
+    end
     local fname = vim.api.nvim_buf_get_name(bufnr)
     local buf_lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
     local cwd = vim.loop.cwd()
@@ -62,10 +65,9 @@ function M.format(bufnr, cb)
     end)
 
 
-end 
+end
 
 function M.setup_autofmt(opts)
-
     local s = string.format([[
         augroup MyAutoFmt
             autocmd!
