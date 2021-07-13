@@ -27,7 +27,7 @@ snippets.snippets = {
     --  which doesn't take user input and is evaluated at the start.
     epoch = "${=os.time()}",
     -- Equivalent to above.
-    epoch = function() return os.time() end,
+    -- epoch = function() return os.time() end,
 
     todo = note_snippet "@TODO",
     note = note_snippet "@NOTE",
@@ -60,7 +60,7 @@ import { $0 } from '$1';
     req = [[local ${2:$1} = require '$1']],
 
     -- A snippet with a placeholder using :... and multiple variables.
-    ["for"] = "for ${1:i}, ${2:v} in ipairs(${3:t}) do\n$0\nend",
+    -- ["for"] = "for ${1:i}, ${2:v} in ipairs(${3:t}) do\n$0\nend",
     -- This is equivalent to above, but looks nicer (to me) using [[]] strings.
     -- Notice $0 to indicate where the cursor should go at the end of expansion.
     ["for"] = [[
@@ -121,4 +121,4 @@ import { $0 } from '$1';
   }
 }
 
-require'snippets'.use_suggested_mappings(true)
+require'snippets'.use_suggested_mappings()

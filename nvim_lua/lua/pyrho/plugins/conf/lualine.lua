@@ -1,5 +1,21 @@
 local M = {}
+
 function M.config()
+  local function get_current_function_name()
+    local symbol = require"nvim-treesitter".statusline({indicator_size = 100})
+    if symbol ~= "" and symbol ~= nil then
+      return " " .. symbol
+    else
+      return ""
+    end
+
+    --[[ local indicator_size = options.indicator_size or 100
+  local type_patterns = options.type_patterns or { "class", "function", "method" }
+  local transform_fn = options.transform_fn or transform_line
+  local separator = options.separator or " -> " ]]
+
+  end
+
   local function WebDevIconsGetFileTypeSymbol()
     return require"nvim-web-devicons".get_icon(vim.fn.expand("%:t"),
                                                vim.fn.expand("%:e"),
@@ -18,14 +34,28 @@ function M.config()
   local function MyCWD()
     return " " .. vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
   end
+  local function num() return vim.fn.tabpagenr() .. '' end
 
   require("lualine").setup {
     options = {
-      section_separators = {'', ''},
-      component_separators = {'', ''},
+      section_separators = {'', ''},
+      component_separators = {'', ''},
       theme = "tokyonight",
-      extensions = {"fzf", "fugitive"},
+      extensions = {"fugitive"},
       disabled_filetypes = {"dashboard"}
+    },
+    tabline = {
+      lualine_a = {function() return ' ' end},
+      lualine_b = {num},
+      lualine_c = {
+        {
+          function() return '%=' .. get_current_function_name() end,
+          color = {gui = "italic", fg="#2ac3de"}
+        }
+      },
+      lualine_x = {},
+      lualine_y = {},
+      lualine_z = {MyCWD}
     },
     sections = {
       lualine_a = {"mode"},
@@ -41,7 +71,8 @@ function M.config()
         }
       },
       lualine_c = {{"filename", file_status = true, path = 1}},
-      lualine_x = {
+      lualine_x = {},
+      lualine_y = {
         ObsessionStatusEnhance, {
           'diagnostics',
           sources = {"nvim_lsp"},
@@ -54,8 +85,7 @@ function M.config()
           }
         }
       },
-      lualine_y = {WebDevIconsGetFileTypeSymbol, "progress", "location"},
-      lualine_z = {MyCWD}
+      lualine_z = {WebDevIconsGetFileTypeSymbol, "progress", "location"}
     }
   }
 end

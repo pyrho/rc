@@ -3,6 +3,7 @@ local Job = require"plenary.job"
 local helpers = require"pyrho.helpers"
 
 function M.format(bufnr, cb)
+    -- Disable
     if vim.g['pyrho#prettierd#autoformat'] == 0 then
         return
     end

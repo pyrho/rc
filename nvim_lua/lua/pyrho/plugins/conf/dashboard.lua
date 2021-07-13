@@ -1,6 +1,6 @@
 local M = {}
 
-local function find_home_dir_files()
+local function find_config_file()
   local opts = {
     search_dirs = {
       require('plenary.path'):new(vim.env.HOME, 'rc', 'nvim_lua'):absolute()
@@ -11,15 +11,10 @@ local function find_home_dir_files()
 end
 
 function M.mappings()
-  local function map(lhs, rhs)
-    vim.api.nvim_buf_set_keymap(0, "n", lhs, rhs,
-                                {noremap = true, silent = true})
-  end
-
   vim.keymap.nnoremap {'q', ":q<CR>", buffer = true}
   vim.keymap.nnoremap {'e', ":enew<CR>", buffer = true}
   vim.keymap.nnoremap {'0', ":source Session.vim<CR>", buffer = true}
-  vim.keymap.nnoremap {'c', find_home_dir_files, buffer = true}
+  vim.keymap.nnoremap {'c', find_config_file, buffer = true}
   vim.keymap.nnoremap {'s', require"telescope.builtin".live_grep, buffer = true}
   vim.keymap.nnoremap {'o', require"telescope.builtin".fd, buffer = true}
   vim.keymap.nnoremap {'O', require"telescope.builtin".oldfiles, buffer = true}
@@ -85,18 +80,19 @@ function M.config()
       description = {'  Old files                               SPC d c'},
       command = require('telescope.builtin').oldfiles
     },
-    b_search = {
+    c_search = {
       description = {'  Grep                                    SPC d g'},
       command = require('telescope.builtin').live_grep
     },
-    b_search = {
+    d_new = {
       description = {'  New File                                SPC d e'},
       command = function() vim.cmd "enew" end
     },
     z_nvimconf = {
       description = {'  Browse config                           SPC d c'},
-      -- command = M.find_home_dir_files
-      command = require('telescope.builtin').live_grep
+      -- command = find_config_file
+      -- command = require('telescope.builtin').live_grep
+      command  = function() find_config_file() end
     }
   }
 

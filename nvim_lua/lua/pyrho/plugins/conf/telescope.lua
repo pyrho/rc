@@ -9,12 +9,15 @@ function M.config()
   }
 
   vim.api.nvim_set_keymap("n", "<Leader>o",
-                          "<cmd>lua require('telescope.builtin').find_files({ previewer=false, seach_dirs = { 'src' } })<CR>",
+                          "<cmd>lua require('telescope.builtin').find_files({ previewer=false })<CR>",
                           {noremap = true, silent = true})
   vim.api.nvim_set_keymap("n", "<Leader>s",
-                          "<cmd>lua require('telescope.builtin').live_grep({ seach_dirs = { 'src' } })<CR>",
+                          "<cmd>lua require('telescope.builtin').live_grep({ cwd =  'src'  })<CR>",
                           {noremap = true, silent = true})
   vim.api.nvim_set_keymap("n", "<Leader>b", "<cmd>Telescope buffers<CR>",
+                          {noremap = true, silent = true})
+
+  vim.api.nvim_set_keymap("n", "g0", "<cmd>Telescope lsp_document_symbols<CR>",
                           {noremap = true, silent = true})
 end
 return M

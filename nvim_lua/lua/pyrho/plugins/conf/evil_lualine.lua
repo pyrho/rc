@@ -1,4 +1,5 @@
 local M = {}
+
 function M.config()
   -- From: https://gist.github.com/hoob3rt/b200435a765ca18f09f83580a606b878
   -- Eviline config for lualine

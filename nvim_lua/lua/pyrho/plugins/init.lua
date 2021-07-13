@@ -4,10 +4,10 @@ require"pyrho.plugins.reload".setup_autocmd()
 
 return require("packer").startup({
   function()
-
     use {"wbthomason/packer.nvim", opt = true}
 
     use "tjdevries/astronauta.nvim"
+
 
     use {
       'glepnir/dashboard-nvim',
@@ -79,8 +79,8 @@ return require("packer").startup({
           vim.g.tokyonight_lualine_bold = true
       end,
       cond = function() return not require"pyrho.helpers".is_zen() end,
-      -- config = require"pyrho.plugins.conf.lualine".config
-      config = require"pyrho.plugins.conf.evil_lualine".config
+      config = require"pyrho.plugins.conf.lualine".config
+      -- config = require"pyrho.plugins.conf.evil_lualine".config
     }
 
     use {"benknoble/vim-obsession", branch = "this_session"}
@@ -148,6 +148,7 @@ return require("packer").startup({
     use "lifepillar/pgsql.vim"
     use 'NoahTheDuke/vim-just'
     use {"elzr/vim-json", ft = "json"}
+    use "elixir-editors/vim-elixir"
 
     -- }}}
 
@@ -256,6 +257,7 @@ return require("packer").startup({
         "lambdalisue/nerdfont.vim"
       }
     }
+
 
   end,
   config = {luarocks = {python_cmd = "python3"}}
