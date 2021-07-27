@@ -5,4 +5,4 @@ manual_install
 spell
 packer_compiled.vim
 Session.vim
-plugin/packer_compiled.lua
+nvim_lua/plugin
