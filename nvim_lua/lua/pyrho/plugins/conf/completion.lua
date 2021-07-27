@@ -4,9 +4,8 @@ function M.config()
   vim.cmd [[
             imap <tab> <Plug>(completion_smart_tab)
             imap <s-tab> <Plug>(completion_smart_s_tab)
+            imap <silent> <c-space> <Plug>(completion_trigger)
         ]]
-  vim.api.nvim_set_keymap("i", "<C-Space>", "<Plug>(completion-trigger)",
-                          {noremap = true, silent = true})
 
   -- Set completeopt to have a better completion experience
   vim.o.completeopt = "menuone,noinsert,noselect"

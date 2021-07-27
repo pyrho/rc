@@ -22,7 +22,7 @@ function M.init()
 
   vim.api.nvim_set_keymap("i", "jf", "<Esc>", {noremap = true})
   vim.api.nvim_set_keymap("i", "fj", "<Esc>", {noremap = true})
-  vim.api.nvim_set_keymap("n", "<Leader>w<Leader>w", "<cmd>e ~/Dropbox/diary/`date +\\%Y-\\%m-\\%d`.md<CR>", {noremap = true})
+  vim.api.nvim_set_keymap("n", "<Leader>w<Leader>w", "<cmd>e ~/repos/perso/Zettelkasten/diary/`date +\\%Y-\\%m-\\%d`.md<CR>", {noremap = true})
 
 end
 return M

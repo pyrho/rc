@@ -8,7 +8,6 @@ return require("packer").startup({
 
     use "tjdevries/astronauta.nvim"
 
-
     use {
       'glepnir/dashboard-nvim',
       config = require'pyrho.plugins.conf.dashboard'.config
@@ -75,9 +74,7 @@ return require("packer").startup({
 
     use {
       "hoob3rt/lualine.nvim",
-      setup = function()
-          vim.g.tokyonight_lualine_bold = true
-      end,
+      setup = function() vim.g.tokyonight_lualine_bold = true end,
       cond = function() return not require"pyrho.helpers".is_zen() end,
       config = require"pyrho.plugins.conf.lualine".config
       -- config = require"pyrho.plugins.conf.evil_lualine".config
@@ -258,6 +255,11 @@ return require("packer").startup({
       }
     }
 
+    use {
+      "junegunn/fzf.vim",
+      config = require"pyrho.plugins.conf.fzf".config,
+      requires = {{"junegunn/fzf", run = "./install --bin"}}
+    }
 
   end,
   config = {luarocks = {python_cmd = "python3"}}
