@@ -4,7 +4,7 @@ function M.config()
   vim.api.nvim_set_keymap("n", "<Leader>o", "<cmd>Files<CR>",
                           {noremap = true, silent = true})
 
-  vim.api.nvim_set_keymap("n", "<Leader>s", ":<cmd>Rg<CR>",
+  vim.api.nvim_set_keymap("n", "<Leader>s", "<cmd>Rg<CR>",
                           {noremap = true, silent = true})
 
   vim.api.nvim_set_keymap("n", "<Leader>b", "<cmd>Buffers<CR>",
