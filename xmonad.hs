@@ -9,12 +9,14 @@
 import           Data.Monoid
 import           System.Exit
 import           XMonad                              hiding ((|||))
+import           XMonad.ManageHook
 
 import           XMonad.Actions.CycleWS              (nextWS, prevWS, toggleWS)
 import           XMonad.Actions.GroupNavigation
 import           XMonad.Layout.Gaps
 import           XMonad.Layout.Spiral
 
+import           XMonad.Layout.Grid
 import           XMonad.Layout.LayoutCombinators
 import           XMonad.Layout.MultiToggle
 import           XMonad.Layout.MultiToggle.Instances
@@ -80,8 +82,8 @@ myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
 
 -- Border colors for unfocused and focused windows, respectively.
 --
-myNormalBorderColor  = "#000000"
-myFocusedBorderColor = "#22CCDD"
+myNormalBorderColor  = "#555555"
+myFocusedBorderColor = "#ffCCDD"
 
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
@@ -91,10 +93,10 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- launch a terminal
     [ ((modm .|. shiftMask, xK_Return), windows W.swapMaster)
 
-    , ((modm .|. shiftMask, xK_s), namedScratchpadAction scratchpads "term")
 
-    -- launch dmenu
-    , ((modm,               xK_p     ), spawn "/home/pyrho/.config/rofi/bin/launcher_text")
+    , ((modm .|. controlMask, xK_n), namedScratchpadAction scratchpads "term")
+    , ((modm .|. controlMask, xK_e), namedScratchpadAction scratchpads "bpytop")
+
 
     , ((modm,               xK_f     ), sendMessage $ Toggle FULL)
 
@@ -104,11 +106,20 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- close focused window
     , ((modm .|. shiftMask, xK_c     ), kill)
 
-     -- Rotate through the available layout algorithms
-    , ((modm,               xK_space ), sendMessage NextLayout)
+
+    -- launch dmenu
+    , ((modm,               xK_p     ), sendMessage NextLayout)
 
     --  Reset the layouts on the current workspace to default
-    , ((modm .|. shiftMask, xK_space ), setLayout $ XMonad.layoutHook conf)
+    , ((modm .|. shiftMask, xK_p ), setLayout $ XMonad.layoutHook conf)
+
+     -- Rotate through the available layout algorithms
+    , ((modm,               xK_space ), spawn "rofi -show-icons -no-lazy-grab -show drun -dpi 177 -modi run,drun,window,bookmarks:rofi-bookmarks.sh -terminal kitty -theme '~/.config/rofi/launchers/text/style_1'")
+    , ((modm,               xK_d ), spawn "rofi -show-icons -no-lazy-grab -show drun -dpi 177 -modi run,drun,window,bookmarks:rofi-bookmarks.sh -terminal kitty -theme '~/.config/rofi/launchers/text/style_1'")
+    , ((modm .|. shiftMask, xK_v ), spawn "rofi -dpi 177 -modi 'clipboard:greenclip print' -show clipboard -run-command '{cmd}' -theme '~/.config/rofi/launchers/text/style_1'")
+     --
+     -- Rotate through the available layout algorithms
+    -- , ((modm .|. shiftMask, xK_space ), spawn "rofi ")
 
     -- Resize viewed windows to the correct size
     , ((modm,               xK_n     ), refresh)
@@ -167,7 +178,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((0, 0x1008ff11), spawn "pactl set-sink-volume @DEFAULT_SINK@ -10%")
 
     -- Quit xmonad
-    , ((modm .|. shiftMask, xK_e     ), io (exitWith ExitSuccess))
+    , ((modm .|. shiftMask, xK_q     ), io (exitWith ExitSuccess))
 
     -- Restart xmonad
     , ((modm              , xK_q     ), spawn "xmonad --recompile; xmonad --restart")
@@ -222,8 +233,12 @@ scratchpads = [
     -- NS "taskwarrior" "urxvtc -name taskwarrior -e ~/bin/tw" (resource =? "taskwarrior")
     --     (customFloating $ W.RationalRect (2/6) (2/6) (2/6) (2/6)),
 
-    NS "term" "kitty --name scratchpad" (className =? "scratchpad")
-        (customFloating $ W.RationalRect (3/5) (4/6) (1/5) (1/6))
+    NS "term" "kitty --title scratchpad --class scratchpad" (className =? "scratchpad")
+    (customFloating $ W.RationalRect (1/6) (1/6) (2/3) (2/3)),
+
+    NS "bpytop" "kitty --title bpytop --class bpytop bpytop" (className =? "bpytop")
+    (customFloating $ W.RationalRect 0 0 1 (2/3))
+
 
     -- NS "pavucontrol" "pavucontrol" (className =? "Pavucontrol")
     --     (customFloating $ W.RationalRect (1/4) (1/4) (2/4) (2/4))
@@ -247,7 +262,7 @@ scratchpads = [
 -- Dimensions are given as (Border top bottom right left)
 mySpacing = spacingRaw False             -- Only for >1 window
                        -- The bottom edge seems to look narrower than it is
-                       (Border 0 15 10 10) -- Size of screen edge gaps
+                       (Border 10 10 10 10) -- Size of screen edge gaps
                        True             -- Enable screen edge gaps
                        (Border 10 10 10 10) -- Size of window gaps
                        True             -- Enable window gaps
@@ -269,7 +284,7 @@ myTabConfig = def { activeColor = "#556064"
 myLayout = avoidStruts
     $ mySpacing
     $ mkToggle (NOBORDERS ?? FULL ?? EOT)
-    $ (tiled ||| Mirror tiled ||| ThreeColMid 1 (3/100) (1/2) ||| spiral (6/7))
+    $ (tiled ||| Mirror tiled ||| ThreeColMid 1 (3/100) (1/2) ||| spiral (6/7) ||| Grid)
   where
      -- default tiling algorithm partitions the screen into two panes
      tiled   = Tall nmaster delta ratio
@@ -302,7 +317,8 @@ myManageHook = composeAll
     [ className =? "MPlayer"        --> doFloat
     , className =? "Gimp"           --> doFloat
     , resource  =? "desktop_window" --> doIgnore
-    , resource  =? "kdesktop"       --> doIgnore ]
+    , resource  =? "kdesktop"       --> doIgnore
+    , namedScratchpadManageHook scratchpads ]
 
 ------------------------------------------------------------------------
 -- Event handling
@@ -350,15 +366,15 @@ myLogHook2 bar = dynamicLogWithPP xmobarPP
         , ppOrder           = \(workspace:layout:title:extras)
                             -> [workspace,layout,title]
         -- Separator between different sections of the log
-        , ppSep             = xmobarColor "#ffff00" ""  " \xf63d "
-        , ppTitle = xmobarColor "#ffff00" "" . shorten 30
+        , ppSep             = xmobarColor "#ffccdd" ""  " \xf444 "
+        , ppTitle = xmobarColor "white" "" . shorten 30
         -- Format the workspace information
         , ppCurrent         = xmobarColor "white" "" . myCurrentWsSymbol
         , ppHidden          = xmobarColor "white" "" . myHiddenWsSymbol
         , ppHiddenNoWindows = xmobarColor "white" "" . myEmptyWsSymbol
 
-        , ppWsSep = xmobarColor "#ffff00" ""  " \xe0bb "
-        , ppLayout = xmobarColor "#ffff00" "" . myLayoutPrinter
+        , ppWsSep = xmobarColor "#ffccdd" ""  " \xe0bb "
+        , ppLayout = xmobarColor "#ffccdd" "" . myLayoutPrinter
         }
 
 myLayoutPrinter :: String -> String
@@ -366,6 +382,7 @@ myLayoutPrinter "Spacing Tall"        = "\xfbfb"
 myLayoutPrinter "Spacing Mirror Tall" = "\xfbfa"
 myLayoutPrinter "Spacing Spiral"      = "\xf110"
 myLayoutPrinter "Spacing ThreeCol"    = "\xf0db"
+myLayoutPrinter "Spacing Full"        = "\xf792"
 myLayoutPrinter x                     = x
 
 ------------------------------------------------------------------------
@@ -379,6 +396,8 @@ myLayoutPrinter x                     = x
 myStartupHook = do
     spawnOnce "nitrogen --restore &"
     spawnOnce "compton &"
+    spawnOnce "greenclip daemon &"
+    spawnOnce "systemctl --user start dropbox"
     spawnOnce "trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 15 --transparent true --alpha 100 --tint 0x000000 --height 42 --monitor 0 &"
 
 ------------------------------------------------------------------------
@@ -419,7 +438,7 @@ defaults = def {
 
       -- hooks, layouts
         layoutHook         = myLayout,
-        manageHook         = (myManageHook) <+> namedScratchpadManageHook scratchpads,
+        manageHook         = myManageHook,
         handleEventHook    = myEventHook,
         logHook            = myLogHook,
         startupHook        = myStartupHook
