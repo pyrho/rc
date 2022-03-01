@@ -4,7 +4,7 @@ gbranches() {
     git reflog | grep checkout | head | awk -F 'from ' '{ print $2 }' | awk -F' ' '{print $1}' | awk '!x[$0]++'
 }
 
-alias tldr="tldr -t base16"
+alias tldr="tldr -p linux"
 
 alias ranger='ranger --choosedir=$HOME/rangerdir; LASTDIR=`cat $HOME/rangerdir`; cd "$LASTDIR"'
 
@@ -12,6 +12,10 @@ alias notifyOk="osascript -e 'display notification \"That thing you just launche
 
 function vimr() {
     open -a VimR.app "$@"
+}
+
+function dnpm(){
+    tmux rename-window $1 && npm run ${@:2}
 }
 
 # Git {{{
@@ -23,6 +27,7 @@ alias gca='git commit -v -a'
 alias gca!='git commit -v -a --amend'
 alias gcb='git checkout -b'
 alias gcm='git checkout master'
+alias gcs='git checkout staging'
 alias gco='git checkout'
 alias gcf='git config --list'
 alias gd='git diff'

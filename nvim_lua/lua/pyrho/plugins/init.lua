@@ -6,8 +6,6 @@ return require("packer").startup({
   function()
     use {"wbthomason/packer.nvim", opt = true}
 
-    use "tjdevries/astronauta.nvim"
-
     use {
       'glepnir/dashboard-nvim',
       config = require'pyrho.plugins.conf.dashboard'.config
@@ -67,10 +65,8 @@ return require("packer").startup({
         "shumphrey/fugitive-gitlab.vim",
         requires = "tpope/vim-fugitive",
         cmd = "GBrowse"
-      }, {"tpope/vim-rhubarb", requires = "tpope/vim-fugitive", cmd = "GBrowse"}
+      }, {"tpope/vim-rhubarb", requires = "tpope/vim-fugitive"}
     }
-
-    use "norcalli/snippets.nvim"
 
     use {
       "hoob3rt/lualine.nvim",
@@ -88,13 +84,20 @@ return require("packer").startup({
       config = require"pyrho.plugins.conf.telescope".config
     }
 
+    use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make'}
+
     -- Better / * # search mappings
     use "junegunn/vim-slash"
 
-    use {"plasticboy/vim-markdown", after = "tabular", ft = "markdown"}
-
     -- Align stuff easily (must come before vim-markdown)
     use "godlygeek/tabular"
+
+    use {
+      "preservim/vim-markdown",
+      after = "tabular",
+      ft = "markdown",
+      config = function() vim.g.vim_markdown_conceal = 1 end
+    }
 
     use {
       "machakann/vim-sandwich",
@@ -155,13 +158,17 @@ return require("packer").startup({
     }
 
     use "chrisbra/nrrwrgn"
-    use {
-      "nvim-lua/completion-nvim",
-      config = require"pyrho.plugins.conf.completion".config
-    }
 
     use "aquach/vim-http-client"
-    use "tpope/vim-dadbod"
+
+    use {
+      "tpope/vim-dadbod", {
+        "kristijanhusak/vim-dadbod-ui",
+        config = require"pyrho.plugins.conf.dadbod".config,
+        requires = "tpope/vim-dadbod"
+      }
+    }
+
     use "kamykn/popup-menu.nvim"
 
     --[[ {{{
@@ -172,18 +179,13 @@ return require("packer").startup({
                   └──────────────────────────────────────────┘
   --]]
     use {
-      {
-        "nvim-treesitter/nvim-treesitter",
-        run = ":TSUpdate",
-        config = require"pyrho.plugins.conf.treesitter".config
-      }, {
-        "nvim-treesitter/nvim-treesitter-textobjects",
-        config = require"pyrho.plugins.conf.treesitter".text_object_config
-      }, {
-        "nvim-treesitter/nvim-treesitter-refactor",
-        config = require"pyrho.plugins.conf.treesitter".refactor_config
-      }
+      "nvim-treesitter/nvim-treesitter",
+      run = ":TSUpdate",
+      config = require"pyrho.plugins.conf.treesitter".config
     }
+    use "nvim-treesitter/nvim-treesitter-textobjects"
+    use "nvim-treesitter/nvim-treesitter-refactor"
+    use "romgrk/nvim-treesitter-context"
     -- }}}
 
     --[[ {{{
@@ -199,10 +201,22 @@ return require("packer").startup({
         "neovim/nvim-lspconfig",
         config = require"pyrho.plugins.conf.nvim-lspconfig".config
       }, {
-        "kabouzeid/nvim-lspinstall",
+        "williamboman/nvim-lsp-installer",
         requires = "neovim/nvim-lspconfig",
-        config = require"pyrho.plugins.conf.nvim-lspinstall".config
+        config = require"pyrho.plugins.conf.nvim-lspinstall".config,
+        cond = function() return not require"pyrho.helpers".is_zen() end
+      }, 'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-buffer', 'hrsh7th/cmp-path',
+      'hrsh7th/cmp-cmdline',
+      {'L3MON4D3/LuaSnip', config = require'pyrho.plugins.conf.luasnip'.config},
+      'saadparwaiz1/cmp_luasnip',
+      use {
+        "hrsh7th/nvim-cmp",
+        config = require"pyrho.plugins.conf.nvim-cmp".config
       }
+    }
+    use {
+      "ojroques/nvim-lspfuzzy",
+      config = function() require('lspfuzzy').setup {} end
     }
 
     use {
@@ -211,8 +225,11 @@ return require("packer").startup({
       --  Waiting on https://github.com/glepnir/lspsaga.nvim/pull/207 to be
       --  merged.
       --    - dr, 2021-06-24
-      'jasonrhansen/lspsaga.nvim',
-      branch = "finder-preview-fixes",
+      -- @NOTE
+      --  Glepnir is awol, tami5 is now maitaining this
+      --    - dr, 2022-01-19
+
+      'tami5/lspsaga.nvim',
       config = require"pyrho.plugins.conf.lspsaga".config
     }
     -- }}}
@@ -259,6 +276,43 @@ return require("packer").startup({
       "junegunn/fzf.vim",
       config = require"pyrho.plugins.conf.fzf".config,
       requires = {{"junegunn/fzf", run = "./install --bin"}}
+    }
+
+    use {
+      -- 2022-01-26 Waiting for my PR to get merged
+      "pyrho/rest.nvim",
+      branch = 'fix/nil-bufnr',
+      requires = {"nvim-lua/plenary.nvim"},
+      config = function()
+        require("rest-nvim").setup({
+          -- Open request results in a horizontal split
+          result_split_horizontal = false,
+          -- Skip SSL verification, useful for unknown certificates
+          skip_ssl_verification = true,
+          -- Highlight request on run
+          highlight = {enabled = true, timeout = 150},
+          result = {
+            -- toggle showing URL, HTTP info, headers at top the of result window
+            show_url = true,
+            show_http_info = true,
+            show_headers = true
+          },
+          -- Jump to request line on run
+          jump_to_request = false,
+          env_file = '.env',
+          custom_dynamic_variables = {},
+          yank_dry_run = true
+        })
+      end
+    }
+
+    use {
+      'pwntester/octo.nvim',
+      requires = {
+        'nvim-lua/plenary.nvim', 'nvim-telescope/telescope.nvim',
+        'kyazdani42/nvim-web-devicons'
+      },
+      config = function() require"octo".setup() end
     }
 
   end,

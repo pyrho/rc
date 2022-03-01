@@ -1,48 +1,49 @@
 local M = {}
 
-function M.text_object_config()
+-- If having issues with markdown concealing, see: https://github.com/MDeiml/tree-sitter-markdown/issues/30
+function M.config()
   require"nvim-treesitter.configs".setup {
+    highlight = {
+      enable = true, -- false will disable the whole extension
+      disable = {
+        -- 2022-02-08 Disabling markdown for now because it's messing with concealing (see https://github.com/nvim-treesitter/nvim-treesitter/issues/959)
+        "markdown", "c", "rust"
+      } -- list of language that will be disabled
+    },
+    ensure_installed = {
+      -- 2022-02-08 Disabling markdown for now because it's messing with concealing (see https://github.com/nvim-treesitter/nvim-treesitter/issues/959)
+      -- "markdown",
+      "javascript", "typescript", "json", "prisma", "http", "lua"
+    },
+    refactor = {highlight_current_scope = {enable = true}},
     textobjects = {
       move = {
         enable = true,
+        set_jumps = true,
         goto_next_start = {["]]"] = "@function.outer"},
         goto_previous_start = {["[["] = "@function.outer"}
       },
       select = {
         enable = true,
+
+        -- Automatically jump forward to textobj, similar to targets.vim
+        lookahead = true,
+
         keymaps = {
           -- You can use the capture groups defined in textobjects.scm
           ["af"] = "@function.outer",
           ["if"] = "@function.inner",
           ["ac"] = "@class.outer",
-          ["ic"] = "@class.inner",
-          -- Or you can define your own textobjects like this
-          ["iF"] = {
-            python = "(function_definition) @function",
-            cpp = "(function_definition) @function",
-            c = "(function_definition) @function",
-            java = "(method_declaration) @function"
-          }
+          ["ic"] = "@class.inner"
         }
       }
     }
   }
-end
 
-function M.refactor_config()
-  require"nvim-treesitter.configs".setup {
-    refactor = {highlight_current_scope = {enable = true}}
-  }
-end
-
-function M.config()
-  require"nvim-treesitter.configs".setup {
-    highlight = {
-      enable = true, -- false will disable the whole extension
-      disable = {"c", "rust"} -- list of language that will be disabled
-    },
-    ensure_installed = "maintained" -- one of "all", "language", or a list of languages
-  }
+  -- From https://github.com/pwntester/octo.nvim#-faq
+  -- This enables treesitter HL for octo buffers
+  local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+  parser_config.markdown.filetype_to_parsername = "octo"
 end
 
 return M

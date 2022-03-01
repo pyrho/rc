@@ -11,13 +11,13 @@ local function find_config_file()
 end
 
 function M.mappings()
-  vim.keymap.nnoremap {'q', ":q<CR>", buffer = true}
-  vim.keymap.nnoremap {'e', ":enew<CR>", buffer = true}
-  vim.keymap.nnoremap {'0', ":source Session.vim<CR>", buffer = true}
-  vim.keymap.nnoremap {'c', find_config_file, buffer = true}
-  vim.keymap.nnoremap {'s', require"telescope.builtin".live_grep, buffer = true}
-  vim.keymap.nnoremap {'o', require"telescope.builtin".fd, buffer = true}
-  vim.keymap.nnoremap {'O', require"telescope.builtin".oldfiles, buffer = true}
+  vim.keymap.set('n', 'q', ':q<CR>', { buffer = true })
+  vim.keymap.set('n', 'e', ':enew<CR>', { buffer = true })
+  vim.keymap.set('n', '0', ':source Session.vim<CR>', { buffer = true })
+  vim.keymap.set('n', 'c', find_config_file, { buffer = true })
+  vim.keymap.set('n', 's', require"telescope.builtin".live_grep, { buffer = true })
+  vim.keymap.set('n', 'o', require"telescope.builtin".fd, { buffer = true })
+  vim.keymap.set('n', 'O', require"telescope.builtin".oldfiles, { buffer = true })
 end
 
 function M.config()
@@ -73,23 +73,23 @@ function M.config()
 
   local custom_sections = {
     a_browse = {
-      description = {'  Browse                                  SPC o o'},
+      description = {'  Browse                                        o'},
       command = require('telescope.builtin').fd
     },
     b_old = {
-      description = {'  Old files                               SPC d c'},
+      description = {'  Old files                                     O'},
       command = require('telescope.builtin').oldfiles
     },
     c_search = {
-      description = {'  Grep                                    SPC d g'},
+      description = {'  Grep                                          s'},
       command = require('telescope.builtin').live_grep
     },
     d_new = {
-      description = {'  New File                                SPC d e'},
+      description = {'  New File                                      e'},
       command = function() vim.cmd "enew" end
     },
     z_nvimconf = {
-      description = {'  Browse config                           SPC d c'},
+      description = {'  Browse config                                 c'},
       -- command = find_config_file
       -- command = require('telescope.builtin').live_grep
       command  = function() find_config_file() end
@@ -98,7 +98,7 @@ function M.config()
 
   if require('plenary.path'):new(vim.fn.getcwd(), 'Session.vim'):exists() then
     custom_sections.a_obsess = {
-      description = {'  Resume Obsession                        SPC d o'},
+      description = {'  Resume Obsession                              0'},
       command = "source Session.vim"
     }
   end

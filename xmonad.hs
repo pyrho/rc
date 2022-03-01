@@ -66,8 +66,9 @@ myBorderWidth   = 4
 -- is mod1Mask ("left alt").  You may also consider using mod3Mask
 -- ("right alt"), which does not conflict with emacs keybindings. The
 -- "windows key" is usually mod4Mask.
---
-myModMask       = mod4Mask
+
+--myModMask       = mod4Mask
+myModMask       = mod1Mask 
 
 -- The default number of workspaces (virtual screens) and their names.
 -- By default we use numeric strings, but any string may be used as a
@@ -88,6 +89,16 @@ myFocusedBorderColor = "#ffCCDD"
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
 --
+toggleFloat :: Window -> X ()
+toggleFloat w =
+  windows
+    ( \s ->
+        if M.member w (W.floating s)
+          then W.sink w s
+          --                               Left  Top    Width Height
+          else (W.float w (W.RationalRect (1/6) (1/10) (2/3) (8/10)) s)
+    )
+
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     -- launch a terminal
@@ -114,9 +125,10 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm .|. shiftMask, xK_p ), setLayout $ XMonad.layoutHook conf)
 
      -- Rotate through the available layout algorithms
-    , ((modm,               xK_space ), spawn "rofi -show-icons -no-lazy-grab -show drun -dpi 177 -modi run,drun,window,bookmarks:rofi-bookmarks.sh -terminal kitty -theme '~/.config/rofi/launchers/text/style_1'")
-    , ((modm,               xK_d ), spawn "rofi -show-icons -no-lazy-grab -show drun -dpi 177 -modi run,drun,window,bookmarks:rofi-bookmarks.sh -terminal kitty -theme '~/.config/rofi/launchers/text/style_1'")
-    , ((modm .|. shiftMask, xK_v ), spawn "rofi -dpi 177 -modi 'clipboard:greenclip print' -show clipboard -run-command '{cmd}' -theme '~/.config/rofi/launchers/text/style_1'")
+    , ((modm,               xK_space ), spawn "rofi -show-icons -no-lazy-grab -show drun -modi run,drun,window -terminal kitty -theme paper-float")
+    , ((modm,               xK_d ), spawn "rofi -show-icons -no-lazy-grab -show window -modi run,drun,window -terminal kitty -theme paper-float")
+    , ((modm .|. shiftMask, xK_d ), spawn "xdg-open \"http://linear.app/caribou/issue/CAR-$(rofi -theme dmenu -p 'Issue #' -dmenu)\"")
+    , ((modm .|. shiftMask, xK_v ), spawn "rofi -modi 'clipboard:greenclip print' -show clipboard -run-command '{cmd}' -theme paper-float")
      --
      -- Rotate through the available layout algorithms
     -- , ((modm .|. shiftMask, xK_space ), spawn "rofi ")
@@ -152,7 +164,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm,               xK_l     ), sendMessage Expand)
 
     -- Push window back into tiling
-    , ((modm,               xK_t     ), withFocused $ windows . W.sink)
+    , ((modm,               xK_t     ), withFocused toggleFloat)
 
     -- Increment the number of windows in the master area
     , ((modm              , xK_comma ), sendMessage (IncMasterN 1))
@@ -284,7 +296,7 @@ myTabConfig = def { activeColor = "#556064"
 myLayout = avoidStruts
     $ mySpacing
     $ mkToggle (NOBORDERS ?? FULL ?? EOT)
-    $ (tiled ||| Mirror tiled ||| ThreeColMid 1 (3/100) (1/2) ||| spiral (6/7) ||| Grid)
+    $ (ThreeColMid 1 (3/100) (3/7) ||| tiled ||| Mirror tiled |||  spiral (6/7) ||| Grid)
   where
      -- default tiling algorithm partitions the screen into two panes
      tiled   = Tall nmaster delta ratio
@@ -315,6 +327,7 @@ myLayout = avoidStruts
 --
 myManageHook = composeAll
     [ className =? "MPlayer"        --> doFloat
+    , title =? "kazam"           --> doFloat
     , className =? "Gimp"           --> doFloat
     , resource  =? "desktop_window" --> doIgnore
     , resource  =? "kdesktop"       --> doIgnore
@@ -398,7 +411,8 @@ myStartupHook = do
     spawnOnce "compton &"
     spawnOnce "greenclip daemon &"
     spawnOnce "systemctl --user start dropbox"
-    spawnOnce "trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 15 --transparent true --alpha 100 --tint 0x000000 --height 42 --monitor 0 &"
+    spawnOnce "trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 15 --transparent true --alpha 50 --tint 0x000000 --height 22 --monitor 0 &"
+    spawnOnce "dunst &"
 
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.

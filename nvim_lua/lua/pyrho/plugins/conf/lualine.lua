@@ -38,21 +38,35 @@ function M.config()
 
   require("lualine").setup {
     options = {
-      section_separators = {'', ''},
-      component_separators = {'', ''},
+      section_separators = {left = '', right = ''},
+      component_separators = {left = '', right = ''},
+      --[[ section_separators   = { left = '', right = '' },
+        component_separators = { left = '', right = '' }, ]]
       theme = "tokyonight",
       extensions = {"fugitive"},
       disabled_filetypes = {"dashboard"}
     },
     tabline = {
       lualine_a = {function() return ' ' end},
-      lualine_b = {num},
-      lualine_c = {
+      lualine_b = {
         {
-          function() return '%=' .. get_current_function_name() end,
-          color = {gui = "italic", fg="#2ac3de"}
+          'tabs',
+          max_length = vim.o.columns / 3,
+          mode = 2,
+          tabs_color = {
+            -- Same values as the general color option can be used here.
+            active = 'lualine_{section}_normal', -- Color for active tab.
+            inactive = 'lualine_{section}_inactive' -- Color for inactive tab.
+          }
         }
       },
+      lualine_c = {},
+      --[[ lualine_c = {
+        {
+          function() return '%=' .. get_current_function_name() end,
+          color = {gui = "italic", fg = "#2ac3de"}
+        }
+      }, ]]
       lualine_x = {},
       lualine_y = {},
       lualine_z = {MyCWD}

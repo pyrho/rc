@@ -3,6 +3,7 @@ robbyrussell/oh-my-zsh path:plugins/vi-mode
 robbyrussell/oh-my-zsh path:plugins/fzf
 robbyrussell/oh-my-zsh path:plugins/fasd
 
+
 zsh-users/zsh-autosuggestions
 
 mafredri/zsh-async
@@ -16,5 +17,7 @@ larkery/zsh-histdb
 zsh-users/zsh-history-substring-search
 
 trystan2k/zsh-tab-title
+
+lukechilds/zsh-better-npm-completion
 
 # Run `antibody bundle < rc/zsh/zsh_plugins.txt > .zsh_plugins.sh` to update.

@@ -64,8 +64,4 @@ unset config_files updated_at
 if [ -e /Users/pyrho/.nix-profile/etc/profile.d/nix.sh ]; then . /Users/pyrho/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 if [ -e /home/pyrho/.nix-profile/etc/profile.d/nix.sh ]; then . /home/pyrho/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 
-
-source <(kubectl completion zsh)
-complete -F __start_kubectl k
-
 source /home/pyrho/.config/broot/launcher/bash/br

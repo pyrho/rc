@@ -7,6 +7,7 @@ function M.format(bufnr, cb)
     if vim.g['pyrho#prettierd#autoformat'] == 0 then
         return
     end
+    local bufnr = vim.api.nvim_get_current_buf()
     local fname = vim.api.nvim_buf_get_name(bufnr)
     local buf_lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
     local cwd = vim.loop.cwd()
@@ -72,7 +73,7 @@ function M.setup_autofmt(opts)
     local s = string.format([[
         augroup MyAutoFmt
             autocmd!
-            autocmd BufWritePost %s lua require"pyrho.prettierd".format(vim.fn.expand('<abuf>'), function() vim.cmd("update") end)
+            autocmd BufWritePost %s lua require"pyrho.prettierd".format(function() vim.cmd("update") end)
         augroup END
     ]], vim.fn.join(opts.types, ","))
 

@@ -34,6 +34,7 @@ set foldtext=NeatFoldText()
 end
 
 local function set_options()
+  opt.clipboard="unnamedplus"
   opt.shell = "zsh"
 
   -- Show 4 lines after/before the cursor
@@ -186,9 +187,8 @@ local function main()
 
   require "pyrho.plugins"
 
-  require "pyrho.snippets"
   require"pyrho.mappings".init()
-  require"pyrho.prettierd".setup_autofmt {types = {"*.ts", "*.js"}}
+  require"pyrho.prettierd".setup_autofmt {types = {"*.ts", "*.js", "*.tsx"}}
 end
 
 set_options()
