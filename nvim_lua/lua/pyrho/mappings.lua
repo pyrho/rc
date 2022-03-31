@@ -23,6 +23,16 @@ function M.init()
   vim.api.nvim_set_keymap("n", "]l", ":lnext<CR>",
                           {noremap = true, silent = true})
 
+-- Files/Buffers/Search
+  vim.api.nvim_set_keymap("n", "<Leader>o", "<cmd>Telescope find_files<CR>",
+                          {noremap = true, silent = true})
+
+  vim.api.nvim_set_keymap("n", "<Leader>s", "<cmd>Rg<CR>",
+                          {noremap = true, silent = true})
+
+  vim.api.nvim_set_keymap("n", "<Leader>b", "<cmd>Buffers<CR>",
+                          {noremap = true, silent = true})
+
   -- Helpers
   vim.api.nvim_set_keymap("n", "<Leader><Leader>x",
                           "<cmd>lua require'pyrho.helpers'.save_and_exec()<CR>",

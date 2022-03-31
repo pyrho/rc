@@ -1,6 +1,12 @@
 local M = {}
 function M.config()
   require("telescope").setup {
+    defaults = {
+      layout_config = {
+        vertical = {width = 0.5}
+        -- other layout configuration here
+      }
+    },
     extensions = {
       fzf = {
         fuzzy = true, -- false will only do exact matching
@@ -16,8 +22,6 @@ function M.config()
       find_files = {theme = "dropdown"}
     }
   }
-  vim.api.nvim_set_keymap("n", "g0", "<cmd>Telescope lsp_document_symbols<CR>",
-                          {noremap = true, silent = true})
 
   require('telescope').load_extension('fzf')
   -- @NOTE

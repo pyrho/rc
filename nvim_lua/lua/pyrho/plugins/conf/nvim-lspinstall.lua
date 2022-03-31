@@ -7,16 +7,28 @@ function M.config()
     -- Set up buffer-local keymaps (vim.api.nvim_buf_set_keymap()), etc.
     local map = vim.api.nvim_buf_set_keymap
     map(0, "n", "gr", "<cmd>Lspsaga rename<cr>", {silent = true, noremap = true})
-    map(0, "n", "gx", "<cmd>Lspsaga code_action<cr>",
+    map(0, "n", "gx", "<cmd>Telescope lsp_code_actions theme=cursor<cr>",
         {silent = true, noremap = true})
-    map(0, "x", "gx", ":<c-u>Lspsaga range_code_action<cr>",
+    map(0, "x", "gx", ":<c-u>Telescope  range_code_action theme=cursor<cr>",
         {silent = true, noremap = true})
     map(0, "n", "K", "<cmd>Lspsaga hover_doc<cr>",
         {silent = true, noremap = true})
     map(0, "n", "go", "<cmd>Lspsaga show_line_diagnostics<cr>",
         {silent = true, noremap = true})
 
-    map(0, "n", "gD", "<cmd>Lspsaga lsp_finder<cr>",
+    map(0, "n", "gd", "<cmd>Telescope lsp_definitions<cr>",
+        {silent = true, noremap = true})
+
+    map(0, "n", "gr", "<cmd>Telescope lsp_references<cr>",
+        {silent = true, noremap = true})
+
+    map(0, "n", "gy", "<cmd>Telescope lsp_type_definitions<cr>",
+        {silent = true, noremap = true})
+
+    map(0, "n", "g0", "<cmd>Telescope lsp_document_symbols<cr>",
+        {silent = true, noremap = true})
+
+    map(0, "n", "gS", "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",
         {silent = true, noremap = true})
 
     map(0, "n", "gj", "<cmd>Lspsaga diagnostic_jump_next<cr>",
