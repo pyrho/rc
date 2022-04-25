@@ -23,14 +23,28 @@ function M.config()
 
   ls.snippets.typescript = {
     s("todo", {
-      t("// @"), i(1, "TODO"), t({"", "// "}), i(0), t({"", "// - dr, "}),
+      t("// @TODO"), t({"", "// - dr, "}),
       p(os.date, "%Y-%m-%d")
-    }), s("imp", {
+    }),
+    s("note", {
+      t("// @NOTE"), t({"", "// "}), i(0), t({"", "// - dr, "}),
+      p(os.date, "%Y-%m-%d")
+    }),
+    s("imp", {
       t("import { "), i(2, "THINGS"), t(" } from '"), i(1, "MODULE"), t("'"),
       i(0)
+    }),
+    s("eslint-ignore-never-throw-result", {
+        t("// eslint-disable-next-line neverthrow/must-use-result")
+    }),
+
+
+    s("iefe", {
+        t("(() => {"), t(""), t("})()")
     })
 
   }
+  ls.snippets.javascript = ls.snippets.typescript
 
   vim.api.nvim_set_keymap("i", "<C-y>", "<Plug>luasnip-expand-or-jump", {})
   vim.api.nvim_set_keymap("s", "<C-y>", "<Plug>luasnip-expand-or-jump", {})
