@@ -21,7 +21,7 @@ function M.config()
   local types = require("luasnip.util.types")
   local conds = require("luasnip.extras.expand_conditions")
 
-  ls.snippets.typescript = {
+  ls.add_snippets("all", {
     s("todo", {
       t("// @TODO"), t({"", "// - dr, "}),
       p(os.date, "%Y-%m-%d")
@@ -30,6 +30,9 @@ function M.config()
       t("// @NOTE"), t({"", "// "}), i(0), t({"", "// - dr, "}),
       p(os.date, "%Y-%m-%d")
     }),
+  })
+
+  ls.add_snippets("typescript", {
     s("imp", {
       t("import { "), i(2, "THINGS"), t(" } from '"), i(1, "MODULE"), t("'"),
       i(0)
@@ -38,13 +41,13 @@ function M.config()
         t("// eslint-disable-next-line neverthrow/must-use-result")
     }),
 
-
     s("iefe", {
         t("(() => {"), t(""), t("})()")
     })
 
-  }
-  ls.snippets.javascript = ls.snippets.typescript
+  })
+
+  ls.add_snippets("javascript", ls.get_snippets("typescript"))
 
   vim.api.nvim_set_keymap("i", "<C-y>", "<Plug>luasnip-expand-or-jump", {})
   vim.api.nvim_set_keymap("s", "<C-y>", "<Plug>luasnip-expand-or-jump", {})
