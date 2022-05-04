@@ -370,6 +370,8 @@ return require("packer").startup({
       end
     }
 
+    use {"ellisonleao/glow.nvim", branch = 'main'}
+
   end,
   config = {luarocks = {python_cmd = "python3"}}
 })

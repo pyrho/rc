@@ -7,9 +7,7 @@ function M.config()
     -- Set up buffer-local keymaps (vim.api.nvim_buf_set_keymap()), etc.
     local map = vim.api.nvim_buf_set_keymap
     map(0, "n", "gr", "<cmd>Lspsaga rename<cr>", {silent = true, noremap = true})
-    map(0, "n", "gx", "<cmd>Telescope lsp_code_actions theme=cursor<cr>",
-        {silent = true, noremap = true})
-    map(0, "x", "gx", ":<c-u>Telescope  range_code_action theme=cursor<cr>",
+    map(0, "n", "gx", "<cmd>Lspsaga code_action<cr>",
         {silent = true, noremap = true})
     map(0, "n", "K", "<cmd>Lspsaga hover_doc<cr>",
         {silent = true, noremap = true})
