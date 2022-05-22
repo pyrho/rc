@@ -209,8 +209,33 @@ return require("packer").startup({
         cond = function() return not require"pyrho.helpers".is_zen() end
       }, 'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-buffer', 'hrsh7th/cmp-path',
       'hrsh7th/cmp-cmdline',
-      {'L3MON4D3/LuaSnip', config = require'pyrho.plugins.conf.luasnip'.config},
-      'saadparwaiz1/cmp_luasnip',
+
+      --[[ {'L3MON4D3/LuaSnip', config = require'pyrho.plugins.conf.luasnip'.config},
+      'saadparwaiz1/cmp_luasnip', ]]
+
+      {
+        {
+          'hrsh7th/vim-vsnip',
+          config = function()
+            vim.g.vsnip_snippet_dir = '~/rc/nvim_lua/snippets'
+            vim.g.vsnip_filetypes = {
+                typescriptreact = { 'typescript'}
+            }
+            --[[ vim.g.vsnip_filetypes.typescriptreact = {'typescript'}
+            vim.g.vsnip_filetypes.javascript = {'typescript'} ]]
+            -- Select or cut text to use as $TM_SELECTED_TEXT in the next snippet.
+            -- See https://github.com/hrsh7th/vim-vsnip/pull/50
+            local opts = {noremap = true, silent = false}
+            vim.api.nvim_set_keymap("x", "<Leader><Tab>",
+                                    "<Plug>(vsnip-cut-text)", opts)
+          end
+        },
+        'hrsh7th/cmp-vsnip',
+        config = function()
+          require'cmp'.setup {sources = {{name = 'vsnip'}}}
+        end
+      },
+
       use {
         "hrsh7th/nvim-cmp",
         config = require"pyrho.plugins.conf.nvim-cmp".config
@@ -337,10 +362,7 @@ return require("packer").startup({
               cmd = {"zk", "lsp"},
               name = "zk",
               on_attach = function(client, bufnr)
-                vim.diagnostic.config({
-                  signs = false,
-                  underline = false,
-                })
+                vim.diagnostic.config({signs = false, underline = false})
               end
               -- on_attach = ...
               -- etc, see `:h vim.lsp.start_client()`

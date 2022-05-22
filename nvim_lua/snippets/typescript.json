@@ -1,0 +1,39 @@
+{
+  "Write a note": {
+    "prefix": ["@note"],
+    "body": [
+        "// @${1:NOTE}",
+        "// $0",
+        "//  - dr, ${VIM:system('date +%Y-%m-%d')}"
+    ]
+  },
+  "Box comment": {
+      "prefix": ["boxcom"],
+      "body": [
+          "////////////////////////////////////////////////////////////////////////////////",
+          "// ${1:$TM_SELECTED_TEXT}",
+          "////////////////////////////////////////////////////////////////////////////////"
+      ]
+  },
+
+  "JSON console log": {
+      "prefix": ["clogj"],
+      "body": [
+          "console.log(JSON.stringify($0, null, 2))"
+      ]
+  },
+
+  "Import": {
+      "prefix": ["imp"],
+      "body": [
+          "import {$0} from '$1'"
+      ]
+  },
+
+  "Export": {
+      "prefix": ["exp"],
+      "body": [
+          "export {$0} from '$1'"
+      ]
+  }
+}
