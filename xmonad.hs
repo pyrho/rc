@@ -45,6 +45,8 @@ import           XMonad.Hooks.EwmhDesktops
 -- Allows us to customise the logHook that sends information to xmobar
 import           XMonad.Hooks.DynamicLog
 
+-- Move left/right/up/down
+import XMonad.Layout.WindowNavigation
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
 --
@@ -83,8 +85,8 @@ myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
 
 -- Border colors for unfocused and focused windows, respectively.
 --
-myNormalBorderColor  = "#555555"
-myFocusedBorderColor = "#ffCCDD"
+myNormalBorderColor  = "#4E2DE2"
+myFocusedBorderColor = "#E45987"
 
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
@@ -140,10 +142,10 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm,               xK_Tab   ), nextMatch History (return True))
 
     -- Move focus to the next window
-    , ((modm,               xK_j     ), windows W.focusDown)
+    , ((modm,               xK_j     ), sendMessage $ Go D)
 
     -- Move focus to the previous window
-    , ((modm,               xK_k     ), windows W.focusUp  )
+    , ((modm,               xK_k     ), sendMessage $ Go U)
 
     -- Move focus to the master window
     , ((modm,               xK_m     ), windows W.focusMaster  )
@@ -151,17 +153,18 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- Swap the focused window and the master window
     , ((modm,               xK_Return), spawn $ XMonad.terminal conf)
 
-    -- Swap the focused window with the next window
-    , ((modm .|. shiftMask, xK_j     ), windows W.swapDown  )
+    , ((modm .|. shiftMask, xK_j     ), sendMessage $ Swap D )
+    , ((modm .|. shiftMask, xK_k     ), sendMessage $ Swap U )
+    , ((modm .|. shiftMask, xK_h     ), sendMessage $ Swap L )
+    , ((modm .|. shiftMask, xK_l     ), sendMessage $ Swap R )
 
-    -- Swap the focused window with the previous window
-    , ((modm .|. shiftMask, xK_k     ), windows W.swapUp    )
+    , ((modm,               xK_h     ), sendMessage $ Go L)
 
-    -- Shrink the master area
-    , ((modm,               xK_h     ), sendMessage Shrink)
-
-    -- Expand the master area
     , ((modm,               xK_l     ), sendMessage Expand)
+    , ((modm .|. controlMask, xK_h     ), sendMessage Shrink )
+    , ((modm .|. controlMask, xK_l     ), sendMessage Expand )
+
+    , ((modm,               xK_l     ), sendMessage $ Go R)
 
     -- Push window back into tiling
     , ((modm,               xK_t     ), withFocused toggleFloat)
@@ -172,7 +175,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- Deincrement the number of windows in the master area
     , ((modm              , xK_period), sendMessage (IncMasterN (-1)))
 
-    , ((modm              , xK_Escape), toggleWS)
+    , ((modm .|. shiftMask, xK_Tab   ), toggleWS)
     , ((modm              , xK_Right), nextWS)
     , ((modm              , xK_Left), prevWS)
 
@@ -193,7 +196,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm .|. shiftMask, xK_q     ), io (exitWith ExitSuccess))
 
     -- Restart xmonad
-    , ((modm              , xK_q     ), spawn "xmonad --recompile; xmonad --restart")
+    -- , ((modm              , xK_q     ), spawn "xmonad --recompile; xmonad --restart")
 
     -- Run xmessage with a summary of the default keybindings (useful for beginners)
     , ((modm .|. shiftMask, xK_slash ), spawn ("echo \"" ++ help ++ "\" | xmessage -file -"))
@@ -207,15 +210,16 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     [((m .|. modm, k), windows $ f i)
         | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]
         , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
-    ++
 
     --
     -- mod-{w,e,r}, Switch to physical/Xinerama screens 1, 2, or 3
     -- mod-shift-{w,e,r}, Move client to screen 1, 2, or 3
     --
+
+    {- ++
     [((m .|. modm, key), screenWorkspace sc >>= flip whenJust (windows . f))
         | (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
-        , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
+        , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]] -}
 
 
 ------------------------------------------------------------------------
@@ -296,7 +300,7 @@ myTabConfig = def { activeColor = "#556064"
 myLayout = avoidStruts
     $ mySpacing
     $ mkToggle (NOBORDERS ?? FULL ?? EOT)
-    $ (ThreeColMid 1 (3/100) (3/7) ||| tiled ||| Mirror tiled |||  spiral (6/7) ||| Grid)
+    $ windowNavigation (ThreeColMid 1 (3/100) (3/7) ||| tiled ||| Mirror tiled |||  spiral (6/7) ||| Grid)
   where
      -- default tiling algorithm partitions the screen into two panes
      tiled   = Tall nmaster delta ratio
@@ -413,6 +417,7 @@ myStartupHook = do
     spawnOnce "systemctl --user start dropbox"
     spawnOnce "trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 15 --transparent true --alpha 50 --tint 0x000000 --height 22 --monitor 0 &"
     spawnOnce "dunst &"
+    spawnOnce "lxpolkit"
 
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.

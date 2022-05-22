@@ -44,9 +44,7 @@ done
 
 # FASD deson't work if this line is before the for above it...
 # load antibody plugins
-bindkey '^R' fzf-history-widget
 source ~/.zsh_plugins.sh
-# source "/Users/damien/.fzf/shell/key-bindings.zsh"
 
 unset config_files updated_at
 
@@ -65,3 +63,8 @@ if [ -e /Users/pyrho/.nix-profile/etc/profile.d/nix.sh ]; then . /Users/pyrho/.n
 if [ -e /home/pyrho/.nix-profile/etc/profile.d/nix.sh ]; then . /home/pyrho/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 
 source /home/pyrho/.config/broot/launcher/bash/br
+
+[ -f "/home/pyrho/.ghcup/env" ] && source "/home/pyrho/.ghcup/env" # ghcup-env
+# Generated for envman. Do not edit.
+[ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
+

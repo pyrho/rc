@@ -1,7 +1,7 @@
 robbyrussell/oh-my-zsh path:plugins/ssh-agent
 robbyrussell/oh-my-zsh path:plugins/vi-mode
 robbyrussell/oh-my-zsh path:plugins/fzf
-robbyrussell/oh-my-zsh path:plugins/fasd
+#robbyrussell/oh-my-zsh path:plugins/fasd
 
 
 zsh-users/zsh-autosuggestions
@@ -12,6 +12,7 @@ romkatv/powerlevel10k
 
 
 larkery/zsh-histdb
+m42e/zsh-histdb-fzf
 
 # zsh-users/zsh-syntax-highlighting
 zsh-users/zsh-history-substring-search
