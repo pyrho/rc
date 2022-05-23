@@ -56,10 +56,8 @@ return require("packer").startup({
     }
 
     use {
-        "lewis6991/gitsigns.nvim",
-        config = function ()
-            require('gitsigns').setup()
-        end
+      "lewis6991/gitsigns.nvim",
+      config = function() require('gitsigns').setup() end
     }
 
     --[[ use {
@@ -320,9 +318,7 @@ return require("packer").startup({
                                  └────────────┘
   -- ]]
 
-    use{ 'j-hui/fidget.nvim', config = function ()
-        require'fidget'.setup{}
-    end}
+    use {'j-hui/fidget.nvim', config = function() require'fidget'.setup {} end}
     use {
       {
         "neovim/nvim-lspconfig",
@@ -516,6 +512,21 @@ return require("packer").startup({
     }
 
     use {"ellisonleao/glow.nvim", branch = 'main'}
+
+    use {
+      'alvarosevilla95/luatab.nvim',
+      requires = 'kyazdani42/nvim-web-devicons',
+      config = function()
+        require'luatab'.setup {
+          windowCount = function(idx) return "["..idx.."] " end,
+          modified = function() return "" end,
+          separator = function(idx)
+            local s = require('pyrho.helpers').separators.right
+            return (idx < vim.fn.tabpagenr('$') and '%#TabLine#' .. s or '')
+          end
+        }
+      end
+    }
 
   end,
   config = {luarocks = {python_cmd = "python3"}}

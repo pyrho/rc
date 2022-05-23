@@ -1,36 +1,12 @@
 local M = {}
 function M.config()
-  local separators = {
-    vertical_bar = '┃',
-    vertical_bar_thin = '│',
-    left = '',
-    right = '',
-    block = '█',
-    left_filled = '',
-    right_filled = '',
-    slant_left = '',
-    slant_left_thin = '',
-    slant_right = '',
-    slant_right_thin = '',
-    slant_left_2 = '',
-    slant_left_2_thin = '',
-    slant_right_2 = '',
-    slant_right_2_thin = '',
-    left_rounded = '',
-    left_rounded_thin = '',
-    right_rounded = '',
-    right_rounded_thin = '',
-    circle = '●',
-    github_icon = " ﯙ ",
-    folder_icon = " "
-  }
   local conditions = require("heirline.conditions")
   local utils = require("heirline.utils")
 
-  local colors = require("tokyonight.colors").setup({}) -- pass in any of the config options as explained above
+  local colors = require("tokyonight.colors").setup {} -- pass in any of the config options as explained above
   local tokyonight_utils = require("tokyonight.util")
   local Space = {provider = " "}
-  local Sep = { provider = " " .. separators.vertical_bar_thin .. " ", hl = { fg = colors.blue } }
+  local Sep = {provider = "❱", hl = {fg = colors.blue7}}
   local Align = {provider = "%="}
   local TerminalName = {
     -- we could add a condition to check that buftype == 'terminal'
@@ -86,7 +62,8 @@ function M.config()
     provider = function(self)
       -- return " %2(" .. self.mode_names[vim.fn.mode(1)] .. "%)"
       -- return " %2(" .. self.mode_names[vim.fn.mode(1)] .. "%)"
-      return " %2(" .. self.mode_names[vim.fn.mode(1)] .. "%)"
+      return require'pyrho.helpers'.separators.circle .. " %2(" ..
+                 self.mode_names[vim.fn.mode(1)] .. "%)"
     end,
     hl = function(self)
       local color = self:mode_color() -- here!
@@ -256,12 +233,13 @@ function M.config()
     })
   }
   -- }}}
+
   -- Lsp Stuff {{{
 
   local LSPActive = {
     condition = conditions.lsp_attached,
 
-    provider = "LSP ",
+    provider = "LSP  ",
 
     hl = {fg = colors.green, bold = true}
   }
@@ -339,14 +317,18 @@ function M.config()
               self.status_dict.changed ~= 0
     end,
 
-    hl = {fg = colors.blue6},
+    hl = {fg = colors.teal},
 
+    Sep,
+    Space,
     { -- git branch name
-      provider = function(self) return " " .. self.status_dict.head end,
-      hl = {bold = true}
+      provider = function(self)
+        local repo_name = vim.fn.fnamemodify(self.status_dict.root, ":t")
+        return " " .. repo_name .. "  " .. self.status_dict.head
+      end
     },
     -- You could handle delimiters, icons and counts similar to Diagnostics
-    {condition = function(self) return self.has_changes end, provider = "("},
+    {condition = function(self) return self.has_changes end, provider = "  "},
     {
       provider = function(self)
         local count = self.status_dict.added or 0
@@ -367,8 +349,7 @@ function M.config()
         return count > 0 and ("~" .. count)
       end,
       hl = {fg = colors.git.change}
-    },
-    {condition = function(self) return self.has_changes end, provider = ")"}
+    }
   }
   -- }}} !Git stuff
 
@@ -400,19 +381,36 @@ function M.config()
     {
 
       condition = conditions.has_diagnostics,
-      utils.surround({separators.left_rounded, separators.right_rounded},
-                     colors.fg_gutter, {hl = {fg = colors.blue}, Diagnostics})
+      utils.surround({
+        require'pyrho.helpers'.separators.left_rounded,
+        require'pyrho.helpers'.separators.right_rounded
+      }, colors.fg_gutter, {hl = {fg = colors.blue}, Diagnostics})
     }
   }
 
   -- }}} !Winbar
+
+  -- Misc {{{
+  local Obsession = {
+    provider = function()
+      local obsession_status = vim.fn.ObsessionStatus("OBS  ", "OBS  ")
+      if #obsession_status == 0 then
+        return "OBS 逸"
+      else
+        return obsession_status
+      end
+      -- return "OBS " .. vim.fn.ObsessionStatus(" ", " ") .. ""
+    end,
+    hl = {fg = colors.magenta, bold = true}
+  }
+  -- }}} !Misc
+  --
   -- }}} !Components
 
   local DefaultStatusline = {
     -- xxx
-    ViMode, Space, FileNameBlock, Sep, Git, Align, --
-    Gps, Align, -- xxx
-    LSPActive, Space, Space, FileType, Space, Ruler, Space, ScrollBar
+    ViMode, Space, FileNameBlock, Space, Git, Align, Gps, Align, -- xxx
+    Obsession, Space, LSPActive, Space, FileType, Space, Ruler, Space, ScrollBar
 
   }
 
@@ -502,6 +500,14 @@ function M.config()
     InactiveStatusline,
     DefaultStatusline
   }
+
+  -- This is done so that when the config is reloaded on the fly, the colors are re-applied
+  vim.cmd [[
+  augroup heirline
+  autocmd!
+  autocmd ColorScheme * lua require'heirline'.reset_highlights();
+  augroup END
+  ]]
 
   require'heirline'.setup(StatusLines, WinBars)
 end

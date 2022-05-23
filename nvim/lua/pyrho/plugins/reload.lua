@@ -1,6 +1,6 @@
 local M = {}
 function M.setup_autocmd()
-    vim.cmd [[
+  vim.cmd [[
         augroup MyPackerAutocmd
             au!
             au BufWritePost */plugins/init.lua lua require 'pyrho.plugins.reload'.refresh_plugins()
@@ -9,10 +9,12 @@ function M.setup_autocmd()
 end
 
 function M.refresh_plugins()
-    vim.cmd "PackerCompile"
-    require"plenary.reload".reload_module("pyrho.plugins")
-    require "pyrho.plugins"
-    vim.cmd "PackerCompile"
+  for name, _ in pairs(package.loaded) do
+    if name:match('^pyrho') then package.loaded[name] = nil end
+  end
+
+  dofile(vim.env.MYVIMRC)
+  vim.cmd "PackerCompile"
 end
 
 return M
