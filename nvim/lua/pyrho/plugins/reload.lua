@@ -9,6 +9,7 @@ function M.setup_autocmd()
 end
 
 function M.refresh_plugins()
+    vim.cmd "PackerCompile"
     require"plenary.reload".reload_module("pyrho.plugins")
     require "pyrho.plugins"
     vim.cmd "PackerCompile"
