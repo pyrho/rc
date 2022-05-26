@@ -109,6 +109,17 @@ function M.config()
     end,
     hl = {fg = utils.get_highlight("Directory").fg}
   }
+  local FlexFileName = {
+    init = function(self)
+      self.lfilename = vim.fn.fnamemodify(self.filename, ":.")
+      if self.lfilename == "" then self.lfilename = "[No Name]" end
+    end,
+    hl = {fg = utils.get_highlight("Directory").fg},
+
+    utils.make_flexible_component(2, {
+      provider = function(self) return self.lfilename end
+    }, {provider = function(self) return vim.fn.pathshorten(self.lfilename) end})
+  }
 
   local FileFlags = {
     {
@@ -139,15 +150,15 @@ function M.config()
 
   -- let's add the children to our FileNameBlock component
   FileNameBlock = utils.insert(FileNameBlock, FileIcon,
-                               utils.insert(FileNameModifer, FileName), -- a new table where FileName is a child of FileNameModifier
+                               utils.insert(FileNameModifer, FlexFileName), -- a new table where FileName is a child of FileNameModifier
                                unpack(FileFlags), -- A small optimisation, since their parent does nothing
                                {provider = '%<'} -- this means that the statusline is cut here when there's not enough space
   )
 
-  local FileType = {
+  local FileType = utils.make_flexible_component(3, {
     provider = function() return string.upper(vim.bo.filetype) end,
     hl = {fg = utils.get_highlight("Type").fg, bold = true}
-  }
+  }, {provider = ""})
 
   local FileEncoding = {
     provider = function()
@@ -188,7 +199,7 @@ function M.config()
     -- %L = number of lines in the buffer
     -- %c = column number
     -- %P = percentage through file of displayed window
-    provider = "%7(%l/%3L%):%2c %P"
+    provider = "%7(%l/%L%):%c %P"
   }
   -- I take no credits for this! :lion:
   local ScrollBar = {
@@ -235,14 +246,45 @@ function M.config()
   -- }}}
 
   -- Lsp Stuff {{{
+  local LspSignature = {
+    init = function()
+      vim.api
+          .nvim_set_hl(0, "WinBarSignature", {fg = "#dedede", bg = "#363636"})
+      vim.api.nvim_set_hl(0, "WinBarSigDoc", {fg = "#dedede", bg = "#363636"})
+      vim.api.nvim_set_hl(0, "WinBarSigActParm",
+                          {fg = "#dedede", bg = "#9f3838"})
+    end,
+    provider = function()
+      local columns = vim.api.nvim_get_option("columns")
+      local sig = require("lsp_signature").status_line(columns)
 
-  local LSPActive = {
+      if sig == nil or sig.label == nil or sig.range == nil then return "" end
+      local label1 = sig.label
+      local label2 = ""
+      if sig.range then
+        label1 = sig.label:sub(1, sig.range["start"] - 1)
+        label2 = sig.label:sub(sig.range["end"] + 1, #sig.label)
+      end
+      local doc = sig.doc or ""
+      if #doc + #sig.label >= columns then
+        local trim = math.max(5, columns - #sig.label - #sig.hint - 10)
+        doc = doc:sub(1, trim) .. "..."
+        -- lprint(doc)
+      end
+
+      return "%#WinBarSignature#" .. label1 .. "%*" .. "%#WinBarSigActParm#" ..
+                 sig.hint .. "%*" .. "%#WinBarSignature#" .. label2 .. "%*" ..
+                 "%#WinBarSigDoc#" .. " " .. doc or "" .. "%*"
+    end
+  }
+
+  local LSPActive = utils.make_flexible_component(3, {
     condition = conditions.lsp_attached,
 
     provider = "LSP  ",
 
     hl = {fg = colors.green, bold = true}
-  }
+  }, {provider = ""})
 
   -- Awesome plugin
   local Gps = {
@@ -250,6 +292,7 @@ function M.config()
     provider = require("nvim-gps").get_location,
     hl = {fg = colors.gray}
   }
+  local FlexGps = utils.make_flexible_component(3, Gps, {provider = ""})
 
   local Diagnostics = {
 
@@ -385,31 +428,31 @@ function M.config()
         require'pyrho.helpers'.separators.left_rounded,
         require'pyrho.helpers'.separators.right_rounded
       }, colors.fg_gutter, {hl = {fg = colors.blue}, Diagnostics})
-    }
+    },
   }
 
   -- }}} !Winbar
 
   -- Misc {{{
-  local Obsession = {
+  local Obsession = utils.make_flexible_component(3, {
     provider = function()
       local obsession_status = vim.fn.ObsessionStatus("OBS  ", "OBS  ")
       if #obsession_status == 0 then
-        return "OBS 逸"
+        return "OBS ⭘"
       else
         return obsession_status
       end
       -- return "OBS " .. vim.fn.ObsessionStatus(" ", " ") .. ""
     end,
     hl = {fg = colors.magenta, bold = true}
-  }
+  }, {provider = ""})
   -- }}} !Misc
   --
   -- }}} !Components
 
   local DefaultStatusline = {
     -- xxx
-    ViMode, Space, FileNameBlock, Space, Git, Align, Gps, Align, -- xxx
+    ViMode, Space, FileNameBlock, Space, Git, Align, FlexGps, Align, -- xxx
     Obsession, Space, LSPActive, Space, FileType, Space, Ruler, Space, ScrollBar
 
   }

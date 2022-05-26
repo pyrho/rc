@@ -6,24 +6,11 @@ return require("packer").startup({
   function()
     use {"wbthomason/packer.nvim", opt = true}
 
+    -- Startpage
     use {
       'glepnir/dashboard-nvim',
       config = require'pyrho.plugins.conf.dashboard'.config
     }
-
-    --[[ use {
-      -- "pyrho/nerveux.nvim",
-      "~/repos/perso/nerveux.nvim",
-      config = function()
-        require'nerveux'.setup {
-          create_default_mappings = true,
-          start_daemon = true,
-          use_cache = true,
-          virtual_titles = true,
-          kill_daemon_at_exit = true
-        }
-      end
-    } ]]
 
     -- See https://github.com/neovim/neovim/issues/12587
     use {
@@ -31,19 +18,23 @@ return require("packer").startup({
       run = function() vim.g.curshold_updatime = 1000 end
     }
 
+    -- Distraction free writing
     use {
       "junegunn/goyo.vim",
       config = function() vim.g.goyo_height = "70%" end,
       cmd = "Goyo"
     }
 
+    -- Colorscheme
     use {
       "folke/tokyonight.nvim",
       config = require"pyrho.plugins.conf.tokyonight".config
     }
 
+    -- Smart commenting
     use 'b3nj5m1n/kommentary'
 
+    -- Better JS indent
     use {"jason0x43/vim-js-indent", ft = "javascript"}
 
     -- Manually highlight words
@@ -55,16 +46,13 @@ return require("packer").startup({
       end
     }
 
+    -- Git gutter plugin
     use {
       "lewis6991/gitsigns.nvim",
       config = function() require('gitsigns').setup() end
     }
 
-    --[[ use {
-      "airblade/vim-gitgutter",
-      config = require"pyrho.plugins.conf.gitgutter".config
-    } ]]
-
+    -- Git integration
     use {
       {"tpope/vim-fugitive"}, {
         "shumphrey/fugitive-gitlab.vim",
@@ -72,29 +60,27 @@ return require("packer").startup({
         cmd = "GBrowse"
       }, {"tpope/vim-rhubarb", requires = "tpope/vim-fugitive"}
     }
-    --[[
-    use {
-      "hoob3rt/lualine.nvim",
-      setup = function() vim.g.tokyonight_lualine_bold = true end,
-      cond = function() return not require"pyrho.helpers".is_zen() end,
-      -- config = require"pyrho.plugins.conf.lualine.mine".config
-      -- config = require"pyrho.plugins.conf.lualine.evil".config
-      config = require"pyrho.plugins.conf.lualine.slanted".config
-    }
- ]]
+
+    -- Full lua Statusline
     use {
       "rebelot/heirline.nvim",
       config = require"pyrho.plugins.conf.heirline".config
     }
 
+    -- Signature auto complete helper
+    use {  'ray-x/lsp_signature.nvim', config = require'pyrho.plugins.conf.lsp_signature'.config }
+
+    -- Record sessions
     use {"benknoble/vim-obsession", branch = "this_session"}
 
+    -- The all in one Fuzzy Finder
     use {
       "nvim-lua/telescope.nvim",
       requires = {"nvim-lua/popup.nvim", "nvim-lua/plenary.nvim"},
       config = require"pyrho.plugins.conf.telescope".config
     }
 
+    -- Telescope plugin for fzf integration
     use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make'}
 
     -- Better / * # search mappings
@@ -103,14 +89,10 @@ return require("packer").startup({
     -- Align stuff easily (must come before vim-markdown)
     use "godlygeek/tabular"
 
-    use {
-      "preservim/vim-markdown",
-      after = "tabular",
-      ft = "markdown",
-      config = function() vim.g.vim_markdown_conceal = 1 end
-    }
+    -- Align text
     use 'junegunn/vim-easy-align'
 
+    -- Change surrounding pairs
     use {
       "machakann/vim-sandwich",
       config = function()
@@ -142,7 +124,7 @@ return require("packer").startup({
       config = function() vim.g.lexima_enable_basic_rules = 1 end
     }
 
-    -- Show hex color codes'
+    -- Show hex color codes
     use "norcalli/nvim-colorizer.lua"
 
     --  Highlight where the cursor jumped
@@ -156,6 +138,14 @@ return require("packer").startup({
                            └────────────────────────┘
 --]]
 
+    -- Better markdown support
+    use {
+      "preservim/vim-markdown",
+      after = "tabular",
+      ft = "markdown",
+      config = function() vim.g.vim_markdown_conceal = 1 end
+    }
+
     use "stephpy/vim-yaml"
     use "lifepillar/pgsql.vim"
     use 'NoahTheDuke/vim-just'
@@ -164,15 +154,16 @@ return require("packer").startup({
 
     -- }}}
 
+    -- Float terminal
     use {
       "voldikss/vim-floaterm",
       config = require"pyrho.plugins.conf.floaterm".config
     }
 
+    -- Focus on a portion of code
     use "chrisbra/nrrwrgn"
 
-    use "aquach/vim-http-client"
-
+    -- DB client
     use {
       "tpope/vim-dadbod", {
         "kristijanhusak/vim-dadbod-ui",
@@ -181,6 +172,7 @@ return require("packer").startup({
       }
     }
 
+    -- Popup menu feature (used by dadbod-ui iirc)
     use "kamykn/popup-menu.nvim"
 
     --[[ {{{
@@ -307,7 +299,6 @@ return require("packer").startup({
       end
     }
 
-    -- use "romgrk/nvim-treesitter-context"
     -- }}}
 
     --[[ {{{
@@ -318,7 +309,10 @@ return require("packer").startup({
                                  └────────────┘
   -- ]]
 
+  -- Display a little widget at startup to show LSP server statuses
     use {'j-hui/fidget.nvim', config = function() require'fidget'.setup {} end}
+
+    -- 
     use {
       {
         "neovim/nvim-lspconfig",
@@ -331,14 +325,11 @@ return require("packer").startup({
       }, 'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-buffer', 'hrsh7th/cmp-path',
       'hrsh7th/cmp-cmdline',
 
-      --[[ {'L3MON4D3/LuaSnip', config = require'pyrho.plugins.conf.luasnip'.config},
-      'saadparwaiz1/cmp_luasnip', ]]
-
       {
         {
           'hrsh7th/vim-vsnip',
           config = function()
-            vim.g.vsnip_snippet_dir = '~/rc/nvim_lua/snippets'
+            vim.g.vsnip_snippet_dir = '~/rc/nvim/snippets'
             vim.g.vsnip_filetypes = {typescriptreact = {'typescript'}}
             --[[ vim.g.vsnip_filetypes.typescriptreact = {'typescript'}
             vim.g.vsnip_filetypes.javascript = {'typescript'} ]]
@@ -360,6 +351,7 @@ return require("packer").startup({
         config = require"pyrho.plugins.conf.nvim-cmp".config
       }
     }
+
     use {
       "ojroques/nvim-lspfuzzy",
       config = function() require('lspfuzzy').setup {} end
@@ -380,16 +372,19 @@ return require("packer").startup({
     }
     -- }}}
 
+    -- Format code with external tools
     use {
       "https://github.com/mhartington/formatter.nvim",
       config = require"pyrho.plugins.conf.formatter".config
     }
 
+    -- Fancy icons
     use {
       'kyazdani42/nvim-web-devicons',
       config = function() require'nvim-web-devicons'.setup {default = true} end
     }
 
+    -- Tmux integration, allows seamless transition between vim windows and tmux panes
     use {
       "aserowy/tmux.nvim",
       config = function()
@@ -408,6 +403,7 @@ return require("packer").startup({
       end
     }
 
+    -- File explorer, similar to vim-vinegar
     use {
       "lambdalisue/fern.vim",
       config = require"pyrho.plugins.conf.fern".config,
@@ -418,16 +414,16 @@ return require("packer").startup({
       }
     }
 
+    -- The legendary fuzzy finder
     use {
       "junegunn/fzf.vim",
       config = require"pyrho.plugins.conf.fzf".config,
       requires = {{"junegunn/fzf", run = "./install --bin"}}
     }
 
+    -- HTTP client
     use {
-      -- 2022-01-26 Waiting for my PR to get merged
-      "pyrho/rest.nvim",
-      branch = 'fix/nil-bufnr',
+      "NTBBloodbath/rest.nvim",
       requires = {"nvim-lua/plenary.nvim"},
       config = function()
         require("rest-nvim").setup({
@@ -452,20 +448,13 @@ return require("packer").startup({
       end
     }
 
-    use {
-      'pwntester/octo.nvim',
-      requires = {
-        'nvim-lua/plenary.nvim', 'nvim-telescope/telescope.nvim',
-        'kyazdani42/nvim-web-devicons'
-      },
-      config = function() require"octo".setup() end
-    }
-
+    -- Show a popup window with the contents of registers for pasting
     use {
       "tversteeg/registers.nvim",
       config = function() vim.g.registers_window_border = "rounded" end
     }
 
+    -- Zettelkasten
     use {
       'mickael-menu/zk-nvim',
       cond = function() return require"pyrho.helpers".is_zen() end,
@@ -511,14 +500,16 @@ return require("packer").startup({
       end
     }
 
+    -- Glow markdown reader integration
     use {"ellisonleao/glow.nvim", branch = 'main'}
 
+    -- A tab line
     use {
       'alvarosevilla95/luatab.nvim',
       requires = 'kyazdani42/nvim-web-devicons',
       config = function()
         require'luatab'.setup {
-          windowCount = function(idx) return "["..idx.."] " end,
+          windowCount = function(idx) return "[" .. idx .. "] " end,
           modified = function() return "" end,
           separator = function(idx)
             local s = require('pyrho.helpers').separators.right
