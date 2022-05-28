@@ -37,12 +37,13 @@ return require("packer").startup({
     -- Better JS indent
     use {"jason0x43/vim-js-indent", ft = "javascript"}
 
-    -- Manually highlight words
+    -- Highlight words
     use {
-      "Yggdroot/vim-mark",
+      'azabiong/vim-highlighter',
       config = function()
-        vim.api.nvim_set_keymap("n", "<Leader>N", ":MarkClear<CR>",
-                                {noremap = true, silent = true})
+        local map_opts = {noremap = true, silent = false}
+        vim.api.nvim_set_keymap("n", "<CR>", "<Cmd>Hi}<CR>", map_opts)
+        vim.api.nvim_set_keymap("n", "<BS>", "<Cmd>Hi{<CR>", map_opts)
       end
     }
 
@@ -68,7 +69,10 @@ return require("packer").startup({
     }
 
     -- Signature auto complete helper
-    use {  'ray-x/lsp_signature.nvim', config = require'pyrho.plugins.conf.lsp_signature'.config }
+    use {
+      'ray-x/lsp_signature.nvim',
+      config = require'pyrho.plugins.conf.lsp_signature'.config
+    }
 
     -- Record sessions
     use {"benknoble/vim-obsession", branch = "this_session"}
@@ -309,7 +313,7 @@ return require("packer").startup({
                                  └────────────┘
   -- ]]
 
-  -- Display a little widget at startup to show LSP server statuses
+    -- Display a little widget at startup to show LSP server statuses
     use {'j-hui/fidget.nvim', config = function() require'fidget'.setup {} end}
 
     -- 
@@ -323,9 +327,7 @@ return require("packer").startup({
         config = require"pyrho.plugins.conf.nvim-lspinstall".config,
         cond = function() return not require"pyrho.helpers".is_zen() end
       }, 'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-buffer', 'hrsh7th/cmp-path',
-      'hrsh7th/cmp-cmdline',
-
-      {
+      'hrsh7th/cmp-cmdline', {
         {
           'hrsh7th/vim-vsnip',
           config = function()
@@ -522,3 +524,13 @@ return require("packer").startup({
   end,
   config = {luarocks = {python_cmd = "python3"}}
 })
+
+--[[
+                             ┌────────────────────┐
+                             │░█▀█░█▀█░▀█▀░█▀▀░█▀▀│
+                             │░█░█░█░█░░█░░█▀▀░▀▀█│
+                             │░▀░▀░▀▀▀░░▀░░▀▀▀░▀▀▀│
+                             └────────────────────┘
+# 2022-05-28
+Moved from Yggdroot/vim-mark to azabiong/vim-highlighter, it seem more feature packed
+--]]
