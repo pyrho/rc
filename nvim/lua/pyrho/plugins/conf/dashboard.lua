@@ -3,7 +3,7 @@ local M = {}
 local function find_config_file()
   local opts = {
     search_dirs = {
-      require('plenary.path'):new(vim.env.HOME, 'rc', 'nvim_lua'):absolute()
+      require('plenary.path'):new(vim.env.HOME, 'rc', 'nvim'):absolute()
     }
   }
 
