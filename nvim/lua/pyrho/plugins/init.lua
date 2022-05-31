@@ -33,6 +33,9 @@ return require("packer").startup({
 
     -- Smart commenting
     use 'b3nj5m1n/kommentary'
+    use { 'numToStr/Comment.nvim', config = function ()
+        require'Comment'.setup()
+    end }
 
     -- Better JS indent
     use {"jason0x43/vim-js-indent", ft = "javascript"}
@@ -524,17 +527,7 @@ return require("packer").startup({
       end
     }
 
-    use {
-      'toppair/reach.nvim',
-      config = function() require'reach'.setup {notifications = true} end
-    }
-
-    use {
-      'ThePrimeagen/harpoon',
-      config = function() end,
-
-      requires = 'nvim-lua/plenary.nvim'
-    }
+    use {'toppair/reach.nvim', config = require 'pyrho.plugins.conf.reach'.config}
 
   end,
   config = {luarocks = {python_cmd = "python3"}}
