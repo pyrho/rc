@@ -554,72 +554,8 @@ function M.config()
 
   require'heirline'.setup(StatusLines, WinBars)
 end
+
 return M
 
---[[
-{
-  bg = "#24283b",
-  bg_dark = "#1f2335",
-  bg_float = "#24283b",
-  bg_highlight = "#292e42",
-  bg_popup = "#1f2335",
-  bg_search = "#3d59a1",
-  bg_sidebar = "#24283b",
-  bg_statusline = "#1f2335",
-  bg_visual = "#364A82",
-  black = "#1D202F",
-  blue = "#7aa2f7",
-  blue0 = "#3d59a1",
-  blue1 = "#2ac3de",
-  blue2 = "#0db9d7",
-  blue5 = "#89ddff",
-  blue6 = "#B4F9F8",
-  blue7 = "#394b70",
-  border = "#1D202F",
-  border_highlight = "#3d59a1",
-  comment = "#565f89",
-  cyan = "#7dcfff",
-  dark3 = "#545c7e",
-  dark5 = "#737aa2",
-  diff = {
-    add = "#283B4D",
-    change = "#272D43",
-    delete = "#3F2D3D",
-    text = "#394b70"
-  },
-  error = "#db4b4b",
-  fg = "#c0caf5",
-  fg_dark = "#a9b1d6",
-  fg_gutter = "#3b4261",
-  fg_sidebar = "#a9b1d6",
-  git = {
-    add = "#449dab",
-    change = "#6183bb",
-    conflict = "#bb7a61",
-    delete = "#914c54",
-    ignore = "#545c7e"
-  },
-  gitSigns = {
-    add = "#266d6a",
-    change = "#536c9e",
-    delete = "#b2555b"
-  },
-  green = "#9ece6a",
-  green1 = "#73daca",
-  green2 = "#41a6b5",
-  hint = "#1abc9c",
-  info = "#0db9d7",
-  magenta = "#bb9af7",
-  magenta2 = "#ff007c",
-  none = "NONE",
-  orange = "#ff9e64",
-  purple = "#9d7cd8",
-  red = "#f7768e",
-  red1 = "#db4b4b",
-  teal = "#1abc9c",
-  terminal_black = "#414868",
-  warning = "#e0af68",
-  yellow = "#e0af68"
-}
-  ]]
 -- vim:fdm=marker
+
