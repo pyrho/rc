@@ -65,7 +65,17 @@ return require("packer").startup({
     -- Full lua Statusline
     use {
       "rebelot/heirline.nvim",
-      config = require"pyrho.plugins.conf.heirline".config
+      config = require"pyrho.plugins.conf.heirline".config,
+      -- We need to instantiate this plugin after lsp-config because we rely on Signs defined
+      -- in that config
+      after = "nvim-lspconfig"
+
+      -- Use this to debug, it will give the exact error stack trace
+      --[[ config = function()
+        vim.cmd(
+            'luafile /home/pyrho/rc/nvim/lua/pyrho/plugins/conf/heirline.lua')
+      end, ]]
+
     }
 
     -- Signature auto complete helper
@@ -316,47 +326,38 @@ return require("packer").startup({
     -- Display a little widget at startup to show LSP server statuses
     use {'j-hui/fidget.nvim', config = function() require'fidget'.setup {} end}
 
-    -- 
+    -- LSP stuff
     use {
-      {
-        "neovim/nvim-lspconfig",
-        config = require"pyrho.plugins.conf.nvim-lspconfig".config
-      }, {
-        "williamboman/nvim-lsp-installer",
-        requires = "neovim/nvim-lspconfig",
-        config = require"pyrho.plugins.conf.nvim-lspinstall".config,
-        cond = function() return not require"pyrho.helpers".is_zen() end
-      }, 'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-buffer', 'hrsh7th/cmp-path',
-      'hrsh7th/cmp-cmdline', {
-        {
-          'hrsh7th/vim-vsnip',
-          config = function()
-            vim.g.vsnip_snippet_dir = '~/rc/nvim/snippets'
-            vim.g.vsnip_filetypes = {typescriptreact = {'typescript'}}
-            --[[ vim.g.vsnip_filetypes.typescriptreact = {'typescript'}
-            vim.g.vsnip_filetypes.javascript = {'typescript'} ]]
-            -- Select or cut text to use as $TM_SELECTED_TEXT in the next snippet.
-            -- See https://github.com/hrsh7th/vim-vsnip/pull/50
-            local opts = {noremap = true, silent = false}
-            vim.api.nvim_set_keymap("x", "<Leader><Tab>",
-                                    "<Plug>(vsnip-cut-text)", opts)
-          end
-        },
-        'hrsh7th/cmp-vsnip',
-        config = function()
-          require'cmp'.setup {sources = {{name = 'vsnip'}}}
-        end
-      },
-
-      use {
-        "hrsh7th/nvim-cmp",
-        config = require"pyrho.plugins.conf.nvim-cmp".config
-      }
+      "neovim/nvim-lspconfig",
+      config = require"pyrho.plugins.conf.nvim-lspconfig".config
     }
 
     use {
-      "ojroques/nvim-lspfuzzy",
-      config = function() require('lspfuzzy').setup {} end
+      "williamboman/nvim-lsp-installer",
+      requires = "neovim/nvim-lspconfig",
+      config = require"pyrho.plugins.conf.nvim-lspinstall".config,
+      cond = function() return not require"pyrho.helpers".is_zen() end
+    }
+
+    use {
+      {"hrsh7th/nvim-cmp", config = require"pyrho.plugins.conf.nvim-cmp".config},
+      'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-buffer', 'hrsh7th/cmp-path',
+      'hrsh7th/cmp-cmdline', 'hrsh7th/cmp-vsnip'
+    }
+
+    use {
+      'hrsh7th/vim-vsnip',
+      config = function()
+        vim.g.vsnip_snippet_dir = '~/rc/nvim/snippets'
+        vim.g.vsnip_filetypes = {typescriptreact = {'typescript'}}
+        --[[ vim.g.vsnip_filetypes.typescriptreact = {'typescript'}
+            vim.g.vsnip_filetypes.javascript = {'typescript'} ]]
+        -- Select or cut text to use as $TM_SELECTED_TEXT in the next snippet.
+        -- See https://github.com/hrsh7th/vim-vsnip/pull/50
+        local opts = {noremap = true, silent = false}
+        vim.api.nvim_set_keymap("x", "<Leader><Tab>", "<Plug>(vsnip-cut-text)",
+                                opts)
+      end
     }
 
     use {
@@ -427,6 +428,8 @@ return require("packer").startup({
     use {
       "NTBBloodbath/rest.nvim",
       requires = {"nvim-lua/plenary.nvim"},
+      -- Using this commit until https://github.com/NTBBloodbath/rest.nvim/issues/114 is fixed
+      commit = "2826f6960fbd9adb1da9ff0d008aa2819d2d06b3",
       config = function()
         require("rest-nvim").setup({
           -- Open request results in a horizontal split
@@ -519,6 +522,18 @@ return require("packer").startup({
           end
         }
       end
+    }
+
+    use {
+      'toppair/reach.nvim',
+      config = function() require'reach'.setup {notifications = true} end
+    }
+
+    use {
+      'ThePrimeagen/harpoon',
+      config = function() end,
+
+      requires = 'nvim-lua/plenary.nvim'
     }
 
   end,
