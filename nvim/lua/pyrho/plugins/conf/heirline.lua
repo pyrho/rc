@@ -419,6 +419,9 @@ function M.config()
     { -- An inactive winbar for regular files
       condition = function() return not conditions.is_active() end,
       provider = ""
+    },{ -- Disable winbar for zen mode
+      condition = function() return require'pyrho.helpers'.is_zen() end,
+      provider = ""
     },
     -- A winbar for regular files
     {
