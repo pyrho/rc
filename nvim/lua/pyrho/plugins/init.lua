@@ -7,8 +7,12 @@ return require("packer").startup({
     use {"wbthomason/packer.nvim", opt = true}
 
     -- Startpage
+    -- Until sessions are opt-out I'll use my fork because the `:SessionLoad` etc. commands
+    -- defined in this plugin conflict with the ones defined in persisted.nvim.
+    -- https://github.com/glepnir/dashboard-nvim/issues/217
     use {
-      'glepnir/dashboard-nvim',
+      'pyrho/dashboard-nvim',
+      branch = 'feat/remove-session-stuff',
       config = require'pyrho.plugins.conf.dashboard'.config
     }
 
@@ -33,9 +37,10 @@ return require("packer").startup({
 
     -- Smart commenting
     use 'b3nj5m1n/kommentary'
-    use { 'numToStr/Comment.nvim', config = function ()
-        require'Comment'.setup()
-    end }
+    use {
+      'numToStr/Comment.nvim',
+      config = function() require'Comment'.setup() end
+    }
 
     -- Better JS indent
     use {"jason0x43/vim-js-indent", ft = "javascript"}
@@ -47,13 +52,57 @@ return require("packer").startup({
         local map_opts = {noremap = true, silent = false}
         vim.api.nvim_set_keymap("n", "<CR>", "<Cmd>Hi}<CR>", map_opts)
         vim.api.nvim_set_keymap("n", "<BS>", "<Cmd>Hi{<CR>", map_opts)
+        vim.g.HiSyncMode = 1
       end
     }
 
     -- Git gutter plugin
     use {
       "lewis6991/gitsigns.nvim",
-      config = function() require('gitsigns').setup() end
+      config = function()
+        require('gitsigns').setup({
+          on_attach = function(bufnr)
+            local gs = package.loaded.gitsigns
+
+            local function map(mode, l, r, opts)
+              opts = opts or {}
+              opts.buffer = bufnr
+              vim.keymap.set(mode, l, r, opts)
+            end
+
+            -- Navigation
+            map('n', ']c', function()
+              if vim.wo.diff then return ']c' end
+              vim.schedule(function() gs.next_hunk() end)
+              return '<Ignore>'
+            end, {expr = true})
+
+            map('n', '[c', function()
+              if vim.wo.diff then return '[c' end
+              vim.schedule(function() gs.prev_hunk() end)
+              return '<Ignore>'
+            end, {expr = true})
+
+            -- Actions
+            --[[ map({'n', 'v'}, '<leader>hs', ':Gitsigns stage_hunk<CR>')
+            map({'n', 'v'}, '<leader>hr', ':Gitsigns reset_hunk<CR>')
+            map('n', '<leader>hS', gs.stage_buffer) ]]
+            -- map('n', '<leader>hu', gs.undo_stage_hunk)
+            -- map('n', '<leader>hR', gs.reset_buffer)
+            map('n', '<leader>gp', gs.preview_hunk)
+            map('n', '<leader>gb', function()
+              gs.blame_line {full = true}
+            end)
+            map('n', '<leader>tb', gs.toggle_current_line_blame)
+            map('n', '<leader>d', gs.diffthis)
+            map('n', '<leader>D', function() gs.diffthis('~') end)
+            -- map('n', '<leader>td', gs.toggle_deleted)
+
+            -- Text object
+            map({'o', 'x'}, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
+          end
+        })
+      end
     }
 
     -- Git integration
@@ -84,11 +133,31 @@ return require("packer").startup({
     -- Signature auto complete helper
     use {
       'ray-x/lsp_signature.nvim',
+      -- 2022-09-19: There's a bug where the window shows up on top of the current
+      -- line, making edits quite painful..
+      -- See https://github.com/ray-x/lsp_signature.nvim/issues/182
+      disable = true,
       config = require'pyrho.plugins.conf.lsp_signature'.config
     }
 
-    -- Record sessions
-    use {"benknoble/vim-obsession", branch = "this_session"}
+    --[[ -- Record sessions
+    use {"benknoble/vim-obsession", branch = "this_session"} ]]
+
+    -- Record sessions (better than obsession)
+    use({
+      "olimorris/persisted.nvim",
+      -- module = "persisted", -- For lazy loading
+      config = function()
+        require("persisted").setup({
+          use_git_branch = true, -- create session files based on the branch of the git enabled repository
+          follow_cwd = true, -- change session file name to match current working directory if it changes
+          autoload = false, -- automatically load the session for the cwd on Neovim startup
+          allowed_dirs = {'~/code/caribou/main-repo'}, -- table of dirs that the plugin will auto-save and auto-load from
+          branch_separator = "@@"
+        })
+        require("telescope").load_extension("persisted") -- To load the telescope extension
+      end
+    })
 
     -- The all in one Fuzzy Finder
     use {
@@ -120,21 +189,41 @@ return require("packer").startup({
     -- Better matching of pairs
     use "andymass/vim-matchup"
 
-    -- Smart f motions
     use {
+      'ggandor/leap.nvim',
+      config = function()
+        require('leap').opts.highlight_unlabeled = true
+        require('leap').add_default_mappings()
+      end
+    }
+    use {
+      'ggandor/leap-spooky.nvim',
+      config = function()
+        require('leap-spooky').setup {
+          affixes = {
+            -- These will generate mappings for all native text objects, like:
+            -- (ir|ar|iR|aR|im|am|iM|aM){obj}.
+            -- Special line objects will also be added, by repeating the affixes.
+            -- E.g. `yrr<leap>` and `ymm<leap>` will yank a line in the current
+            -- window.
+            -- You can also use 'rest' & 'move' as mnemonics.
+            remote = {window = 'r', cross_window = 'R'},
+            magnetic = {window = 'm', cross_window = 'M'}
+          },
+          -- If this option is set to true, the yanked text will automatically be pasted
+          -- at the cursor position if the unnamed register is in use (and the object is
+          -- "non-magnetic").
+          yank_paste = true
+        }
+      end
+    }
+    -- Smart f motions
+    --[[ use {
       "justinmk/vim-sneak",
       config = function()
         vim.g["sneak#label"] = 1
-
-        -- Causes issue with sandwich and the DOT repeats.
-        -- vim.cmd [[
-        --         map f <Plug>Sneak_f
-        --         map F <Plug>Sneak_F
-        --         map t <Plug>Sneak_t
-        --         map T <Plug>Sneak_T
-        --       ]]
       end
-    }
+    } ]]
     -- pairs autoclosing
     use {
       "cohama/lexima.vim",
@@ -173,8 +262,12 @@ return require("packer").startup({
 
     -- Float terminal
     use {
-      "voldikss/vim-floaterm",
-      config = require"pyrho.plugins.conf.floaterm".config
+      "numToStr/FTerm.nvim",
+      config = function()
+        vim.keymap.set('n', '<A-i>', '<CMD>lua require("FTerm").toggle()<CR>')
+        vim.keymap.set('t', '<A-i>',
+                       '<C-\\><C-n><CMD>lua require("FTerm").toggle()<CR>')
+      end
     }
 
     -- Focus on a portion of code
@@ -207,115 +300,6 @@ return require("packer").startup({
     use "nvim-treesitter/nvim-treesitter-textobjects"
     use "nvim-treesitter/nvim-treesitter-refactor"
 
-    use {
-      "SmiteshP/nvim-gps",
-      config = function()
-        -- Lua
-
-        -- Customized config
-        require("nvim-gps").setup({
-
-          disable_icons = false, -- Setting it to true will disable all icons
-
-          icons = {
-            ["class-name"] = ' ', -- Classes and class-like objects
-            ["function-name"] = ' ', -- Functions
-            ["method-name"] = ' ', -- Methods (functions inside class-like objects)
-            ["container-name"] = '⛶ ', -- Containers (example: lua tables)
-            ["tag-name"] = '炙' -- Tags (example: html tags)
-          },
-
-          -- Add custom configuration per language or
-          -- Disable the plugin for a language
-          -- Any language not disabled here is enabled by default
-          languages = {
-            -- Some languages have custom icons
-            ["json"] = {
-              icons = {
-                ["array-name"] = ' ',
-                ["object-name"] = ' ',
-                ["null-name"] = '[] ',
-                ["boolean-name"] = 'ﰰﰴ ',
-                ["number-name"] = '# ',
-                ["string-name"] = ' '
-              }
-            },
-            ["latex"] = {
-              icons = {["title-name"] = "# ", ["label-name"] = " "}
-            },
-            ["norg"] = {icons = {["title-name"] = " "}},
-            ["toml"] = {
-              icons = {
-                ["table-name"] = ' ',
-                ["array-name"] = ' ',
-                ["boolean-name"] = 'ﰰﰴ ',
-                ["date-name"] = ' ',
-                ["date-time-name"] = ' ',
-                ["float-name"] = ' ',
-                ["inline-table-name"] = ' ',
-                ["integer-name"] = '# ',
-                ["string-name"] = ' ',
-                ["time-name"] = ' '
-              }
-            },
-            ["verilog"] = {icons = {["module-name"] = ' '}},
-            ["yaml"] = {
-              icons = {
-                ["mapping-name"] = ' ',
-                ["sequence-name"] = ' ',
-                ["null-name"] = '[] ',
-                ["boolean-name"] = 'ﰰﰴ ',
-                ["integer-name"] = '# ',
-                ["float-name"] = ' ',
-                ["string-name"] = ' '
-              }
-            },
-            ["yang"] = {
-              icons = {
-                ["module-name"] = " ",
-                ["augment-path"] = " ",
-                ["container-name"] = " ",
-                ["grouping-name"] = " ",
-                ["typedef-name"] = " ",
-                ["identity-name"] = " ",
-                ["list-name"] = "﬘ ",
-                ["leaf-list-name"] = " ",
-                ["leaf-name"] = " ",
-                ["action-name"] = " "
-              }
-            }
-
-            -- Disable for particular languages
-            -- ["bash"] = false, -- disables nvim-gps for bash
-            -- ["go"] = false,   -- disables nvim-gps for golang
-
-            -- Override default setting for particular languages
-            -- ["ruby"] = {
-            --	separator = '|', -- Overrides default separator with '|'
-            --	icons = {
-            --		-- Default icons not specified in the lang config
-            --		-- will fallback to the default value
-            --		-- "container-name" will fallback to default because it's not set
-            --		["function-name"] = '',    -- to ensure empty values, set an empty string
-            --		["tag-name"] = ''
-            --		["class-name"] = '::',
-            --		["method-name"] = '#',
-            --	}
-            -- }
-          },
-
-          separator = ' > ',
-
-          -- limit for amount of context shown
-          -- 0 means no limit
-          depth = 0,
-
-          -- indicator used when context hits depth limit
-          depth_limit_indicator = ".."
-        })
-      end
-    }
-
     -- }}}
 
     --[[ {{{
@@ -347,6 +331,8 @@ return require("packer").startup({
       'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-buffer', 'hrsh7th/cmp-path',
       'hrsh7th/cmp-cmdline', 'hrsh7th/cmp-vsnip'
     }
+
+    use {'onsails/lspkind.nvim'}
 
     use {
       'hrsh7th/vim-vsnip',
@@ -390,8 +376,9 @@ return require("packer").startup({
       config = function() require'nvim-web-devicons'.setup {default = true} end
     }
 
+    -- 2022-10-03: Disabled this as I'm mostly working with kitty instead of tmux
     -- Tmux integration, allows seamless transition between vim windows and tmux panes
-    use {
+    --[[ use {
       "aserowy/tmux.nvim",
       config = function()
         require("tmux").setup({
@@ -407,7 +394,7 @@ return require("packer").startup({
           }
         })
       end
-    }
+    } ]]
 
     -- File explorer, similar to vim-vinegar
     use {
@@ -428,15 +415,46 @@ return require("packer").startup({
     }
 
     -- HTTP client
+    -- use {
+    --   "NTBBloodbath/rest.nvim",
+    --   requires = {"nvim-lua/plenary.nvim"},
+    --   -- Using this commit until https://github.com/NTBBloodbath/rest.nvim/issues/114 is fixed
+    --   commit = "2826f6960fbd9adb1da9ff0d008aa2819d2d06b3",
+    --   config = function()
+    --     require("rest-nvim").setup({
+    --       -- Open request results in a horizontal split
+    --       result_split_horizontal = false,
+    --       -- Skip SSL verification, useful for unknown certificates
+    --       skip_ssl_verification = true,
+    --       -- Highlight request on run
+    --       highlight = {enabled = true, timeout = 150},
+    --       result = {
+    --         -- toggle showing URL, HTTP info, headers at top the of result window
+    --         show_url = true,
+    --         show_http_info = true,
+    --         show_headers = true
+    --       },
+    --       -- Jump to request line on run
+    --       jump_to_request = false,
+    --       env_file = '.env',
+    --       custom_dynamic_variables = {},
+    --       yank_dry_run = true
+    --     })
+    --   end
+    -- }
+
     use {
-      "NTBBloodbath/rest.nvim",
+      -- [This PR](https://github.com/rest-nvim/rest.nvim/pull/122) of rest.nvim introduces some nice features
+      -- Until its merged, let's use that.
+      'D-James-GH/rest.nvim',
+      branch = 'feature/selectable-json-env',
       requires = {"nvim-lua/plenary.nvim"},
-      -- Using this commit until https://github.com/NTBBloodbath/rest.nvim/issues/114 is fixed
-      commit = "2826f6960fbd9adb1da9ff0d008aa2819d2d06b3",
       config = function()
         require("rest-nvim").setup({
           -- Open request results in a horizontal split
           result_split_horizontal = false,
+
+          result_split_in_place = true,
           -- Skip SSL verification, useful for unknown certificates
           skip_ssl_verification = true,
           -- Highlight request on run
@@ -445,7 +463,13 @@ return require("packer").startup({
             -- toggle showing URL, HTTP info, headers at top the of result window
             show_url = true,
             show_http_info = true,
-            show_headers = true
+            show_headers = true,
+            formatters = {
+              json = "jq",
+              html = function(body)
+                return vim.fn.system({"tidy", "-i", "-q", "-"}, body)
+              end
+            }
           },
           -- Jump to request line on run
           jump_to_request = false,
@@ -454,6 +478,7 @@ return require("packer").startup({
           yank_dry_run = true
         })
       end
+
     }
 
     -- Show a popup window with the contents of registers for pasting
@@ -527,7 +552,42 @@ return require("packer").startup({
       end
     }
 
-    use {'toppair/reach.nvim', config = require 'pyrho.plugins.conf.reach'.config}
+    use {
+      "SmiteshP/nvim-navic",
+      requires = "neovim/nvim-lspconfig",
+      config = function() vim.g.navic_silence = true end
+    }
+
+    use {
+      'tyru/open-browser.vim',
+      config = function()
+        local map_opts = {noremap = true, silent = false}
+        vim.api.nvim_set_keymap("n", "go", "<Plug>(openbrowser-smart-search)",
+                                map_opts)
+        vim.api.nvim_set_keymap("v", "go", "<Plug>(openbrowser-smart-search)",
+                                map_opts)
+        vim.g.netrw_nogx = 1
+      end
+    }
+
+    -- Per dir file bookmarks
+    use {
+      'crusj/bookmarks.nvim',
+      branch = 'main',
+      requires = {'kyazdani42/nvim-web-devicons'},
+      config = function() require("bookmarks").setup() end
+    }
+
+    -- Lua
+    use {
+      "folke/trouble.nvim",
+      requires = "kyazdani42/nvim-web-devicons",
+      config = function()
+        require("trouble").setup {
+            use_diagnostic_signs = true
+        }
+      end
+    }
 
   end,
   config = {luarocks = {python_cmd = "python3"}}
@@ -541,4 +601,13 @@ return require("packer").startup({
                              └────────────────────┘
 # 2022-05-28
 Moved from Yggdroot/vim-mark to azabiong/vim-highlighter, it seem more feature packed
+
+# 2022-10-17
+Moved from vim-obsession to persisted.nvim
+
+# 2022-10-27
+Moved from voldikss/vim-floaterm to FTerm.nvim
+
+# 2022-11-03 
+Modified telescope defaults to use "smart" path truncation, it's said to have a performance impact
 --]]

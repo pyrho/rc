@@ -34,7 +34,10 @@ set foldtext=NeatFoldText()
 end
 
 local function set_options()
-  opt.clipboard="unnamedplus"
+  opt.sessionoptions = "buffers,curdir,folds,winpos,winsize"
+
+  -- 2022-11-03: Let's see how we fare without this.. 
+  -- opt.clipboard="unnamedplus"
   opt.shell = "zsh"
 
   -- Show 4 lines after/before the cursor
@@ -54,7 +57,8 @@ local function set_options()
   opt.smartcase = true
   opt.laststatus = 2
   opt.encoding = "utf8"
-  opt.cursorline = false
+  opt.cursorlineopt = 'number'
+  opt.cursorline = true
   opt.cursorcolumn = false
   opt.hlsearch = true
   opt.showmatch = true
@@ -190,6 +194,28 @@ local function main()
   require"pyrho.mappings".init()
   require"pyrho.prettierd".setup_autofmt {types = {"*.ts", "*.js", "*.tsx"}}
 end
+
+vim.cmd [[ 
+noremap <C-B> :call RunBroot()<CR>i
+
+fun! RunBroot()
+  let l:command = 'broot --conf ~/.config/broot/nvim.toml'
+  enew
+  call termopen(l:command, {'on_exit': 'BrootOnExit'})
+endfun
+
+fun! BrootOnExit(job_id, code, event) dict
+  let l:filename = getline(1)
+  enew | bd! #
+
+  if (l:filename != '')
+    execute 'edit ' . l:filename
+  else
+    bp
+  endif
+endfun
+
+]]
 
 set_options()
 vim.schedule(main)

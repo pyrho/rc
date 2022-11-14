@@ -109,6 +109,7 @@ function M.config()
     end,
     hl = {fg = utils.get_highlight("Directory").fg}
   }
+
   local FlexFileName = {
     init = function(self)
       self.lfilename = vim.fn.fnamemodify(self.filename, ":.")
@@ -288,11 +289,11 @@ function M.config()
 
   -- Awesome plugin
   local Gps = {
-    condition = require("nvim-gps").is_available,
-    provider = require("nvim-gps").get_location,
+    condition = require("nvim-navic").is_available,
+    provider = require("nvim-navic").get_location,
     hl = {fg = colors.gray}
   }
-  local FlexGps = utils.make_flexible_component(3, Gps, {provider = ""})
+  local FlexGps = utils.make_flexible_component(2, Gps, {provider = ""})
 
   local Diagnostics = {
 
@@ -364,12 +365,25 @@ function M.config()
 
     Sep,
     Space,
-    { -- git branch name
+
+    utils.make_flexible_component(2, {
       provider = function(self)
         local repo_name = vim.fn.fnamemodify(self.status_dict.root, ":t")
         return " " .. repo_name .. "  " .. self.status_dict.head
       end
-    },
+    }, {
+      provider = function(self)
+        return " " ..string.sub(self.status_dict.head, 1, 5) .. "..."
+      end
+    }),
+
+    --[[ { -- git branch name
+      provider = function(self)
+        local repo_name = vim.fn.fnamemodify(self.status_dict.root, ":t")
+        return " " .. repo_name .. "  " .. self.status_dict.head
+      end
+    }, ]]
+
     -- You could handle delimiters, icons and counts similar to Diagnostics
     {condition = function(self) return self.has_changes end, provider = "  "},
     {
@@ -399,16 +413,18 @@ function M.config()
   -- Winbar {{{
 
   local WinBars = {
-    init = utils.pick_child_on_condition,
+    fallthrough = false,
     { -- Hide the winbar for special buffers
       condition = function()
         return conditions.buffer_matches({
-          buftype = {"nofile", "prompt", "help", "quickfix"},
+          buftype = {"nofile", "prompt", "help", "quickfix", "terminal"},
           filetype = {"^git.*", "fugitive"}
         })
       end,
       provider = ""
     },
+
+    --[[
     { -- A special winbar for terminals
       condition = function()
         return conditions.buffer_matches({buftype = {"terminal"}})
@@ -416,10 +432,13 @@ function M.config()
       utils.surround({"", ""}, colors.red1,
                      {FileType, Space, TerminalName})
     },
+    ]]
+
     { -- An inactive winbar for regular files
       condition = function() return not conditions.is_active() end,
       provider = ""
-    },{ -- Disable winbar for zen mode
+    },
+    { -- Disable winbar for zen mode
       condition = function() return require'pyrho.helpers'.is_zen() end,
       provider = ""
     },
@@ -431,7 +450,7 @@ function M.config()
         require'pyrho.helpers'.separators.left_rounded,
         require'pyrho.helpers'.separators.right_rounded
       }, colors.fg_gutter, {hl = {fg = colors.blue}, Diagnostics})
-    },
+    }
   }
 
   -- }}} !Winbar
@@ -439,11 +458,11 @@ function M.config()
   -- Misc {{{
   local Obsession = utils.make_flexible_component(3, {
     provider = function()
-      local obsession_status = vim.fn.ObsessionStatus("OBS  ", "OBS  ")
-      if #obsession_status == 0 then
-        return "OBS ⭘"
+      -- local obsession_status = vim.fn.ObsessionStatus("OBS  ", "OBS  ")
+      if vim.g.persisting then
+        return "OBS   "
       else
-        return obsession_status
+        return "OBS   "
       end
       -- return "OBS " .. vim.fn.ObsessionStatus(" ", " ") .. ""
     end,
@@ -465,7 +484,7 @@ function M.config()
     FileNameBlock,
     Align,
     hl = {
-      fg = tokyonight_utils.brighten(colors.bg_highlight, 0.3),
+      fg = tokyonight_utils.lighten(colors.bg_highlight, 0.3),
       bg = colors.bg_dark,
       force = true,
       bold = false
@@ -539,7 +558,7 @@ function M.config()
       end
     },
 
-    init = utils.pick_child_on_condition,
+    fallthrough = false,
 
     SpecialStatusline,
     TerminalStatusline,
@@ -561,4 +580,3 @@ end
 return M
 
 -- vim:fdm=marker
-

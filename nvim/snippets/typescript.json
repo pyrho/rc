@@ -1,6 +1,6 @@
 {
   "Write a note": {
-    "prefix": ["@note"],
+    "prefix": ["note"],
     "body": [
         "// @${1:NOTE}",
         "// $0",

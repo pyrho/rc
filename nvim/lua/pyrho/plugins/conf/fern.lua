@@ -9,7 +9,7 @@ function M.mappings()
 end
 
 function M.config()
-  vim.api.nvim_set_keymap('n', '<Leader>f', ':Fern %:h -reveal=%:p<CR>',
+  vim.api.nvim_set_keymap('n', '<Leader>f', ':Fern . -reveal=%<CR>',
                           {noremap = true, silent = true})
   vim.g["fern#renderer"] = "nerdfont"
 

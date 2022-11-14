@@ -33,10 +33,7 @@ function M.init()
   vim.api.nvim_set_keymap("n", "<Leader>s", "<cmd>Rg<CR>",
                           {noremap = true, silent = true})
 
-  vim.api.nvim_set_keymap("n", "<Leader>b", "<cmd>Reach buffers<CR>",
-                          {noremap = true, silent = true})
-
-  vim.api.nvim_set_keymap("n", "<Leader>m", "<cmd>Reach marks<CR>",
+  vim.api.nvim_set_keymap("n", "<Leader>b", "<cmd>Buffers<CR>",
                           {noremap = true, silent = true})
 
   -- Helpers

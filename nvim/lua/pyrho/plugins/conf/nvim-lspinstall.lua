@@ -4,6 +4,8 @@ function M.config()
   local lsp_installer = require "nvim-lsp-installer"
 
   local function on_attach(client, bufnr)
+
+    require('nvim-navic').attach(client, bufnr)
     -- Set up buffer-local keymaps (vim.api.nvim_buf_set_keymap()), etc.
     local map = vim.api.nvim_buf_set_keymap
     map(0, "n", "gr", "<cmd>Lspsaga rename<cr>", {silent = true, noremap = true})
@@ -15,6 +17,9 @@ function M.config()
         {silent = true, noremap = true})
 
     map(0, "n", "gd", "<cmd>Telescope lsp_definitions<cr>",
+        {silent = true, noremap = true})
+
+    map(0, "n", "gp", "<cmd>Lspsaga preview_definition<cr>",
         {silent = true, noremap = true})
 
     map(0, "n", "gr", "<cmd>Telescope lsp_references<cr>",
@@ -45,6 +50,7 @@ function M.config()
   local enhance_server_opts = {
     ["ltex"] = function(opts)
       opts.filetypes = { "markdown" }
+      opts.cmd =  {"/opt/homebrew/bin/ltex-ls"}
       opts.settings = {
         ltex = {
           diagnosticSeverity = 'information',

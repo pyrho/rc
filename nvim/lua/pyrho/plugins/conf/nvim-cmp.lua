@@ -26,6 +26,25 @@ function M.config()
         -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
       end
     },
+    formatting = {
+      format = function(entry, vim_item)
+        local lspkind = require('lspkind')
+        if vim.tbl_contains({'path'}, entry.source.name) then
+          local icon, hl_group = require('nvim-web-devicons').get_icon(
+                                     entry:get_completion_item().label)
+          if icon then
+            vim_item.kind = icon
+            vim_item.kind_hl_group = hl_group
+            return vim_item
+          end
+        end
+        return lspkind.cmp_format({with_text = false})(entry, vim_item)
+      end
+    },
+    window = {
+      completion = cmp.config.window.bordered(),
+      documentation = cmp.config.window.bordered()
+    },
     mapping = {
 
       ["<Tab>"] = cmp.mapping(function(fallback)
@@ -58,25 +77,27 @@ function M.config()
     },
     sources = cmp.config.sources({
       -- { name = 'luasnip' }, -- For luasnip users.
-      {name = 'vsnip'}, -- For vsnip users.
-      {name = 'nvim_lsp'}
+      {name = 'vsnip', priority = 1}, -- For vsnip users.
+      {name = 'nvim_lsp', priority = 2}, {name = 'path', priority = 3},
+      -- {name = 'buffer', priority = 10}
       -- { name = 'ultisnips' }, -- For ultisnips users.
       -- { name = 'snippy' }, -- For snippy users.
-    }, {{name = 'buffer'}})
+    }, {})
   })
 
-  -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
-  cmp.setup.cmdline('/', {sources = {{name = 'buffer'}}})
+  -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline({'/', '?'}, {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = {{name = 'buffer'}}
+  })
 
   -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
   cmp.setup.cmdline(':', {
+    mapping = cmp.mapping.preset.cmdline(),
     sources = cmp.config.sources({{name = 'path'}}, {{name = 'cmdline'}})
   })
-
   -- Setup lspconfig.
-  local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp
-                                                                       .protocol
-                                                                       .make_client_capabilities())
+  local capabilities = require('cmp_nvim_lsp').default_capabilities()
   -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
   require('lspconfig')['tsserver'].setup {capabilities = capabilities}
 end
