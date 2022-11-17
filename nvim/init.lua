@@ -34,7 +34,7 @@ set foldtext=NeatFoldText()
 end
 
 local function set_options()
-  opt.sessionoptions = "buffers,curdir,folds,winpos,winsize"
+  opt.sessionoptions = "buffers,curdir,folds,winpos,winsize,tabpages"
 
   -- 2022-11-03: Let's see how we fare without this.. 
   -- opt.clipboard="unnamedplus"

@@ -117,9 +117,9 @@ function M.config()
     end,
     hl = {fg = utils.get_highlight("Directory").fg},
 
-    utils.make_flexible_component(2, {
-      provider = function(self) return self.lfilename end
-    }, {provider = function(self) return vim.fn.pathshorten(self.lfilename) end})
+    flexible = 10,
+    {provider = function(self) return self.lfilename end},
+    {provider = function(self) return vim.fn.pathshorten(self.lfilename) end}
   }
 
   local FileFlags = {
@@ -156,10 +156,14 @@ function M.config()
                                {provider = '%<'} -- this means that the statusline is cut here when there's not enough space
   )
 
-  local FileType = utils.make_flexible_component(3, {
-    provider = function() return string.upper(vim.bo.filetype) end,
-    hl = {fg = utils.get_highlight("Type").fg, bold = true}
-  }, {provider = ""})
+  local FileType = {
+    flexible = 10,
+    {
+      provider = function() return string.upper(vim.bo.filetype) end,
+      hl = {fg = utils.get_highlight("Type").fg, bold = true}
+    },
+    {provider = ""}
+  }
 
   local FileEncoding = {
     provider = function()
@@ -226,23 +230,26 @@ function M.config()
     end,
     hl = {fg = colors.blue, bold = false},
 
-    utils.make_flexible_component(1, {
+    flexible = 10,
+    {
       -- evaluates to the full-lenth path
       provider = function(self)
         local trail = self.cwd:sub(-1) == "/" and "" or "/"
         return self.icon .. self.cwd .. trail
       end
-    }, {
+    },
+    {
       -- evaluates to the shortened path
       provider = function(self)
         local cwd = vim.fn.pathshorten(self.cwd)
         local trail = self.cwd:sub(-1) == "/" and "" or "/"
         return self.icon .. cwd .. trail
       end
-    }, {
+    },
+    {
       -- evaluates to "", hiding the component
       provider = ""
-    })
+    }
   }
   -- }}}
 
@@ -279,21 +286,24 @@ function M.config()
     end
   }
 
-  local LSPActive = utils.make_flexible_component(3, {
+  local LSPActive = {
+    flexible = 10,
     condition = conditions.lsp_attached,
 
-    provider = "LSP  ",
-
-    hl = {fg = colors.green, bold = true}
-  }, {provider = ""})
+    hl = {fg = colors.green, bold = true},
+    {provider = "LSP  "},
+    {provider = ""}
+  }
 
   -- Awesome plugin
-  local Gps = {
+  local FlexGps = {
     condition = require("nvim-navic").is_available,
-    provider = require("nvim-navic").get_location,
-    hl = {fg = colors.gray}
+    hl = {fg = colors.gray},
+    flexible = 1,
+    {provider = require("nvim-navic").get_location},
+    {provider = ""}
+
   }
-  local FlexGps = utils.make_flexible_component(2, Gps, {provider = ""})
 
   local Diagnostics = {
 
@@ -366,17 +376,22 @@ function M.config()
     Sep,
     Space,
 
-    utils.make_flexible_component(2, {
-      provider = function(self)
-        local repo_name = vim.fn.fnamemodify(self.status_dict.root, ":t")
-        return " " .. repo_name .. "  " .. self.status_dict.head
-      end
-    }, {
-      provider = function(self)
-        return " " ..string.sub(self.status_dict.head, 1, 5) .. "..."
-      end
-    }),
+    {
+      flexible = 10,
+      {
+        provider = function(self)
+          local repo_name = vim.fn.fnamemodify(self.status_dict.root, ":t")
+          return " " .. repo_name .. "  " .. self.status_dict.head
+        end
+      },
+      {
+        provider = function(self)
+          return " " .. string.sub(self.status_dict.head, 1, 5) .. "..."
+        end
 
+      }
+
+    },
     --[[ { -- git branch name
       provider = function(self)
         local repo_name = vim.fn.fnamemodify(self.status_dict.root, ":t")
@@ -456,18 +471,23 @@ function M.config()
   -- }}} !Winbar
 
   -- Misc {{{
-  local Obsession = utils.make_flexible_component(3, {
-    provider = function()
-      -- local obsession_status = vim.fn.ObsessionStatus("OBS  ", "OBS  ")
-      if vim.g.persisting then
-        return "OBS   "
-      else
-        return "OBS   "
-      end
-      -- return "OBS " .. vim.fn.ObsessionStatus(" ", " ") .. ""
-    end,
-    hl = {fg = colors.magenta, bold = true}
-  }, {provider = ""})
+  local Obsession = {
+    flexible = 10,
+    {
+      provider = function()
+        -- local obsession_status = vim.fn.ObsessionStatus("OBS  ", "OBS  ")
+        if vim.g.persisting then
+          return "OBS   "
+        else
+          return "OBS   "
+        end
+        -- return "OBS " .. vim.fn.ObsessionStatus(" ", " ") .. ""
+      end,
+      hl = {fg = colors.magenta, bold = true}
+    },
+    {provider = ""}
+  }
+
   -- }}} !Misc
   --
   -- }}} !Components

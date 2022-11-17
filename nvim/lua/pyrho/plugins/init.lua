@@ -36,7 +36,6 @@ return require("packer").startup({
     }
 
     -- Smart commenting
-    use 'b3nj5m1n/kommentary'
     use {
       'numToStr/Comment.nvim',
       config = function() require'Comment'.setup() end

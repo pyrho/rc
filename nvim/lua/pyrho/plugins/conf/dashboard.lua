@@ -13,7 +13,7 @@ end
 function M.mappings()
   vim.keymap.set('n', 'q', ':q<CR>', { buffer = true })
   vim.keymap.set('n', 'e', ':enew<CR>', { buffer = true })
-  vim.keymap.set('n', '0', ':Telescope persisted<CR>', { buffer = true })
+  vim.keymap.set('n', '0', '<cmd>SessionLoad<CR>', { buffer = true })
   vim.keymap.set('n', 'c', find_config_file, { buffer = true })
   vim.keymap.set('n', 's', require"telescope.builtin".live_grep, { buffer = true })
   vim.keymap.set('n', 'o', require"telescope.builtin".fd, { buffer = true })

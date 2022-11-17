@@ -66,5 +66,8 @@ function M.init()
     nmap <Leader>gx <Plug>vertopen_url
   ]]
 
+  vim.api.nvim_set_keymap("n", '-', '<cmd>m -2<CR>', {noremap =true})
+  vim.api.nvim_set_keymap("n", '_', '<cmd>m +1<CR>', {noremap =true})
+
 end
 return M
