@@ -14,6 +14,10 @@ function vimr() {
     open -a VimR.app "$@"
 }
 
+function git_current_branch() {
+    git branch 2> /dev/null | sed -n -e 's/^\* \(.*\)/\1/p'
+}
+
 function dnpm(){
     tmux rename-window $1 && npm run ${@:2}
 }

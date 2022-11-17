@@ -1,3 +1,12 @@
+#!/bin/zsh
+
+
+# source antidote
+source ${ZDOTDIR:-~}/.antidote/antidote.zsh
+
+# initialize plugins statically with ${ZDOTDIR:-~}/.zsh_plugins.txt
+antidote load
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -5,7 +14,6 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-#!/bin/zsh
 
 # shortcut to this dotfiles path is $DOTFILES
 export DOTFILES="$HOME/rc"
@@ -16,37 +24,18 @@ export EDITOR='vim'
 # all of our zsh files
 typeset -U config_files
 config_files=($DOTFILES/zsh/*.zsh)
-
-# This is needed to load OMZ plugins
-export ZSH=`/usr/local/bin/antibody home`/https-COLON--SLASH--SLASH-github.com-SLASH-robbyrussell-SLASH-oh-my-zsh
-export ZSH_CACHE_DIR=$ZSH/cache
-
-ZSH_TAB_TITLE_CONCAT_FOLDER_PROCESS=true
-ZSH_TAB_TITLE_DEFAULT_DISABLE_PREFIX=true
-
 # load everything but the path and completion files
 for file in ${config_files:#*/completion.zsh}; do
   source "$file"
 done
 
-autoload -Uz compinit
-typeset -i updated_at=$(date +'%j' -r ~/.zcompdump 2>/dev/null || stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)
-if [ $(date +'%j') != $updated_at ]; then
-  compinit -i
-else
-  compinit -C -i
-fi
+# rehash if command not found (possibly recently installed)
+zstyle ':completion:*' rehash true
+# menu if nb items > 2
+zstyle ':completion:*' menu select=2
 
-# load every completion after autocomplete loads
-for file in ${(M)config_files:#*/completion.zsh}; do
-  source "$file"
-done
-
-# FASD deson't work if this line is before the for above it...
-# load antibody plugins
-source ~/.zsh_plugins.sh
-
-unset config_files updated_at
+ZSH_TAB_TITLE_CONCAT_FOLDER_PROCESS=true
+ZSH_TAB_TITLE_DEFAULT_DISABLE_PREFIX=true
 
 # use .localrc for SUPER SECRET CRAP that you don't
 # want in your public, versioned repo.
@@ -62,7 +51,7 @@ unset config_files updated_at
 if [ -e /Users/pyrho/.nix-profile/etc/profile.d/nix.sh ]; then . /Users/pyrho/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 if [ -e /home/pyrho/.nix-profile/etc/profile.d/nix.sh ]; then . /home/pyrho/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 
-source /home/pyrho/.config/broot/launcher/bash/br
+source ${HOME}/.config/broot/launcher/bash/br
 
 [ -f "/home/pyrho/.ghcup/env" ] && source "/home/pyrho/.ghcup/env" # ghcup-env
 # Generated for envman. Do not edit.
