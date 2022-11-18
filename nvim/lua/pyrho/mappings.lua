@@ -66,8 +66,17 @@ function M.init()
     nmap <Leader>gx <Plug>vertopen_url
   ]]
 
-  vim.api.nvim_set_keymap("n", '-', '<cmd>m -2<CR>', {noremap =true})
-  vim.api.nvim_set_keymap("n", '_', '<cmd>m +1<CR>', {noremap =true})
+  vim.api.nvim_set_keymap("n", '-', '<cmd>m -2<CR>', {noremap = true})
+  vim.api.nvim_set_keymap("n", '_', '<cmd>m +1<CR>', {noremap = true})
+
+  -- Include "dumb" motions in jumplist
+  -- See https://medium.com/@kadek/understanding-vims-jump-list-7e1bfc72cdf0
+  vim.api.nvim_set_keymap("n", "k",
+                          [[(v:count > 1 ? "m'" . v:count : '' ) . 'gk']],
+                          {noremap = true, expr = true})
+  vim.api.nvim_set_keymap("n", "j",
+                          [[(v:count > 1 ? "m'" . v:count : '' ) . 'gj']],
+                          {noremap = true, expr = true})
 
 end
 return M
