@@ -569,14 +569,6 @@ return require("packer").startup({
       end
     }
 
-    -- Per dir file bookmarks
-    use {
-      'crusj/bookmarks.nvim',
-      branch = 'main',
-      requires = {'kyazdani42/nvim-web-devicons'},
-      config = function() require("bookmarks").setup() end
-    }
-
     -- Lua
     use {
       "folke/trouble.nvim",
