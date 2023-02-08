@@ -116,16 +116,19 @@ return require("packer").startup({
     -- Full lua Statusline
     use {
       "rebelot/heirline.nvim",
-      config = require"pyrho.plugins.conf.heirline".config,
+      config = function()
+        -- require"pyrho.plugins.conf.heirline".config
+        require"pyrho.plugins.conf.heirline".config()
+      end,
       -- We need to instantiate this plugin after lsp-config because we rely on Signs defined
       -- in that config
       after = "nvim-lspconfig"
 
       -- Use this to debug, it will give the exact error stack trace
-      --[[ config = function()
-        vim.cmd(
-            'luafile /home/pyrho/rc/nvim/lua/pyrho/plugins/conf/heirline.lua')
-      end, ]]
+      -- config = function()
+      --   vim.cmd(
+      --       'luafile ~/rc/nvim/lua/pyrho/plugins/conf/heirline.lua')
+      -- end,
 
     }
 
@@ -357,9 +360,13 @@ return require("packer").startup({
       -- @NOTE
       --  Glepnir is awol, tami5 is now maitaining this
       --    - dr, 2022-01-19
+      -- @NOTE
+      --  Glepnir is back.
+      --    - dr, 2022-11-22
 
-      'tami5/lspsaga.nvim',
-      config = require"pyrho.plugins.conf.lspsaga".config
+      'glepnir/lspsaga.nvim',
+      config = require"pyrho.plugins.conf.lspsaga".config,
+      branch = "main"
     }
     -- }}}
 
@@ -574,12 +581,11 @@ return require("packer").startup({
       "folke/trouble.nvim",
       requires = "kyazdani42/nvim-web-devicons",
       config = function()
-        require("trouble").setup {
-            use_diagnostic_signs = true
-        }
+        require("trouble").setup {use_diagnostic_signs = true}
       end
     }
 
+    use {'pleshevskiy/d2-vim', branch = 'issue-3'}
   end,
   config = {luarocks = {python_cmd = "python3"}}
 })

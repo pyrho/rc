@@ -3,16 +3,8 @@ function M.config()
   require("formatter").setup({
     logging = false,
     filetype = {
-      typescript = {
-        -- prettierd
-        function()
-          return {
-            exe = "prettierd",
-            args = {vim.api.nvim_buf_get_name(0)},
-            stdin = true
-          }
-        end
-      },
+      typescript = {require"formatter.defaults".prettierd},
+      typescriptreact = {require"formatter.defaults".prettierd},
       elm = {
         -- luafmt
         function()
@@ -25,11 +17,7 @@ function M.config()
           return {exe = "lua-format", args = {"--indent-width=2"}, stdin = true}
         end
       },
-      html = {
-        function()
-          return {exe = "prettierd", args = {vim.api.nvim_buf_get_name(0)}, stdin = true}
-        end
-      }
+      html = {require"formatter.filetypes.html".prettierd}
     }
   })
 end

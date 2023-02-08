@@ -23,11 +23,8 @@ function M.init()
   vim.api.nvim_set_keymap("n", "]l", ":lnext<CR>",
                           {noremap = true, silent = true})
 
-  -- Files/Buffers/Search
-  --[[ vim.api.nvim_set_keymap("n", "<Leader>o", "<cmd>Telescope find_files<CR>",
-                          {noremap = true, silent = true}) ]]
   vim.api.nvim_set_keymap("n", "<Leader>o",
-                          "<CMD>lua require'pyrho.plugins.conf.telescope'.project_files()<CR>",
+                          "<Cmd>GitFiles<CR>",
                           {noremap = true, silent = true})
 
   vim.api.nvim_set_keymap("n", "<Leader>s", "<cmd>Rg<CR>",
@@ -43,10 +40,6 @@ function M.init()
   vim.api.nvim_set_keymap("n", "<Localleader>k",
                           "<cmd>.!toilet -w80 -f pagga -F border<CR>Vjjjj:center<CR>",
                           {noremap = true, silent = true})
-
-  -- Touchbar fix ;)
-  vim.api.nvim_set_keymap("i", "jf", "<Esc>", {noremap = true})
-  vim.api.nvim_set_keymap("i", "fj", "<Esc>", {noremap = true})
 
   -- Misc
   vim.api.nvim_set_keymap("n", "<Leader>w<Leader>w",
@@ -77,6 +70,13 @@ function M.init()
   vim.api.nvim_set_keymap("n", "j",
                           [[(v:count > 1 ? "m'" . v:count : '' ) . 'gj']],
                           {noremap = true, expr = true})
+
+  vim.api.nvim_set_keymap("n", "<Leader>F", "<CMD>FormatWrite<CR>",
+                          {noremap = true})
+
+  vim.api.nvim_set_keymap("n", "<F12>", "<CMD>LSoutlineToggle<CR>",
+                          {noremap = true})
+
 
 end
 return M

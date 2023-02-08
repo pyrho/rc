@@ -79,6 +79,7 @@ function M.config()
       -- { name = 'luasnip' }, -- For luasnip users.
       {name = 'vsnip', priority = 1}, -- For vsnip users.
       {name = 'nvim_lsp', priority = 2}, {name = 'path', priority = 3},
+       {name = 'conjure'},
       -- {name = 'buffer', priority = 10}
       -- { name = 'ultisnips' }, -- For ultisnips users.
       -- { name = 'snippy' }, -- For snippy users.

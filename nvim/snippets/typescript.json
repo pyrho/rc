@@ -19,7 +19,14 @@
   "JSON console log": {
       "prefix": ["clogj"],
       "body": [
-          "console.log(JSON.stringify($0, null, 2))"
+          "console.log(JSON.stringify(${0:$TM_SELECTED_TEXT}, null, 2))"
+      ]
+  },
+
+  "console log": {
+      "prefix": ["clog"],
+      "body": [
+          "console.log(`${1:$TM_SELECTED_TEXT} - \\${${1:$TM_SELECTED_TEXT}\\}`)$0"
       ]
   },
 

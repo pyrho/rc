@@ -192,7 +192,6 @@ local function main()
   require "pyrho.plugins"
 
   require"pyrho.mappings".init()
-  require"pyrho.prettierd".setup_autofmt {types = {"*.ts", "*.js", "*.tsx"}}
 end
 
 vim.cmd [[ 

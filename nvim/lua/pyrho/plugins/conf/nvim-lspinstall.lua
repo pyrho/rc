@@ -8,7 +8,7 @@ function M.config()
     require('nvim-navic').attach(client, bufnr)
     -- Set up buffer-local keymaps (vim.api.nvim_buf_set_keymap()), etc.
     local map = vim.api.nvim_buf_set_keymap
-    map(0, "n", "gr", "<cmd>Lspsaga rename<cr>", {silent = true, noremap = true})
+    -- map(0, "n", "gr", "<cmd>Lspsaga rename<cr>", {silent = true, noremap = true})
     map(0, "n", "gx", "<cmd>Lspsaga code_action<cr>",
         {silent = true, noremap = true})
     map(0, "n", "K", "<cmd>Lspsaga hover_doc<cr>",
@@ -19,10 +19,10 @@ function M.config()
     map(0, "n", "gd", "<cmd>Telescope lsp_definitions<cr>",
         {silent = true, noremap = true})
 
-    map(0, "n", "gp", "<cmd>Lspsaga preview_definition<cr>",
+    map(0, "n", "gp", "<cmd>Lspsaga peek_definition<cr>",
         {silent = true, noremap = true})
 
-    map(0, "n", "gr", "<cmd>Telescope lsp_references<cr>",
+    map(0, "n", "gr", "<cmd>Lspsaga lsp_finder<cr>",
         {silent = true, noremap = true})
 
     map(0, "n", "gy", "<cmd>Telescope lsp_type_definitions<cr>",
@@ -40,11 +40,6 @@ function M.config()
     map(0, "n", "gk", "<cmd>Lspsaga diagnostic_jump_prev<cr>",
         {silent = true, noremap = true})
 
-    map(0, "n", "<C-u>",
-        "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<cr>", {})
-
-    map(0, "n", "<C-d>",
-        "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<cr>", {})
   end
 
   local enhance_server_opts = {

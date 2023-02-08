@@ -310,10 +310,10 @@ function M.config()
     condition = conditions.has_diagnostics,
 
     static = {
-      error_icon = vim.fn.sign_getdefined("DiagnosticSignError")[1].text,
-      warn_icon = vim.fn.sign_getdefined("DiagnosticSignWarn")[1].text,
-      info_icon = vim.fn.sign_getdefined("DiagnosticSignInfo")[1].text,
-      hint_icon = vim.fn.sign_getdefined("DiagnosticSignHint")[1].text
+      error_icon = (vim.fn.sign_getdefined("DiagnosticSignError")[1] or { text='😡' }).text,
+      warn_icon = (vim.fn.sign_getdefined("DiagnosticSignWarn")[1] or { text = "😥" }).text,
+      info_icon = (vim.fn.sign_getdefined("DiagnosticSignInfo")[1] or { text = '😤' }).text,
+      hint_icon = (vim.fn.sign_getdefined("DiagnosticSignHint")[1] or { text = '😐' }).text
     },
 
     init = function(self)
@@ -597,6 +597,7 @@ function M.config()
   require'heirline'.setup(StatusLines, WinBars)
 end
 
+M.config()
 return M
 
 -- vim:fdm=marker

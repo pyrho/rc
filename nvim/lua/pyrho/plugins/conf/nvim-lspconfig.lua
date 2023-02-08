@@ -1,24 +1,24 @@
 local M = {}
 function M.config()
-  vim.fn.sign_define("LspDiagnosticsSignError", {
-    texthl = "LspDiagnosticsSignError",
+  vim.fn.sign_define("DiagnosticSignError", {
+    texthl = "DiagnosticSignError",
     text = "",
-    numhl = "LspDiagnosticsSignError"
+    numhl = "DiagnosticSignError"
   })
-  vim.fn.sign_define("LspDiagnosticsSignWarning", {
-    texthl = "LspDiagnosticsSignWarning",
+  vim.fn.sign_define("DiagnosticSignWarn", {
+    texthl = "DiagnosticSignWarn",
     text = "",
-    numhl = "LspDiagnosticsSignWarning"
+    numhl = "DiagnosticSignWarn"
   })
-  vim.fn.sign_define("LspDiagnosticsSignHint", {
-    texthl = "LspDiagnosticsSignHint",
+  vim.fn.sign_define("DiagnosticSignHint", {
+    texthl = "DiagnosticSignHint",
     text = "",
-    numhl = "LspDiagnosticsSignHint"
+    numhl = "DiagnosticSignHint"
   })
-  vim.fn.sign_define("LspDiagnosticsSignInformation", {
-    texthl = "LspDiagnosticsSignInformation",
+  vim.fn.sign_define("DiagnosticSignInfo", {
+    texthl = "DiagnosticSignInfo",
     text = "",
-    numhl = "LspDiagnosticsSignInformation"
+    numhl = "DiagnosticSignInfo"
   })
 
 end
