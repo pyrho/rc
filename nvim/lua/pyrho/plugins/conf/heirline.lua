@@ -3,6 +3,8 @@ function M.config()
   local conditions = require("heirline.conditions")
   local utils = require("heirline.utils")
 
+  local flexLowPriority = 1
+  local flexHighPriority = 100
   local colors = require("tokyonight.colors").setup {} -- pass in any of the config options as explained above
   local tokyonight_utils = require("tokyonight.util")
   local Space = {provider = " "}
@@ -117,7 +119,7 @@ function M.config()
     end,
     hl = {fg = utils.get_highlight("Directory").fg},
 
-    flexible = 10,
+    flexible = flexHighPriority,
     {provider = function(self) return self.lfilename end},
     {provider = function(self) return vim.fn.pathshorten(self.lfilename) end}
   }
@@ -157,12 +159,11 @@ function M.config()
   )
 
   local FileType = {
-    flexible = 10,
+    -- flexible = flexHighPriority,
     {
       provider = function() return string.upper(vim.bo.filetype) end,
       hl = {fg = utils.get_highlight("Type").fg, bold = true}
-    },
-    {provider = ""}
+    }, {provider = ""}
   }
 
   local FileEncoding = {
@@ -230,7 +231,7 @@ function M.config()
     end,
     hl = {fg = colors.blue, bold = false},
 
-    flexible = 10,
+    flexible = flexLowPriority,
     {
       -- evaluates to the full-lenth path
       provider = function(self)
@@ -287,7 +288,7 @@ function M.config()
   }
 
   local LSPActive = {
-    flexible = 10,
+    -- flexible = flexHighPriority,
     condition = conditions.lsp_attached,
 
     hl = {fg = colors.green, bold = true},
@@ -297,12 +298,19 @@ function M.config()
 
   -- Awesome plugin
   local FlexGps = {
-    condition = function()
-      require("nvim-navic").is_available(vim.api.nvim_get_current_buf())
-    end,
+    condition = function() return require("nvim-navic").is_available() end,
     hl = {fg = colors.gray},
-    flexible = 1,
-    {provider = require("nvim-navic").get_location},
+    flexible = flexHighPriority,
+    {
+      provider = function()
+        return require("nvim-navic").get_location({depth_limit = 3})
+      end
+    },
+    {
+      provider = function()
+        return require("nvim-navic").get_location({depth_limit = 1})
+      end
+    },
     {provider = ""}
 
   }
@@ -383,7 +391,7 @@ function M.config()
     Space,
 
     {
-      flexible = 10,
+      flexible = flexLowPriority,
       {
         provider = function(self)
           local repo_name = vim.fn.fnamemodify(self.status_dict.root, ":t")
@@ -406,27 +414,44 @@ function M.config()
     }, ]]
 
     -- You could handle delimiters, icons and counts similar to Diagnostics
-    {condition = function(self) return self.has_changes end, provider = "  "},
     {
-      provider = function(self)
-        local count = self.status_dict.added or 0
-        return count > 0 and ("+" .. count)
-      end,
-      hl = {fg = colors.git.add}
+      flexible = flexLowPriority,
+      {
+        condition = function(self) return self.has_changes end,
+        provider = "  "
+      }
+    },
+
+    {
+      flexible = flexLowPriority,
+      {
+        provider = function(self)
+          local count = self.status_dict.added or 0
+          return count > 0 and ("+" .. count)
+        end,
+        hl = {fg = colors.git.add}
+      }
+    },
+
+    {
+      flexible = flexLowPriority,
+      {
+        provider = function(self)
+          local count = self.status_dict.removed or 0
+          return count > 0 and ("-" .. count)
+        end,
+        hl = {fg = colors.git.delete}
+      }
     },
     {
-      provider = function(self)
-        local count = self.status_dict.removed or 0
-        return count > 0 and ("-" .. count)
-      end,
-      hl = {fg = colors.git.delete}
-    },
-    {
-      provider = function(self)
-        local count = self.status_dict.changed or 0
-        return count > 0 and ("~" .. count)
-      end,
-      hl = {fg = colors.git.change}
+      flexible = flexLowPriority,
+      {
+        provider = function(self)
+          local count = self.status_dict.changed or 0
+          return count > 0 and ("~" .. count)
+        end,
+        hl = {fg = colors.git.change}
+      }
     }
   }
   -- }}} !Git stuff
@@ -470,6 +495,13 @@ function M.config()
         require'pyrho.helpers'.separators.left_rounded,
         require'pyrho.helpers'.separators.right_rounded
       }, colors.fg_gutter, {hl = {fg = colors.blue}, Diagnostics})
+    },
+    {
+      condition = function() return require("nvim-navic").is_available() end,
+      utils.surround({
+        require'pyrho.helpers'.separators.left_rounded,
+        require'pyrho.helpers'.separators.right_rounded
+      }, colors.fg_gutter, {hl = {fg = colors.black}, FlexGps})
     }
   }
 
@@ -477,7 +509,7 @@ function M.config()
 
   -- Misc {{{
   local Obsession = {
-    flexible = 10,
+    -- flexible = flexHighPriority,
     {
       provider = function()
         -- local obsession_status = vim.fn.ObsessionStatus("OBS  ", "OBS  ")
@@ -489,8 +521,7 @@ function M.config()
         -- return "OBS " .. vim.fn.ObsessionStatus(" ", " ") .. ""
       end,
       hl = {fg = colors.magenta, bold = true}
-    },
-    {provider = ""}
+    }, {provider = ""}
   }
 
   -- }}} !Misc
@@ -499,7 +530,7 @@ function M.config()
 
   local DefaultStatusline = {
     -- xxx
-    ViMode, Space, FileNameBlock, Space, Git, Align, FlexGps, Align, -- xxx
+    ViMode, Space, FileNameBlock, Space, Git, Align, -- xxx
     Obsession, Space, LSPActive, Space, FileType, Space, Ruler, Space, ScrollBar
 
   }
