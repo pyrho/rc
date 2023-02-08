@@ -297,7 +297,9 @@ function M.config()
 
   -- Awesome plugin
   local FlexGps = {
-    condition = require("nvim-navic").is_available,
+    condition = function()
+      require("nvim-navic").is_available(vim.api.nvim_get_current_buf())
+    end,
     hl = {fg = colors.gray},
     flexible = 1,
     {provider = require("nvim-navic").get_location},
@@ -310,10 +312,14 @@ function M.config()
     condition = conditions.has_diagnostics,
 
     static = {
-      error_icon = (vim.fn.sign_getdefined("DiagnosticSignError")[1] or { text='😡' }).text,
-      warn_icon = (vim.fn.sign_getdefined("DiagnosticSignWarn")[1] or { text = "😥" }).text,
-      info_icon = (vim.fn.sign_getdefined("DiagnosticSignInfo")[1] or { text = '😤' }).text,
-      hint_icon = (vim.fn.sign_getdefined("DiagnosticSignHint")[1] or { text = '😐' }).text
+      error_icon = (vim.fn.sign_getdefined("DiagnosticSignError")[1] or
+          {text = '😡'}).text,
+      warn_icon = (vim.fn.sign_getdefined("DiagnosticSignWarn")[1] or
+          {text = "😥"}).text,
+      info_icon = (vim.fn.sign_getdefined("DiagnosticSignInfo")[1] or
+          {text = '😤'}).text,
+      hint_icon = (vim.fn.sign_getdefined("DiagnosticSignHint")[1] or
+          {text = '😐'}).text
     },
 
     init = function(self)
@@ -459,7 +465,6 @@ function M.config()
     },
     -- A winbar for regular files
     {
-
       condition = conditions.has_diagnostics,
       utils.surround({
         require'pyrho.helpers'.separators.left_rounded,
@@ -594,10 +599,9 @@ function M.config()
   augroup END
   ]]
 
-  require'heirline'.setup(StatusLines, WinBars)
+  require'heirline'.setup({statusline = StatusLines, winbar = WinBars})
 end
 
-M.config()
 return M
 
 -- vim:fdm=marker

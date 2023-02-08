@@ -352,18 +352,6 @@ return require("packer").startup({
     }
 
     use {
-      -- 'glepnir/lspsaga.nvim',
-      -- @NOTE
-      --  Waiting on https://github.com/glepnir/lspsaga.nvim/pull/207 to be
-      --  merged.
-      --    - dr, 2021-06-24
-      -- @NOTE
-      --  Glepnir is awol, tami5 is now maitaining this
-      --    - dr, 2022-01-19
-      -- @NOTE
-      --  Glepnir is back.
-      --    - dr, 2022-11-22
-
       'glepnir/lspsaga.nvim',
       config = require"pyrho.plugins.conf.lspsaga".config,
       branch = "main"
@@ -587,7 +575,10 @@ return require("packer").startup({
 
     use {'pleshevskiy/d2-vim', branch = 'issue-3'}
   end,
-  config = {luarocks = {python_cmd = "python3"}}
+  config = {
+    luarocks = {python_cmd = "python3"},
+    snapshot_path = '/Users/pyrho/resilio/main/backups'
+  }
 })
 
 --[[

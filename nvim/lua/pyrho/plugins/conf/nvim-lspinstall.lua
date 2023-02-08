@@ -13,10 +13,13 @@ function M.config()
         {silent = true, noremap = true})
     map(0, "n", "K", "<cmd>Lspsaga hover_doc<cr>",
         {silent = true, noremap = true})
+
     map(0, "n", "go", "<cmd>Lspsaga show_line_diagnostics<cr>",
         {silent = true, noremap = true})
 
-    map(0, "n", "gd", "<cmd>Telescope lsp_definitions<cr>",
+    -- map(0, "n", "gd", "<cmd>Telescope lsp_definitions<cr>",
+    --     {silent = true, noremap = true})
+    map(0, "n", "gd", "<cmd>Lspsaga goto_definition<cr>",
         {silent = true, noremap = true})
 
     map(0, "n", "gp", "<cmd>Lspsaga peek_definition<cr>",
@@ -40,20 +43,20 @@ function M.config()
     map(0, "n", "gk", "<cmd>Lspsaga diagnostic_jump_prev<cr>",
         {silent = true, noremap = true})
 
+    map(0, "n", "<Leader>ci", "<cmd>Lspsaga incoming_calls<CR>", {silent = true, noremap = true})
+    map(0, "n", "<Leader>co", "<cmd>Lspsaga outgoing_calls<CR>", {silent = true, noremap = true})
+
   end
 
   local enhance_server_opts = {
     ["ltex"] = function(opts)
-      opts.filetypes = { "markdown" }
-      opts.cmd =  {"/opt/homebrew/bin/ltex-ls"}
+      opts.filetypes = {"markdown"}
+      opts.cmd = {"/opt/homebrew/bin/ltex-ls"}
       opts.settings = {
         ltex = {
           diagnosticSeverity = 'information',
           language = 'en-US',
-          additionalRules = {
-            motherTongue = 'fr',
-            languageModel = '~/.ngrams'
-          }
+          additionalRules = {motherTongue = 'fr', languageModel = '~/.ngrams'}
         }
       }
     end
