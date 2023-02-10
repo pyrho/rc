@@ -459,6 +459,7 @@ function M.config()
   -- Winbar {{{
 
   local WinBars = {
+
     fallthrough = false,
     { -- Hide the winbar for special buffers
       condition = function()
@@ -490,18 +491,21 @@ function M.config()
     },
     -- A winbar for regular files
     {
-      condition = conditions.has_diagnostics,
-      utils.surround({
-        require'pyrho.helpers'.separators.left_rounded,
-        require'pyrho.helpers'.separators.right_rounded
-      }, colors.fg_gutter, {hl = {fg = colors.blue}, Diagnostics})
-    },
-    {
-      condition = function() return require("nvim-navic").is_available() end,
-      utils.surround({
-        require'pyrho.helpers'.separators.left_rounded,
-        require'pyrho.helpers'.separators.right_rounded
-      }, colors.fg_gutter, {hl = {fg = colors.black}, FlexGps})
+      {
+        condition = conditions.has_diagnostics,
+        utils.surround({
+          require'pyrho.helpers'.separators.left_rounded,
+          require'pyrho.helpers'.separators.right_rounded
+        }, colors.fg_gutter, {hl = {fg = colors.blue}, Diagnostics})
+      }, Align, {
+        condition = function()
+          return require("nvim-navic").is_available()
+        end,
+        utils.surround({
+          require'pyrho.helpers'.separators.left_rounded,
+          require'pyrho.helpers'.separators.right_rounded
+        }, colors.fg_gutter, {hl = {fg = colors.black}, FlexGps})
+      }
     }
   }
 
