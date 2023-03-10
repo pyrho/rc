@@ -154,7 +154,7 @@ return require("packer").startup({
           use_git_branch = true, -- create session files based on the branch of the git enabled repository
           follow_cwd = true, -- change session file name to match current working directory if it changes
           autoload = false, -- automatically load the session for the cwd on Neovim startup
-          allowed_dirs = {'~/code/caribou/main-repo'}, -- table of dirs that the plugin will auto-save and auto-load from
+          allowed_dirs = {"~/code/caribou/main-repo"}, -- table of dirs that the plugin will auto-save and auto-load from
           branch_separator = "@@"
         })
         require("telescope").load_extension("persisted") -- To load the telescope extension
@@ -317,16 +317,158 @@ return require("packer").startup({
 
     -- LSP stuff
     use {
-      "neovim/nvim-lspconfig",
-      config = require"pyrho.plugins.conf.nvim-lspconfig".config
+      {
+        "williamboman/mason.nvim",
+        config = function() require("mason").setup() end
+      }, {
+        "williamboman/mason-lspconfig.nvim",
+        cond = function() return not require"pyrho.helpers".is_zen() end,
+        config = function()
+          local map = vim.api.nvim_buf_set_keymap
+
+          local function configureForLspSaga()
+            -- Set up buffer-local keymaps (vim.api.nvim_buf_set_keymap()), etc.
+            map(0, "n", "gx", "<cmd>Lspsaga code_action<cr>",
+                {silent = true, noremap = true})
+            map(0, "n", "K", "<cmd>Lspsaga hover_doc<cr>",
+                {silent = true, noremap = true})
+
+            map(0, "n", "go", "<cmd>Lspsaga show_line_diagnostics<cr>",
+                {silent = true, noremap = true})
+            map(0, "n", "gO", "<cmd>Lspsaga show_cursor_diagnostics<cr>",
+                {silent = true, noremap = true})
+
+            map(0, "n", "gd", "<cmd>Lspsaga goto_definition<cr>",
+                {silent = true, noremap = true})
+
+            map(0, "n", "gp", "<cmd>Lspsaga peek_definition<cr>",
+                {silent = true, noremap = true})
+
+            map(0, "n", "gr", "<cmd>Lspsaga lsp_finder<cr>",
+                {silent = true, noremap = true})
+
+            map(0, "n", "gy", "<cmd>Telescope lsp_type_definitions<cr>",
+                {silent = true, noremap = true})
+
+            map(0, "n", "g0", "<cmd>Lspsaga outline<cr>",
+                {silent = true, noremap = true})
+
+            map(0, "n", "gS",
+                "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",
+                {silent = true, noremap = true})
+
+            map(0, "n", "gj", "<cmd>Lspsaga diagnostic_jump_next<cr>",
+                {silent = true, noremap = true})
+
+            map(0, "n", "gk", "<cmd>Lspsaga diagnostic_jump_prev<cr>",
+                {silent = true, noremap = true})
+
+            map(0, "n", "<Leader>ci", "<cmd>Lspsaga incoming_calls<CR>",
+                {silent = true, noremap = true})
+            map(0, "n", "<Leader>co", "<cmd>Lspsaga outgoing_calls<CR>",
+                {silent = true, noremap = true})
+          end
+
+          local function configureForTrouble()
+            vim.keymap.set("n", "<leader>xx", "<cmd>TroubleToggle<cr>",
+                           {silent = true, noremap = true})
+            vim.keymap.set("n", "<leader>xw",
+                           "<cmd>TroubleToggle workspace_diagnostics<cr>",
+                           {silent = true, noremap = true})
+            vim.keymap.set("n", "<leader>xd",
+                           "<cmd>TroubleToggle document_diagnostics<cr>",
+                           {silent = true, noremap = true})
+            vim.keymap.set("n", "<leader>xl", "<cmd>TroubleToggle loclist<cr>",
+                           {silent = true, noremap = true})
+            vim.keymap.set("n", "<leader>xq", "<cmd>TroubleToggle quickfix<cr>",
+                           {silent = true, noremap = true})
+            vim.keymap.set("n", "gr", "<cmd>TroubleToggle lsp_references<cr>",
+                           {silent = true, noremap = true})
+            vim.keymap.set("n", "gd", "<cmd>TroubleToggle lsp_definitions<cr>",
+                           {silent = true, noremap = true})
+            vim.keymap.set("n", "gy",
+                           "<cmd>TroubleToggle lsp_type_definitions<cr>",
+                           {silent = true, noremap = true})
+            vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<cr>",
+                           {silent = true, noremap = true})
+
+          end
+          require("mason-lspconfig").setup({
+            ensure_installed = {
+              "lua_ls", "vtsls", "elixirls", "elmls", "prismals", "zk", "ltex",
+              "yamlls"
+            }
+          })
+          require("mason-lspconfig").setup_handlers {
+            -- The first entry (without a key) will be the default handler
+            -- and will be called for each installed server that doesn't have
+            -- a dedicated handler.
+            function(server_name) -- default handler (optional)
+              require("lspconfig")[server_name].setup {
+                on_attach = function(client, bufnr)
+                  require('nvim-navic').attach(client, bufnr)
+                  configureForLspSaga()
+                end
+              }
+            end,
+            -- Next, you can provide a dedicated handler for specific servers.
+            -- For example, a handler override for the `rust_analyzer`:
+            ["ltex"] = function()
+              require('lspconfig').ltex.setup {
+                on_attach = function(client, bufnr)
+
+                  require('nvim-navic').attach(client, bufnr)
+                  configureForLspSaga()
+                end,
+                filetypes = {"markdown"},
+                cmd = {"/opt/homebrew/bin/ltex-ls"},
+                settings = {
+                  ltex = {
+                    diagnosticSeverity = 'information',
+                    language = 'en-US',
+                    additionalRules = {
+                      motherTongue = 'fr',
+                      languageModel = '~/.ngrams'
+                    }
+                  }
+                }
+              }
+            end,
+
+            ["yamlls"] = function()
+              require('lspconfig').yamlls.setup {
+                on_attach = function(client, bufnr)
+                  require('nvim-navic').attach(client, bufnr)
+                  configureForLspSaga()
+                end,
+                settings = {
+                  yaml = {
+                    schemas = {
+                      ["https://json.schemastore.org/taskfile.json"] = "Taskfile*.yml",
+                      ["https://json.schemastore.org/circleciconfig.json"] = ".circleci/config.yml"
+                    }
+                  }
+                }
+              }
+            end
+          }
+
+        end
+      }, {
+        "neovim/nvim-lspconfig",
+        config = function()
+          require"pyrho.plugins.conf.nvim-lspconfig".config()
+        end
+      }
     }
 
-    use {
+    -- Deprecated
+    --[[ use {
       "williamboman/nvim-lsp-installer",
       requires = "neovim/nvim-lspconfig",
       config = require"pyrho.plugins.conf.nvim-lspinstall".config,
       cond = function() return not require"pyrho.helpers".is_zen() end
-    }
+    } ]]
 
     use {
       {"hrsh7th/nvim-cmp", config = require"pyrho.plugins.conf.nvim-cmp".config},
@@ -351,6 +493,7 @@ return require("packer").startup({
       end
     }
 
+    -- 2023-02-10 too slow right now..
     use {
       'glepnir/lspsaga.nvim',
       config = require"pyrho.plugins.conf.lspsaga".config,
@@ -440,8 +583,7 @@ return require("packer").startup({
     use {
       -- [This PR](https://github.com/rest-nvim/rest.nvim/pull/122) of rest.nvim introduces some nice features
       -- Until its merged, let's use that.
-      'D-James-GH/rest.nvim',
-      branch = 'feature/selectable-json-env',
+      'rest-nvim/rest.nvim',
       requires = {"nvim-lua/plenary.nvim"},
       config = function()
         require("rest-nvim").setup({
@@ -478,7 +620,10 @@ return require("packer").startup({
     -- Show a popup window with the contents of registers for pasting
     use {
       "tversteeg/registers.nvim",
-      config = function() vim.g.registers_window_border = "rounded" end
+      config = function()
+        local registers = require 'registers'
+        registers.setup {window = {border = 'rounded'}}
+      end
     }
 
     -- Zettelkasten
@@ -569,11 +714,14 @@ return require("packer").startup({
       "folke/trouble.nvim",
       requires = "kyazdani42/nvim-web-devicons",
       config = function()
-        require("trouble").setup {use_diagnostic_signs = true}
+        -- require("trouble").setup {use_diagnostic_signs = true}
+        require("trouble").setup {}
       end
     }
 
-    use {'pleshevskiy/d2-vim', branch = 'issue-3'}
+    use {'terrastruct/d2-vim'}
+
+    use {'ledger/vim-ledger'}
   end,
   config = {
     luarocks = {python_cmd = "python3"},
@@ -598,4 +746,7 @@ Moved from voldikss/vim-floaterm to FTerm.nvim
 
 # 2022-11-03 
 Modified telescope defaults to use "smart" path truncation, it's said to have a performance impact
+
+# 2023-02-10 
+Lspsaga is looking great but the performance is really bad (> 30s sometimes), trying lsp trouble.
 --]]
