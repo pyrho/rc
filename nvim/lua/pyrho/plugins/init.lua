@@ -725,7 +725,7 @@ return require("packer").startup({
   end,
   config = {
     luarocks = {python_cmd = "python3"},
-    snapshot_path = '/Users/pyrho/resilio/main/backups'
+    snapshot_path = os.getenv('HOME') .. '/resilio/main/backups'
   }
 })
 
