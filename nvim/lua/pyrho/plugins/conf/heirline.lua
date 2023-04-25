@@ -121,7 +121,7 @@ function M.config()
 
     flexible = flexHighPriority,
     {provider = function(self) return self.lfilename end},
-    {provider = function(self) return vim.fn.pathshorten(self.lfilename) end}
+    {provider = function(self) return vim.fn.pathshorten(self.lfilename, 3) end}
   }
 
   local FileFlags = {
@@ -524,7 +524,11 @@ function M.config()
         end
         -- return "OBS " .. vim.fn.ObsessionStatus(" ", " ") .. ""
       end,
-      hl = {fg = colors.magenta, bold = true}
+      hl = {fg = colors.magenta, bold = true},
+      on_click = {
+        callback = function() vim.api.nvim_command('SessionStart') end,
+        name = "obsession_toggle"
+      }
     }, {provider = ""}
   }
 

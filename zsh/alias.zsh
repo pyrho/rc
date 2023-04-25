@@ -62,20 +62,19 @@ alias grt='cd $(git rev-parse --show-toplevel || echo ".")'
 # }}}
 #
 alias l='exa --group-directories-first -lgm'
-#alias lt='l --sort=time'
+alias lt='l --sort=time'
 alias la='l -a'
 alias ls='exa -F'
-alias k='kubectl'
-alias kdo='kubectl --context do'
-alias kmi='kubectl --context minikube'
 
-alias ffcontstartw='docker run -d --name=firefox -p 5800:5800 --shm-size 4g -e "DISPLAY_WIDTH=3008" -e "DISPLAY_HEIGHT=1692" jlesage/firefox && open http://localhost:5800'
-alias ffcontstartn='docker run -d --name=firefox -p 5800:5800 --shm-size 4g -e "DISPLAY_WIDTH=1920" -e "DISPLAY_HEIGHT=1080" jlesage/firefox && open http://localhost:5800'
-alias ffcontstop='docker stop firefox && docker rm firefox'
 alias sl='exa --icons -l'
 alias t='todo.sh'
 alias icat="kitty +kitten icat"
+alias ssk="kitty +kitten ssh"
 alias coffee="curl https://coffee.25.wf -T"
+function haste() {
+    PASTE_ID=$(cat $1 | curl -X POST --data-binary @- https://paste.25-47.net/api/pastes/simple)
+    echo "https://paste.25-47.net/$PASTE_ID"
+}
 function obsess() {
     #kitty @ set-tab-title $@
     cd $(zoxide query "$@") && nvim -S Session.vim

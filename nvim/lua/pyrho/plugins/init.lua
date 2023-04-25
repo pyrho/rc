@@ -273,7 +273,8 @@ return require("packer").startup({
     }
 
     -- Focus on a portion of code
-    use "chrisbra/nrrwrgn"
+    -- 2023-04-24 Not really using it
+    -- use "chrisbra/nrrwrgn"
 
     -- DB client
     use {
@@ -416,7 +417,6 @@ return require("packer").startup({
             ["ltex"] = function()
               require('lspconfig').ltex.setup {
                 on_attach = function(client, bufnr)
-
                   require('nvim-navic').attach(client, bufnr)
                   configureForLspSaga()
                 end,
@@ -424,6 +424,7 @@ return require("packer").startup({
                 cmd = {"/opt/homebrew/bin/ltex-ls"},
                 settings = {
                   ltex = {
+                    dictionary = {['en_US'] = {"HPAQ"}},
                     diagnosticSeverity = 'information',
                     language = 'en-US',
                     additionalRules = {
@@ -709,19 +710,32 @@ return require("packer").startup({
       end
     }
 
-    -- Lua
-    use {
-      "folke/trouble.nvim",
-      requires = "kyazdani42/nvim-web-devicons",
-      config = function()
-        -- require("trouble").setup {use_diagnostic_signs = true}
-        require("trouble").setup {}
-      end
-    }
-
     use {'terrastruct/d2-vim'}
 
     use {'ledger/vim-ledger'}
+
+    use {
+      'stevearc/aerial.nvim',
+      config = function()
+        require('aerial').setup({
+          on_attach = function(bufnr)
+            -- Jump forwards/backwards with '{' and '}'
+            vim.keymap.set('n', '[n', '<cmd>AerialPrev<CR>', {buffer = bufnr})
+            vim.keymap.set('n', ']n', '<cmd>AerialNext<CR>', {buffer = bufnr})
+            vim.keymap.set('n', '<leader>n', '<cmd>AerialNavToggle<CR>',
+                           {buffer = bufnr})
+          end
+        })
+      end
+    }
+
+    use({
+      "iamcco/markdown-preview.nvim",
+      run = "cd app && npm install",
+      setup = function() vim.g.mkdp_filetypes = {"markdown"} end,
+      ft = {"markdown"}
+    })
+
   end,
   config = {
     luarocks = {python_cmd = "python3"},

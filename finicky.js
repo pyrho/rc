@@ -1,35 +1,13 @@
 module.exports = {
-  defaultBrowser: "Firefox",
+  defaultBrowser: "Safari",
   options: {
     // Hide the finicky icon from the top bar. Default: false
     hideIcon: false,
     // Check for update on startup. Default: true
     checkForUpdate: true,
     // Log every request with basic information to console. Default: false
-    logRequests: false,
+    logRequests: true,
   },
-  handlers: [
-    {
-      match: "https://linear.app/*",
-      browser: "Linear",
-    },
-    {
-      match: "https://www.figma.com/file/*",
-      browser: "Figma",
-    },
-    {
-      match: "https://www.figma.com/file/*",
-      browser: "Figma",
-    },
-    {
-      match: ({ url }) => url.host.endsWith("cloud.google.com"),
-      browser: "Firefox",
-    },
-    {
-      match: /zoom\.us\/join/,
-      browser: "us.zoom.xos",
-    },
-  ],
   rewrite: [
     {
       match: ({ url }) =>
@@ -72,6 +50,48 @@ module.exports = {
           search: search.map((parameter) => parameter.join("=")).join("&"),
         };
       },
+    },
+  ],
+  handlers: [
+    {
+      match: ({ url }) => url.host.endsWith("cloud.google.com"),
+      url({ urlString }) {
+        return `ext+container:name=Caribou&url=${encodeURIComponent(urlString)}`;
+      },
+      browser: "Firefox"
+    },
+
+    {
+      match: "ext+container:name=*",
+      browser: "Firefox",
+    },
+    {
+      match: "http://localhost:3000/*",
+      browser: {
+        name: "Google Chrome",
+        profile: "Profile 1",
+      },
+    },
+
+    {
+      match: "https://linear.app/*",
+      browser: "Linear",
+    },
+    {
+      match: "https://www.figma.com/file/*",
+      browser: "Figma",
+    },
+    {
+      match: "https://www.notion.so/*",
+      browser: "Notion",
+    },
+    // {
+    //   match: ({ url }) => url.host.endsWith("cloud.google.com"),
+    //   browser: "Firefox",
+    // },
+    {
+      match: /zoom\.us\/join/,
+      browser: "us.zoom.xos",
     },
   ],
 };

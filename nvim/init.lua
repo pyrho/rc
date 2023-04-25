@@ -179,42 +179,47 @@ local function highlight_yank_init()
   ]]
 end
 
+local function remove_kitty_padding()
+  -- vim.cmd [[
+  --   augroup kitty_mp
+  --   autocmd!
+  --   au VimLeave * :silent !kitty @ set-spacing padding=20 margin=10
+  --   au VimEnter * :silent !kitty @ set-spacing padding=0 margin=0
+  --   augroup END
+  -- ]]
+
+  local kitty_padding_augroup = vim.api.nvim_create_augroup('kitty_padding',
+                                                            {clear = true})
+
+  vim.api.nvim_create_autocmd({"VimLeave"}, {
+    pattern = "*",
+    group = kitty_padding_augroup,
+    command = [[ silent !kitty @ set-spacing padding=20 ]]
+  })
+
+  vim.api.nvim_create_autocmd({"VimEnter"}, {
+    pattern = "*",
+    group = kitty_padding_augroup,
+    command = [[ silent !kitty @ set-spacing padding=0 ]]
+  })
+end
+
 function _G.dump(...)
   local objects = vim.tbl_map(vim.inspect, {...})
   print(unpack(objects))
 end
 
 local function main()
+  vim.cmd([[au BufRead,BufNewFile *.jq setfiletype jq]])
   init_abbrev()
   highlight_yank_init()
+  -- remove_kitty_padding()
   fancy_fold()
 
   require "pyrho.plugins"
 
   require"pyrho.mappings".init()
 end
-
-vim.cmd [[ 
-noremap <C-B> :call RunBroot()<CR>i
-
-fun! RunBroot()
-  let l:command = 'broot --conf ~/.config/broot/nvim.toml'
-  enew
-  call termopen(l:command, {'on_exit': 'BrootOnExit'})
-endfun
-
-fun! BrootOnExit(job_id, code, event) dict
-  let l:filename = getline(1)
-  enew | bd! #
-
-  if (l:filename != '')
-    execute 'edit ' . l:filename
-  else
-    bp
-  endif
-endfun
-
-]]
 
 set_options()
 vim.schedule(main)

@@ -26,8 +26,8 @@ n ()
     fi
 }
 
-export NNN_BMS='a:/home/pyrho/repos/askmarty/apps;t:/tmp;D:~/Downloads/'
+export NNN_BMS='c:/Users/pyrho/code/caribou/main-repo;t:/tmp;D:~/Downloads/'
 export NNN_FIFO=/tmp/nnn.fifo
-export NNN_PLUG='p:preview-tui'
+export NNN_PLUG='p:preview-tui;o:fzopen;z:autojump'
 export NNN_COLORS='1234'
-export NNN_OPTS='ex'
+export NNN_OPTS='exAdn'

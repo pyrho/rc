@@ -25,7 +25,7 @@ export ZSH_AUTOSUGGEST_USE_ASYNC=1
 # Not sure why this is here :)
 export PATH="/usr/local/opt/libpq/bin:/Users/pyrho/.cargo/bin:/usr/local/opt/avr-gcc@7/bin:$PATH"
 export LDFLAGS="-L/usr/local/opt/avr-gcc@7/lib"
-export HISTDB_FILE="${HOME}/resilio/main/zsh_histdb/zsh-history.db"
+export HISTDB_FILE="${HOME}/.zsh_histdb/zsh-history.db"
 
 #export MANPAGER="nvim -u ~/rc/nvim/init_minimal.vim -c 'set ft=man' -"
 export sel=${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.selection
