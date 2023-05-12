@@ -17,7 +17,12 @@ function M.config()
           return {exe = "lua-format", args = {"--indent-width=2"}, stdin = true}
         end
       },
-      html = {require"formatter.filetypes.html".prettierd}
+      html = {require"formatter.filetypes.html".prettierd},
+      mysql = {
+        function()
+          return {exe = "sql-formatter", args = {"-lmysql"}, stdin = true}
+        end
+      }
     }
   })
 end
