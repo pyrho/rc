@@ -18,5 +18,5 @@ zsh-users/zsh-history-substring-search
 trystan2k/zsh-tab-title
 
 zsh-users/zsh-completions
-mattmc3/zephyr path:plugins/completions
+mattmc3/zephyr path:plugins/completion
 lukechilds/zsh-better-npm-completion

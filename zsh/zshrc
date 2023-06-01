@@ -51,7 +51,7 @@ ZSH_TAB_TITLE_DEFAULT_DISABLE_PREFIX=true
 if [ -e /Users/pyrho/.nix-profile/etc/profile.d/nix.sh ]; then . /Users/pyrho/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 if [ -e /home/pyrho/.nix-profile/etc/profile.d/nix.sh ]; then . /home/pyrho/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 
-source ${HOME}/.config/broot/launcher/bash/br
+[ -f "/home/pyrho/.ghcup/env" ] && source ${HOME}/.config/broot/launcher/bash/br
 
 [ -f "/home/pyrho/.ghcup/env" ] && source "/home/pyrho/.ghcup/env" # ghcup-env
 # Generated for envman. Do not edit.
