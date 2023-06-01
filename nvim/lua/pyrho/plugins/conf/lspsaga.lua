@@ -20,6 +20,9 @@ function M.config()
     symbol_in_winbar = {enable = false},
     lightbulb = {enable = false}
   })
+
+  -- 2023-05-26 Seems to conflict with nvim-cmp..
+  -- require('pyrho.plugins.conf.lspsaga_signature_help')
 end
 
 return M

@@ -78,6 +78,7 @@ function M.config()
     sources = cmp.config.sources({
       -- { name = 'luasnip' }, -- For luasnip users.
       {name = 'vsnip', priority = 1}, -- For vsnip users.
+      { name = 'nvim_lsp_signature_help', priority = 2},
       {name = 'nvim_lsp', priority = 2}, {name = 'path', priority = 3},
        {name = 'conjure'},
       -- {name = 'buffer', priority = 10}

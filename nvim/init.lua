@@ -179,7 +179,7 @@ local function highlight_yank_init()
   ]]
 end
 
-local function remove_kitty_padding()
+local function restore_kitty_padding()
   -- vim.cmd [[
   --   augroup kitty_mp
   --   autocmd!
@@ -188,20 +188,21 @@ local function remove_kitty_padding()
   --   augroup END
   -- ]]
 
-  local kitty_padding_augroup = vim.api.nvim_create_augroup('kitty_padding',
-                                                            {clear = true})
+  -- local kitty_padding_augroup = vim.api.nvim_create_augroup('kitty_padding',
+  --                                                           {clear = true})
 
-  vim.api.nvim_create_autocmd({"VimLeave"}, {
-    pattern = "*",
-    group = kitty_padding_augroup,
-    command = [[ silent !kitty @ set-spacing padding=20 ]]
-  })
-
-  vim.api.nvim_create_autocmd({"VimEnter"}, {
-    pattern = "*",
-    group = kitty_padding_augroup,
-    command = [[ silent !kitty @ set-spacing padding=0 ]]
-  })
+  -- vim.api.nvim_create_autocmd({"VimLeave"}, {
+  --   pattern = "*",
+  --   group = kitty_padding_augroup,
+  --   command = [[ silent !kitty @ set-spacing padding=20 ]]
+  -- })
+  --
+  -- vim.api.nvim_create_autocmd({"VimEnter"}, {
+  --   pattern = "*",
+  --   group = kitty_padding_augroup,
+  --   command = [[ silent !kitty @ set-spacing padding=0 ]]
+  -- })
+  vim.api.nvim_command([[ autocmd VimLeave * :silent !kitty @ set-spacing padding=50 margin=10 ]])
 end
 
 function _G.dump(...)
@@ -210,7 +211,8 @@ function _G.dump(...)
 end
 
 local function main()
-  vim.cmd([[au BufRead,BufNewFile *.jq setfiletype jq]])
+  -- Running a shell command on vim exit breaks integration with git commits
+  -- restore_kitty_padding()
   init_abbrev()
   highlight_yank_init()
   -- remove_kitty_padding()

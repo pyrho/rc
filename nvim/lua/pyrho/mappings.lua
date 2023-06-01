@@ -24,13 +24,16 @@ function M.init()
                           {noremap = true, silent = true})
 
   vim.api.nvim_set_keymap("n", "<Leader>o",
-                          "<Cmd>GitFiles<CR>",
+                          "<Cmd>FzfLua files<CR>",
                           {noremap = true, silent = true})
 
-  vim.api.nvim_set_keymap("n", "<Leader>s", "<cmd>Rg<CR>",
+  vim.api.nvim_set_keymap("n", "<Leader>s", "<cmd>FzfLua live_grep<CR>",
                           {noremap = true, silent = true})
 
-  vim.api.nvim_set_keymap("n", "<Leader>b", "<cmd>Buffers<CR>",
+  vim.api.nvim_set_keymap("n", "<Leader>S", "<cmd>FzfLua grep_cword<CR>",
+                          {noremap = true, silent = true})
+
+  vim.api.nvim_set_keymap("n", "<Leader>b", "<cmd>FzfLua buffers<CR>",
                           {noremap = true, silent = true})
 
   -- Helpers
@@ -40,11 +43,6 @@ function M.init()
   vim.api.nvim_set_keymap("n", "<Localleader>k",
                           "<cmd>.!toilet -w80 -f pagga -F border<CR>Vjjjj:center<CR>",
                           {noremap = true, silent = true})
-
-  -- Misc
-  vim.api.nvim_set_keymap("n", "<Leader>w<Leader>w",
-                          "<cmd>e ~/repos/perso/Zettelkasten/diary/`date +\\%Y-\\%m-\\%d`.md<CR>",
-                          {noremap = true})
 
   -- Tabs
   vim.api.nvim_set_keymap("n", "te", "<cmd>tab split<CR>", {noremap = true})

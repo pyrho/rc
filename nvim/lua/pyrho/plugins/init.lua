@@ -138,6 +138,8 @@ return require("packer").startup({
       -- 2022-09-19: There's a bug where the window shows up on top of the current
       -- line, making edits quite painful..
       -- See https://github.com/ray-x/lsp_signature.nvim/issues/182
+      -- 2023-05-26 : Trying again
+      -- 2023-05-26 : Waaay too slow!!
       disable = true,
       config = require'pyrho.plugins.conf.lsp_signature'.config
     }
@@ -215,7 +217,7 @@ return require("packer").startup({
           -- If this option is set to true, the yanked text will automatically be pasted
           -- at the cursor position if the unnamed register is in use (and the object is
           -- "non-magnetic").
-          yank_paste = true
+          yank_paste = false
         }
       end
     }
@@ -314,7 +316,13 @@ return require("packer").startup({
   -- ]]
 
     -- Display a little widget at startup to show LSP server statuses
-    use {'j-hui/fidget.nvim', config = function() require'fidget'.setup {} end}
+    -- 2023-05-05 Using my branch until this gets merged.
+    -- use {'j-hui/fidget.nvim', config = function() require'fidget'.setup {} end}
+    use {
+      'pyrho/fidget.nvim',
+      branch = 'feat/max-messages',
+      config = function() require'fidget'.setup {} end
+    }
 
     -- LSP stuff
     use {
@@ -339,35 +347,55 @@ return require("packer").startup({
             map(0, "n", "gO", "<cmd>Lspsaga show_cursor_diagnostics<cr>",
                 {silent = true, noremap = true})
 
-            map(0, "n", "gd", "<cmd>Lspsaga goto_definition<cr>",
-                {silent = true, noremap = true})
-
+            -- map(0, "n", "gd", "<cmd>Lspsaga goto_definition<cr>",
+            --     {silent = true, noremap = true})
+            --
             map(0, "n", "gp", "<cmd>Lspsaga peek_definition<cr>",
                 {silent = true, noremap = true})
+            --
+            -- map(0, "n", "gr", "<cmd>Lspsaga lsp_finder<cr>",
+            --     {silent = true, noremap = true})
+            --
+            -- map(0, "n", "gy", "<cmd>Telescope lsp_type_definitions<cr>",
+            --     {silent = true, noremap = true})
 
-            map(0, "n", "gr", "<cmd>Lspsaga lsp_finder<cr>",
-                {silent = true, noremap = true})
+            -- map(0, "n", "g0", "<cmd>Lspsaga outline<cr>",
+            --     {silent = true, noremap = true})
 
-            map(0, "n", "gy", "<cmd>Telescope lsp_type_definitions<cr>",
-                {silent = true, noremap = true})
-
-            map(0, "n", "g0", "<cmd>Lspsaga outline<cr>",
-                {silent = true, noremap = true})
-
-            map(0, "n", "gS",
-                "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",
-                {silent = true, noremap = true})
+            -- map(0, "n", "gS",
+            --     "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",
+            --     {silent = true, noremap = true})
 
             map(0, "n", "gj", "<cmd>Lspsaga diagnostic_jump_next<cr>",
                 {silent = true, noremap = true})
 
             map(0, "n", "gk", "<cmd>Lspsaga diagnostic_jump_prev<cr>",
                 {silent = true, noremap = true})
+          end
 
-            map(0, "n", "<Leader>ci", "<cmd>Lspsaga incoming_calls<CR>",
+          local function configureForGlance()
+            map(0, "n", "gd", "<cmd>Glance definitions<cr>",
                 {silent = true, noremap = true})
-            map(0, "n", "<Leader>co", "<cmd>Lspsaga outgoing_calls<CR>",
+
+            map(0, "n", "gr", "<cmd>Glance references<cr>",
                 {silent = true, noremap = true})
+
+            map(0, "n", "gy", "<cmd>Glance type_definitions<cr>",
+                {silent = true, noremap = true})
+          end
+
+          local function configureForFzfLua()
+            map(0, "n", "gS", "<cmd>FzfLua lsp_live_workspace_symbols<cr>",
+                {silent = true, noremap = true})
+
+            map(0, "n", "g0", "<cmd>FzfLua lsp_document_symbols<cr>",
+                {silent = true, noremap = true})
+          end
+
+          local function configureMappings()
+            configureForLspSaga()
+            configureForGlance()
+            configureForFzfLua()
           end
 
           local function configureForTrouble()
@@ -408,7 +436,7 @@ return require("packer").startup({
               require("lspconfig")[server_name].setup {
                 on_attach = function(client, bufnr)
                   require('nvim-navic').attach(client, bufnr)
-                  configureForLspSaga()
+                  configureMappings()
                 end
               }
             end,
@@ -418,7 +446,7 @@ return require("packer").startup({
               require('lspconfig').ltex.setup {
                 on_attach = function(client, bufnr)
                   require('nvim-navic').attach(client, bufnr)
-                  configureForLspSaga()
+                  configureMappings()
                 end,
                 filetypes = {"markdown"},
                 cmd = {"/opt/homebrew/bin/ltex-ls"},
@@ -440,7 +468,7 @@ return require("packer").startup({
               require('lspconfig').yamlls.setup {
                 on_attach = function(client, bufnr)
                   require('nvim-navic').attach(client, bufnr)
-                  configureForLspSaga()
+                  configureMappings()
                 end,
                 settings = {
                   yaml = {
@@ -474,7 +502,8 @@ return require("packer").startup({
     use {
       {"hrsh7th/nvim-cmp", config = require"pyrho.plugins.conf.nvim-cmp".config},
       'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-buffer', 'hrsh7th/cmp-path',
-      'hrsh7th/cmp-cmdline', 'hrsh7th/cmp-vsnip'
+      'hrsh7th/cmp-cmdline', 'hrsh7th/cmp-vsnip',
+      'hrsh7th/cmp-nvim-lsp-signature-help'
     }
 
     use {'onsails/lspkind.nvim'}
@@ -550,6 +579,15 @@ return require("packer").startup({
       "junegunn/fzf.vim",
       config = require"pyrho.plugins.conf.fzf".config,
       requires = {{"junegunn/fzf", run = "./install --bin"}}
+    }
+
+    use {
+      'ibhagwan/fzf-lua',
+      -- optional for icon support
+      requires = {'nvim-tree/nvim-web-devicons'},
+      config = function()
+        require'fzf-lua'.setup({winopts = {preview = {layout = 'vertical'}}})
+      end
     }
 
     -- HTTP client
@@ -718,6 +756,29 @@ return require("packer").startup({
       'stevearc/aerial.nvim',
       config = function()
         require('aerial').setup({
+          show_guides = true,
+          nav = {
+            border = "rounded",
+            max_height = 0.9,
+            min_height = {10, 0.1},
+            max_width = 0.5,
+            min_width = {0.2, 20},
+            win_opts = {cursorline = true, winblend = 10},
+            -- Jump to symbol in source window when the cursor moves
+            autojump = false,
+            -- Show a preview of the code in the right column, when there are no child symbols
+            preview = true,
+            -- Keymaps in the nav window
+            keymaps = {
+              ["o"] = "actions.jump",
+              ["<2-LeftMouse>"] = "actions.jump",
+              ["<C-v>"] = "actions.jump_vsplit",
+              ["<C-s>"] = "actions.jump_split",
+              ["h"] = "actions.left",
+              ["l"] = "actions.right",
+              ["q"] = "actions.close"
+            }
+          },
           on_attach = function(bufnr)
             -- Jump forwards/backwards with '{' and '}'
             vim.keymap.set('n', '[n', '<cmd>AerialPrev<CR>', {buffer = bufnr})
@@ -736,10 +797,150 @@ return require("packer").startup({
       ft = {"markdown"}
     })
 
+    use {
+      'ibhagwan/smartyank.nvim',
+      config = function()
+        require('smartyank').setup {highlight = {enabled = false}}
+      end
+    }
+
+    use {
+      'stevearc/oil.nvim',
+      config = function()
+        require("oil").setup({
+          -- Id is automatically added at the beginning, and name at the end
+          -- See :help oil-columns
+          columns = {"icon", "permissions", "size", "mtime"},
+          -- Buffer-local options to use for oil buffers
+          buf_options = {buflisted = false, bufhidden = "hide"},
+          -- Window-local options to use for oil buffers
+          win_options = {
+            wrap = false,
+            signcolumn = "no",
+            cursorcolumn = false,
+            foldcolumn = "0",
+            spell = false,
+            list = false,
+            conceallevel = 3,
+            concealcursor = "n"
+          },
+          -- Oil will take over directory buffers (e.g. `vim .` or `:e src/`
+          default_file_explorer = true,
+          -- Restore window options to previous values when leaving an oil buffer
+          restore_win_options = true,
+          -- Skip the confirmation popup for simple operations
+          skip_confirm_for_simple_edits = false,
+          -- Deleted files will be removed with the trash_command (below).
+          delete_to_trash = false,
+          -- Change this to customize the command used when deleting to trash
+          trash_command = "trash-put",
+          -- Selecting a new/moved/renamed file or directory will prompt you to save changes first
+          prompt_save_on_select_new_entry = true,
+          -- Keymaps in oil buffer. Can be any value that `vim.keymap.set` accepts OR a table of keymap
+          -- options with a `callback` (e.g. { callback = function() ... end, desc = "", nowait = true })
+          -- Additionally, if it is a string that matches "actions.<name>",
+          -- it will use the mapping at require("oil.actions").<name>
+          -- Set to `false` to remove a keymap
+          -- See :help oil-actions for a list of all available actions
+          keymaps = {
+            ["g?"] = "actions.show_help",
+            ["<CR>"] = "actions.select",
+            ["<C-s>"] = "actions.select_vsplit",
+            ["<C-h>"] = "actions.select_split",
+            ["<C-t>"] = "actions.select_tab",
+            ["<C-p>"] = "actions.preview",
+            ["<C-c>"] = "actions.close",
+            ["<C-l>"] = "actions.refresh",
+            ["-"] = "actions.parent",
+            ["_"] = "actions.open_cwd",
+            ["`"] = "actions.cd",
+            ["~"] = "actions.tcd",
+            ["g."] = "actions.toggle_hidden"
+          },
+          -- Set to false to disable all of the above keymaps
+          use_default_keymaps = true,
+          view_options = {
+            -- Show files and directories that start with "."
+            show_hidden = false,
+            -- This function defines what is considered a "hidden" file
+            is_hidden_file = function(name, bufnr)
+              return vim.startswith(name, ".")
+            end,
+            -- This function defines what will never be shown, even when `show_hidden` is set
+            is_always_hidden = function(name, bufnr) return false end
+          },
+          -- Configuration for the floating window in oil.open_float
+          float = {
+            -- Padding around the floating window
+            padding = 2,
+            max_width = 0,
+            max_height = 0,
+            border = "rounded",
+            win_options = {winblend = 10}
+          },
+          -- Configuration for the actions floating preview window
+          preview = {
+            -- Width dimensions can be integers or a float between 0 and 1 (e.g. 0.4 for 40%)
+            -- min_width and max_width can be a single value or a list of mixed integer/float types.
+            -- max_width = {100, 0.8} means "the lesser of 100 columns or 80% of total"
+            max_width = 0.9,
+            -- min_width = {40, 0.4} means "the greater of 40 columns or 40% of total"
+            min_width = {40, 0.4},
+            -- optionally define an integer/float for the exact width of the preview window
+            width = nil,
+            -- Height dimensions can be integers or a float between 0 and 1 (e.g. 0.4 for 40%)
+            -- min_height and max_height can be a single value or a list of mixed integer/float types.
+            -- max_height = {80, 0.9} means "the lesser of 80 columns or 90% of total"
+            max_height = 0.9,
+            -- min_height = {5, 0.1} means "the greater of 5 columns or 10% of total"
+            min_height = {5, 0.1},
+            -- optionally define an integer/float for the exact height of the preview window
+            height = nil,
+            border = "rounded",
+            win_options = {winblend = 0}
+          },
+          -- Configuration for the floating progress window
+          progress = {
+            max_width = 0.9,
+            min_width = {40, 0.4},
+            width = nil,
+            max_height = {10, 0.9},
+            min_height = {5, 0.1},
+            height = nil,
+            border = "rounded",
+            minimized_border = "none",
+            win_options = {winblend = 0}
+          }
+        })
+        -- vim.keymap.set("n", "-", require("oil").open,
+        --                {desc = "Open parent directory"})
+      end
+    }
+
+    use {
+      'DNLHC/glance.nvim',
+      config = function()
+        local glance = require('glance')
+        local actions = glance.actions
+
+        glance.setup({
+          hooks = {
+            before_open = function(results, open, jump, method)
+              if #results == 1 then
+                jump(results[1]) -- argument is optional
+              else
+                open(results) -- argument is optional
+              end
+            end
+          }
+        })
+      end
+    }
+
   end,
   config = {
     luarocks = {python_cmd = "python3"},
-    snapshot_path = os.getenv('HOME') .. '/resilio/main/backups'
+    snapshot_path = os.getenv('HOME') .. '/.local/share/nvim/packer-backups'
   }
 })
 

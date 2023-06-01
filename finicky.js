@@ -1,5 +1,5 @@
 module.exports = {
-  defaultBrowser: "Safari",
+  defaultBrowser: "Firefox",
   options: {
     // Hide the finicky icon from the top bar. Default: false
     hideIcon: false,
@@ -9,6 +9,23 @@ module.exports = {
     logRequests: true,
   },
   rewrite: [
+    {
+      match: ({ url }) =>
+        url.host.includes('open.spotify.com') && url.pathname.includes("track"),
+
+      url({ url }) {
+          // https://open.spotify.com/track/4elsam2rMHPvBo67I6qpDS?si=8607ff4798874a1f&nd=1
+          // finicky.log(url.pathname)
+          const trackId = url.pathname.match(/track\/(.*)/)[1]
+        return {
+            ...url,
+            search: '',
+            host: 'song.link',
+          pathname: "/s/" + trackId,
+          protocol: "https",
+        };
+      },
+    },
     {
       match: ({ url }) =>
         url.host.includes("zoom.us") && url.pathname.includes("/j/"),

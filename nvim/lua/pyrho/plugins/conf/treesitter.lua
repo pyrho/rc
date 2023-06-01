@@ -25,8 +25,8 @@ function M.config()
       move = {
         enable = true,
         set_jumps = true,
-        goto_next_start = {["]]"] = "@function.outer"},
-        goto_previous_start = {["[["] = "@function.outer"}
+        -- goto_next_start = {["]]"] = "@function.outer"},
+        -- goto_previous_start = {["[["] = "@function.outer"}
       },
       select = {
         enable = true,

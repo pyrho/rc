@@ -109,3 +109,6 @@ function amGetMail() {
     cat /home/pyrho/buckets/$___bucket/$___path/mail.json | jq --raw-output '.["body-html"]' > /tmp/`echo $___path | tr '/' '_'`.html && firefox /tmp/`echo $___path | tr '/' '_'`.html
 }
 alias xcd='cd "$(xplr --print-pwd-as-result)"'
+
+alias kmp0='kitty @ set-spacing padding=5 margin=0'
+alias nv='kmp0 && nvim '

@@ -31,4 +31,4 @@ export HISTDB_FILE="${HOME}/.zsh_histdb/zsh-history.db"
 export sel=${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.selection
 export PRETTIERD_DEFAULT_CONFIG=${HOME}/.config/prettierrc.json
 export HISTDB_FZF_DEFAULT_MODE=2
-export LEDGER_FILE=${HOME}/resilio/main/ledger/lambdachurch.journal
+export LEDGER_FILE=${HOME}/resilio/data/ledger/lambdachurch.journal

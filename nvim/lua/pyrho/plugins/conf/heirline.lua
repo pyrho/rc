@@ -504,7 +504,7 @@ function M.config()
         utils.surround({
           require'pyrho.helpers'.separators.left_rounded,
           require'pyrho.helpers'.separators.right_rounded
-        }, colors.fg_gutter, {hl = {fg = colors.black}, FlexGps})
+        }, colors.fg_gutter, {hl = {fg = colors.fg_sidebar}, FlexGps})
       }
     }
   }
