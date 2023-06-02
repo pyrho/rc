@@ -4,8 +4,6 @@
 # source antidote
 source ${ZDOTDIR:-~}/.antidote/antidote.zsh
 
-# initialize plugins statically with ${ZDOTDIR:-~}/.zsh_plugins.txt
-antidote load
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -56,3 +54,6 @@ if [ -e /home/pyrho/.nix-profile/etc/profile.d/nix.sh ]; then . /home/pyrho/.nix
 [ -f "/home/pyrho/.ghcup/env" ] && source "/home/pyrho/.ghcup/env" # ghcup-env
 # Generated for envman. Do not edit.
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
+
+# initialize plugins statically with ${ZDOTDIR:-~}/.zsh_plugins.txt
+antidote load
