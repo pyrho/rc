@@ -4,5 +4,6 @@
         "use",
         "vim",
         "require"
-    ]
+    ],
+    "workspace.checkThirdParty": false
 }

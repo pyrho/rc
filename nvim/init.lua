@@ -4,8 +4,8 @@ local opt = vim.opt
 local function fancy_fold()
   vim.cmd [[
 " Fancier folding from Matias' conf {{{
-set fillchars=fold:─
 function! NeatFoldText()
+set fillchars=fold:─
     let line = getline(v:foldstart)
     " Tries to detect if this is an elixir documentation block so we fold it nicely
     let grps  = matchlist(line, '\(@\a*\) """')
@@ -202,7 +202,8 @@ local function restore_kitty_padding()
   --   group = kitty_padding_augroup,
   --   command = [[ silent !kitty @ set-spacing padding=0 ]]
   -- })
-  vim.api.nvim_command([[ autocmd VimLeave * :silent !kitty @ set-spacing padding=50 margin=10 ]])
+  vim.api.nvim_command(
+      [[ autocmd VimLeave * :silent !kitty @ set-spacing padding=50 margin=10 ]])
 end
 
 function _G.dump(...)
@@ -210,20 +211,47 @@ function _G.dump(...)
   print(unpack(objects))
 end
 
+function lazyBootstrap()
+  local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+  if not vim.loop.fs_stat(lazypath) then
+    vim.fn.system({
+      "git", "clone", "--filter=blob:none",
+      "https://github.com/folke/lazy.nvim.git", "--branch=stable", -- latest stable release
+      lazypath
+    })
+  end
+  vim.opt.rtp:prepend(lazypath)
+end
+
 local function main()
-  -- Running a shell command on vim exit breaks integration with git commits
-  -- restore_kitty_padding()
+  lazyBootstrap()
   init_abbrev()
   highlight_yank_init()
-  -- remove_kitty_padding()
-  fancy_fold()
 
-  require "pyrho.plugins"
+  set_options()
+  fancy_fold()
+  require("lazy").setup({
+    defaults = {
+      lazy = true,
+    },
+    performance = {
+      rtp = {
+        disabled_plugins = {
+          "gzip", "matchit", "matchparen", "netrwPlugin", "tarPlugin", "tohtml",
+          "tutor", "zipPlugin"
+        }
+      }
+    },
+    spec = {
+      {import = "plugins.completion"}, {import = "plugins.ui"},
+      {import = "plugins.others"}, {import = "plugins.git"},
+      {import = "plugins.treesitter"}, {import = "plugins.lsp"}
+    }
+  })
 
   require"pyrho.mappings".init()
 end
 
-set_options()
-vim.schedule(main)
+main()
 
 -- vim: sw=2

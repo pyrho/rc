@@ -1,5 +1,8 @@
 local M = {}
 local api = vim.api
+function M.getFiletypesForLSP()
+  return {"typescript", "typescriptreact", "javascript", "lua"}
+end
 -- From https://sbulav.github.io/vim/neovim-telescope-github/
 function M.rewrite_wrap(fn)
   local windows = api.nvim_list_wins()
@@ -71,5 +74,7 @@ function _G.ReloadConfig()
 
   dofile(vim.env.MYVIMRC)
 end
+
+
 
 return M

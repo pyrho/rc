@@ -1,4 +1,4 @@
-function isModuleAvailable(name)
+local function isModuleAvailable(name)
   if package.loaded[name] then
     return true
   else
@@ -12,8 +12,9 @@ function isModuleAvailable(name)
     return false
   end
 end
+
 -- Add the key mappings only for Markdown files in a zk notebook.
-if isModuleAvailable("zk.util") and require("zk.util").notebook_root(vim.fn.expand('%:p')) ~= nil then
+if require"pyrho.helpers".is_zen() and isModuleAvailable("zk.util") and require("zk.util").notebook_root(vim.fn.expand('%:p')) ~= nil then
   local function map(...) vim.api.nvim_buf_set_keymap(0, ...) end
   local opts = {noremap = true, silent = false}
 

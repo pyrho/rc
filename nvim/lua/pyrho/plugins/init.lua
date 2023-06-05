@@ -184,8 +184,7 @@ return require("packer").startup({
 
     -- Change surrounding pairs
     use {
-      "machakann/vim-sandwich",
-      config = function()
+      "machakann/vim-sandwich", config = function()
         vim.cmd [[ runtime macros/sandwich/keymap/surround.vim ]]
       end
     }
