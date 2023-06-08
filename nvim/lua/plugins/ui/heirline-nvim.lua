@@ -2,6 +2,7 @@ return {
   "rebelot/heirline.nvim",
   lazy = false,
   config = function()
+    local notify = require('notify')
     local conditions = require("heirline.conditions")
     local utils = require("heirline.utils")
 
@@ -83,7 +84,16 @@ return {
     -- File stuff {{{
     local FileNameBlock = {
       -- let's first set up some attributes needed by this component and it's children
-      init = function(self) self.filename = vim.api.nvim_buf_get_name(0) end
+      init = function(self) self.filename = vim.api.nvim_buf_get_name(0) end,
+
+      on_click = {
+        name = 'show_filename',
+        callback = function()
+          vim.defer_fn(function()
+            notify(vim.api.nvim_buf_get_name(0), "info", {title = 'Full file path', render = 'compact'})
+          end, 100)
+        end
+      },
     }
 
     local FileIcon = {
@@ -391,6 +401,15 @@ return {
     local Git = {
       condition = conditions.is_git_repo,
 
+      on_click = {
+        name = 'show_git_branch_name',
+        callback = function()
+          vim.defer_fn(function()
+            notify(vim.b.gitsigns_status_dict.head, "info", {title = 'Branch name', render = 'compact'})
+          end, 100)
+        end
+      },
+
       init = function(self)
         self.status_dict = vim.b.gitsigns_status_dict
         self.has_changes = self.status_dict.added ~= 0 or
@@ -658,7 +677,7 @@ return {
   -- in that config
   dependencies = {
     "neovim/nvim-lspconfig", "nvim-tree/nvim-web-devicons",
-    "SmiteshP/nvim-navic"
+    "SmiteshP/nvim-navic", 'rcarriga/nvim-notify'
   }
 
   -- Use this to debug, it will give the exact error stack trace
