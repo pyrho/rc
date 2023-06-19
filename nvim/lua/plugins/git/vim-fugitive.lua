@@ -1,1 +1,1 @@
-return {"tpope/vim-fugitive", cmd = "G", dependencies = {"tpope/vim-rhubarb"}}
+return {"tpope/vim-fugitive", cmd ={ "G", "GB"}, dependencies = {"tpope/vim-rhubarb"}}

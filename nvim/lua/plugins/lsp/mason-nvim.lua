@@ -1,7 +1,7 @@
 return {
   {
     "williamboman/mason-lspconfig.nvim",
-    ft = require'pyrho.helpers'.getFiletypesForLSP(),
+    event = {"BufNewFile", "BufReadPost"},
     config = function()
 
       require("mason-lspconfig").setup({
@@ -17,7 +17,6 @@ return {
         function(server_name) -- default handler (optional)
           require("lspconfig")[server_name].setup {
             on_attach = function(client, bufnr)
-              _G.dump('IN HTEREE for' .. server_name)
               require('nvim-navic').attach(client, bufnr)
               require'pyrho.mappings'.configureMappings()
             end
@@ -68,8 +67,7 @@ return {
     end
   }, {
     "williamboman/mason.nvim",
-    -- ft = require'pyrho.helpers'.getFiletypesForLSP(),
-    -- lazy = false,
+    cmd = "Mason",
     config = function() require("mason").setup() end,
     build = ":MasonUpdate"
   }, {
@@ -98,5 +96,5 @@ return {
 
     end
 
-  }, {"nvim-navic"}
+  }
 }

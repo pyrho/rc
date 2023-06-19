@@ -1,6 +1,6 @@
 return {
   "nvim-treesitter/nvim-treesitter",
-  lazy = false,
+  event = {"BufNewFile", "BufReadPost"},
   config = function()
     require"nvim-treesitter.configs".setup {
       highlight = {
@@ -19,7 +19,8 @@ return {
       ensure_installed = {
         -- 2022-02-08 Disabling markdown for now because it's messing with concealing (see https://github.com/nvim-treesitter/nvim-treesitter/issues/959)
         -- "markdown",
-        "javascript", "typescript", "json", "prisma", "http", "lua", "markdown_inline", "markdown"
+        "javascript", "typescript", "json", "prisma", "http", "lua",
+        "markdown_inline", "markdown"
       },
       refactor = {highlight_current_scope = {enable = true}},
       textobjects = {

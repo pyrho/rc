@@ -8,10 +8,10 @@ return {
 
     local flexLowPriority = 1
     local flexHighPriority = 100
-    local colors = require("tokyonight.colors").setup {} -- pass in any of the config options as explained above
+    local colors = require("tokyonight.colors").setup { style = "storm" } -- pass in any of the config options as explained above
     local tokyonight_utils = require("tokyonight.util")
     local Space = {provider = " "}
-    local Sep = {provider = "❱", hl = {fg = colors.blue7}}
+    local Sep = {Space, {provider = "❱", hl = {fg = colors.blue7}}, Space,}
     local Align = {provider = "%="}
     local TerminalName = {
       -- we could add a condition to check that buftype == 'terminal'
@@ -90,10 +90,11 @@ return {
         name = 'show_filename',
         callback = function()
           vim.defer_fn(function()
-            notify(vim.api.nvim_buf_get_name(0), "info", {title = 'Full file path', render = 'compact'})
+            notify(vim.api.nvim_buf_get_name(0), "info",
+                   {title = 'Full file path', render = 'compact'})
           end, 100)
         end
-      },
+      }
     }
 
     local FileIcon = {
@@ -349,7 +350,7 @@ return {
         info_icon = (vim.fn.sign_getdefined("DiagnosticSignInfo")[1] or
             {text = '😤'}).text,
         hint_icon = (vim.fn.sign_getdefined("DiagnosticSignHint")[1] or
-            {text = '😐'}).text
+            {text = '😐'}).text,
       },
 
       init = function(self)
@@ -367,7 +368,7 @@ return {
         })
       end,
 
-      {provider = "!["},
+      Space,
       {
         provider = function(self)
           -- 0 is just another output, we can decide to print it or not!
@@ -393,7 +394,7 @@ return {
         end,
         hl = {fg = colors.hint}
       },
-      {provider = "]"}
+      Sep,
     }
     -- }}} ! Lsp stuff
 
@@ -405,7 +406,8 @@ return {
         name = 'show_git_branch_name',
         callback = function()
           vim.defer_fn(function()
-            notify(vim.b.gitsigns_status_dict.head, "info", {title = 'Branch name', render = 'compact'})
+            notify(vim.b.gitsigns_status_dict.head, "info",
+                   {title = 'Branch name', render = 'compact'})
           end, 100)
         end
       },
@@ -419,15 +421,13 @@ return {
 
       hl = {fg = colors.teal},
 
-      Sep,
-      Space,
 
       {
         flexible = flexLowPriority,
         {
           provider = function(self)
             local repo_name = vim.fn.fnamemodify(self.status_dict.root, ":t")
-            return " " .. repo_name .. "  " .. self.status_dict.head
+            return " " .. repo_name .. "  " .. (#self.status_dict.head > 10 and (string.sub(self.status_dict.head, 1, 10) .. "..") or self.status_dict.head)
           end
         },
         {
@@ -570,21 +570,23 @@ return {
 
     local DefaultStatusline = {
       -- xxx
-      ViMode, Space, FileNameBlock, Space, Git, Align, -- xxx
+      --ViMode, Space, FileNameBlock, Space, Git, Align, -- xxx
+      ViMode, Space, Diagnostics, Space, Git, Align, -- xxx
       Obsession, Space, LSPActive, Space, FileType, Space, Ruler, Space,
       ScrollBar
 
     }
 
     local InactiveStatusline = {
+        -- local inactive = { underline = true, bg = c.none, fg = c.bg, sp = c.border }
       condition = function() return not conditions.is_active() end,
-      FileNameBlock,
-      Align,
       hl = {
-        fg = tokyonight_utils.lighten(colors.bg_highlight, 0.3),
-        bg = colors.bg_dark,
-        force = true,
-        bold = false
+          underline = true,
+        fg = colors.bg,
+        bg = colors.none,
+        -- force = true,
+        -- bold = false
+        sp = colors.border,
       }
     }
 
@@ -671,7 +673,10 @@ return {
   augroup END
   ]]
 
-    require'heirline'.setup({statusline = StatusLines, winbar = WinBars})
+    -- 2023-06-09: Repalcing this with barbecue.nvim
+    -- require'heirline'.setup({statusline = StatusLines, winbar = WinBars})
+
+    require'heirline'.setup({statusline = StatusLines})
   end,
   -- We need to instantiate this plugin after lsp-config because we rely on Signs defined
   -- in that config

@@ -1,6 +1,7 @@
 return {
   'stevearc/aerial.nvim',
   ft = require'pyrho.helpers'.getFiletypesForLSP(),
+  cmd = { "AerialNavToggle", "AerialToggle" },
   config = function()
     require('aerial').setup({
       show_guides = true,

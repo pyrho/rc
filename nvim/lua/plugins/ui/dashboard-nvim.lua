@@ -1,23 +1,3 @@
-local function find_config_file()
-  local opts = {
-    search_dirs = {
-      require('plenary.path'):new(vim.env.HOME, 'rc', 'nvim'):absolute()
-    }
-  }
-
-  require('telescope.builtin').find_files(opts)
-end
-
-local function mappings()
-  vim.keymap.set('n', 'q', ':q<CR>', {buffer = true})
-  vim.keymap.set('n', 'e', ':enew<CR>', {buffer = true})
-  vim.keymap.set('n', '0', '<cmd>SessionLoad<CR>', {buffer = true})
-  vim.keymap.set('n', 'c', find_config_file, {buffer = true})
-  vim.keymap
-      .set('n', 's', require"telescope.builtin".live_grep, {buffer = true})
-  vim.keymap.set('n', 'o', require"telescope.builtin".fd, {buffer = true})
-  vim.keymap.set('n', 'O', require"telescope.builtin".oldfiles, {buffer = true})
-end
 
 return {
   'pyrho/dashboard-nvim',
@@ -70,7 +50,7 @@ return {
     vim.cmd [[
                 augroup MyDashMappingr
                     autocmd!
-                    autocmd Filetype dashboard call luaeval('require"pyrho.plugins.conf.dashboard".mappings()')
+                    autocmd Filetype dashboard call luaeval('require"pyrho.mappings".dashboard()')
                 augroup END
             ]]
   end

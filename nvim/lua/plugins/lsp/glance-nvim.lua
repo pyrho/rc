@@ -1,9 +1,9 @@
 return {
   'DNLHC/glance.nvim',
-  ft = require'pyrho.helpers'.getFiletypesForLSP(),
+  cmd = "Glance",
   config = function()
     local glance = require('glance')
-    local actions = glance.actions
+    -- local actions = glance.actions
 
     glance.setup({
       hooks = {

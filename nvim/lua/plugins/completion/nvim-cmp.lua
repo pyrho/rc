@@ -105,9 +105,9 @@ return {
       sources = cmp.config.sources({{name = 'path'}}, {{name = 'cmdline'}})
     })
     -- Setup lspconfig.
-    local capabilities = require('cmp_nvim_lsp').default_capabilities()
-    -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
-    require('lspconfig')['vtsls'].setup {capabilities = capabilities}
+    -- local capabilities = require('cmp_nvim_lsp').default_capabilities()
+    -- -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
+    -- require('lspconfig')['vtsls'].setup {capabilities = capabilities}
   end,
   dependencies = {
     'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-buffer', 'hrsh7th/cmp-path',

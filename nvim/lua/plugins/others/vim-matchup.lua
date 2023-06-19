@@ -1,5 +1,8 @@
 return {
   "andymass/vim-matchup",
   event = "VeryLazy",
-  config = function() vim.g.matchup_matchparen_offscreen = {method = "popup"} end
+  config = function() 
+      -- Disable this feature
+      vim.g.matchup_matchparen_offscreen = {} 
+  end
 }

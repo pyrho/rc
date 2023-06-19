@@ -1,5 +1,5 @@
 return {
   'azabiong/vim-highlighter',
-  keys = {"f<CR>"},
+  keys = {"f<CR>", "f<BS>"},
   config = function() vim.g.HiSyncMode = 1 end
 }

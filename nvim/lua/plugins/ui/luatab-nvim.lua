@@ -5,7 +5,7 @@ return {
   dependencies = {'nvim-tree/nvim-web-devicons'},
   config = function()
     require'luatab'.setup {
-      windowCount = function(idx) return "[" .. idx .. "] " end,
+      windowCount = function(idx) return idx .. " " end,
       modified = function() return "" end,
       separator = function(idx)
         local s = require('pyrho.helpers').separators.vertical_bar_thin
