@@ -154,7 +154,7 @@ return require("packer").startup({
           use_git_branch = true, -- create session files based on the branch of the git enabled repository
           follow_cwd = true, -- change session file name to match current working directory if it changes
           autoload = false, -- automatically load the session for the cwd on Neovim startup
-          allowed_dirs = {"~/code/caribou/main-repo"}, -- table of dirs that the plugin will auto-save and auto-load from
+          allowed_dirs = {"~/code/caribou/main-repo", "~/code/caribou/monorepo"}, -- table of dirs that the plugin will auto-save and auto-load from
           branch_separator = "@@"
         })
         require("telescope").load_extension("persisted") -- To load the telescope extension
@@ -513,6 +513,24 @@ return require("packer").startup({
       config = function() require'nvim-web-devicons'.setup {default = true} end
     }
 
+    -- use {
+    --   'knubie/vim-kitty-navigator',
+    --   config = function()
+    --     -- let g:kitty_navigator_no_mappings = 1
+    --     vim.g.kitty_navigator_no_mappings = 1
+    --     local function map(mode, l, r, opts)
+    --       opts = opts or {}
+    --       vim.keymap.set(mode, l, r, opts)
+    --     end
+    --
+    --     map('n', '<leader>h', "<Cmd>KittyNavigateLeft<CR>")
+    --     map('n', '<leader>j', "<Cmd>KittyNavigateDown<CR>")
+    --     map('n', '<leader>k', "<Cmd>KittyNavigateUp<CR>")
+    --     map('n', '<leader>l', "<Cmd>KittyNavigateRight<CR>")
+    --
+    --   end
+    -- }
+
     -- 2022-10-03: Disabled this as I'm mostly working with kitty instead of tmux
     -- Tmux integration, allows seamless transition between vim windows and tmux panes
     --[[ use {
@@ -722,6 +740,8 @@ return require("packer").startup({
     use {'terrastruct/d2-vim'}
 
     use {'ledger/vim-ledger'}
+
+    use 'is0n/fm-nvim'
   end,
   config = {
     luarocks = {python_cmd = "python3"},

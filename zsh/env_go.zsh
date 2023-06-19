@@ -1,2 +1,2 @@
-export GOPATH=/Users/pyrho/go
+export GOPATH=/Users/damienrajon/go
 export GO111MODULE=on

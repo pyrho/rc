@@ -6,7 +6,6 @@ function M.config()
       typescript = {require"formatter.defaults".prettierd},
       typescriptreact = {require"formatter.defaults".prettierd},
       elm = {
-        -- luafmt
         function()
           return {exe = "elm-format", args = {"--stdin"}, stdin = true}
         end

@@ -10,6 +10,27 @@ module.exports = {
   },
   handlers: [
     {
+      match: "http://localhost:3000/*",
+      browser: {
+        name: "Google Chrome",
+        profile: "Profile 2"
+      }
+    },
+    {
+        match: "http://localhost:4000/*",
+        browser: {
+          name: "Google Chrome",
+          profile: "Profile 3"
+        }
+    },
+    {
+        match: "http://localhost:4040/*",
+        browser: {
+          name: "Google Chrome",
+          profile: "Profile 1"
+        }
+    },
+    {
       match: "https://linear.app/*",
       browser: "Linear",
     },
