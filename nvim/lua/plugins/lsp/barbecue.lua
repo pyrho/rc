@@ -8,6 +8,7 @@ return {
   },
   opts = {
       theme = 'tokyonight',
+      show_modified = true,
   },
   keys = {{"[[", function() require'pyrho.functions'.parent() end}}
 }

@@ -76,10 +76,11 @@ bindkey '^?' backward-delete-char
 # delete word with ctrl+backspace
 bindkey '^[[3;5~' backward-delete-word
 # bindkey '^[[3~' backward-delete-word
-bindkey '^[OA' history-substring-search-up
-bindkey '^[OB' history-substring-search-down
-bindkey -M vicmd 'k' history-substring-search-up
-bindkey -M vicmd 'j' history-substring-search-down
+
+# bindkey '^[OA' history-substring-search-up
+# bindkey '^[OB' history-substring-search-down
+# bindkey -M vicmd 'k' history-substring-search-up
+# bindkey -M vicmd 'j' history-substring-search-down
 
 # ability to comment on cmd line
 setopt interactivecomments

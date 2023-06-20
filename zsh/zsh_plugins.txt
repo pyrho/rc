@@ -1,22 +1,32 @@
+go-task/task path:completion/zsh kind:fpath
+
+#mattmc3/zephyr path:plugins/directory
+#mattmc3/zephyr path:plugins/editor
+#mattmc3/zephyr path:plugins/history
+mattmc3/zephyr path:plugins/macos
+mattmc3/zephyr path:plugins/homebrew
+#mattmc3/zephyr path:plugins/color
+
 robbyrussell/oh-my-zsh path:plugins/ssh-agent
 robbyrussell/oh-my-zsh path:plugins/vi-mode
 robbyrussell/oh-my-zsh path:plugins/fzf
-
 
 zsh-users/zsh-autosuggestions
 
 mafredri/zsh-async
 romkatv/powerlevel10k
 
-
 larkery/zsh-histdb
 m42e/zsh-histdb-fzf
 
-# zsh-users/zsh-syntax-highlighting
-zsh-users/zsh-history-substring-search
+#zsh-users/zsh-syntax-highlighting
+#zsh-users/zsh-history-substring-search
 
 trystan2k/zsh-tab-title
 
-zsh-users/zsh-completions
-lukechilds/zsh-better-npm-completion
+# Important to run this last !
 mattmc3/zephyr path:plugins/completion
+
+# This needs to be ran after for some reason, but other completions must 
+# run before
+lukechilds/zsh-better-npm-completion 
