@@ -19,8 +19,8 @@ romkatv/powerlevel10k
 larkery/zsh-histdb
 m42e/zsh-histdb-fzf
 
-#zsh-users/zsh-syntax-highlighting
-#zsh-users/zsh-history-substring-search
+zsh-users/zsh-syntax-highlighting
+zsh-users/zsh-history-substring-search
 
 trystan2k/zsh-tab-title
 

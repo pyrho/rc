@@ -8,10 +8,10 @@ return {
 
     local flexLowPriority = 1
     local flexHighPriority = 100
-    local colors = require("tokyonight.colors").setup { style = "storm" } -- pass in any of the config options as explained above
+    local colors = require("tokyonight.colors").setup {style = "storm"} -- pass in any of the config options as explained above
     local tokyonight_utils = require("tokyonight.util")
     local Space = {provider = " "}
-    local Sep = {Space, {provider = "❱", hl = {fg = colors.blue7}}, Space,}
+    local Sep = {Space, {provider = "❱", hl = {fg = colors.blue7}}, Space}
     local Align = {provider = "%="}
     local TerminalName = {
       -- we could add a condition to check that buftype == 'terminal'
@@ -350,7 +350,7 @@ return {
         info_icon = (vim.fn.sign_getdefined("DiagnosticSignInfo")[1] or
             {text = '😤'}).text,
         hint_icon = (vim.fn.sign_getdefined("DiagnosticSignHint")[1] or
-            {text = '😐'}).text,
+            {text = '😐'}).text
       },
 
       init = function(self)
@@ -394,7 +394,7 @@ return {
         end,
         hl = {fg = colors.hint}
       },
-      Sep,
+      Sep
     }
     -- }}} ! Lsp stuff
 
@@ -421,13 +421,15 @@ return {
 
       hl = {fg = colors.teal},
 
-
       {
         flexible = flexLowPriority,
         {
           provider = function(self)
             local repo_name = vim.fn.fnamemodify(self.status_dict.root, ":t")
-            return " " .. repo_name .. "  " .. (#self.status_dict.head > 10 and (string.sub(self.status_dict.head, 1, 10) .. "..") or self.status_dict.head)
+            return " " .. repo_name .. "  " ..
+                       (#self.status_dict.head > 10 and
+                           (string.sub(self.status_dict.head, 1, 10) .. "..") or
+                           self.status_dict.head)
           end
         },
         {
@@ -568,25 +570,52 @@ return {
     --
     -- }}} !Components
 
+    local DefaultStatusline_left_old = {ViMode, Space, Diagnostics, Space, Git}
+
+    local DefaultStatusline_left = {
+      {
+        provider = "",
+        hl = function(self)
+          local color = self:mode_color() -- here!
+          return {bg = colors.black, bold = true, fg = color}
+
+        end
+      }, {
+        provider = "NO",
+        hl = function(self)
+          local color = self:mode_color() -- here!
+          return {fg = colors.black, bold = true, bg = color}
+
+        end
+      }, Git, {
+        provider = "",
+        hl = function(self)
+          local color = self:mode_color() -- here!
+          return {bg = colors.black, bold = true, fg = color}
+
+        end
+      },
+
+    }
+
     local DefaultStatusline = {
       -- xxx
-      --ViMode, Space, FileNameBlock, Space, Git, Align, -- xxx
-      ViMode, Space, Diagnostics, Space, Git, Align, -- xxx
+      DefaultStatusline_left_old, Align, -- xxx}
       Obsession, Space, LSPActive, Space, FileType, Space, Ruler, Space,
       ScrollBar
 
     }
 
     local InactiveStatusline = {
-        -- local inactive = { underline = true, bg = c.none, fg = c.bg, sp = c.border }
+      -- local inactive = { underline = true, bg = c.none, fg = c.bg, sp = c.border }
       condition = function() return not conditions.is_active() end,
       hl = {
-          underline = true,
+        underline = true,
         fg = colors.bg,
         bg = colors.none,
         -- force = true,
         -- bold = false
-        sp = colors.border,
+        sp = colors.border
       }
     }
 
@@ -676,7 +705,30 @@ return {
     -- 2023-06-09: Repalcing this with barbecue.nvim
     -- require'heirline'.setup({statusline = StatusLines, winbar = WinBars})
 
-    require'heirline'.setup({statusline = StatusLines})
+    require'heirline'.setup({
+      statusline = StatusLines,
+      opts = {
+        colors = {
+          bright_bg = utils.get_highlight("Folded").bg,
+          bright_fg = utils.get_highlight("Folded").fg,
+          red = utils.get_highlight("DiagnosticError").fg,
+          dark_red = utils.get_highlight("DiffDelete").bg,
+          green = utils.get_highlight("String").fg,
+          blue = utils.get_highlight("Function").fg,
+          gray = utils.get_highlight("NonText").fg,
+          orange = utils.get_highlight("Constant").fg,
+          purple = utils.get_highlight("Statement").fg,
+          cyan = utils.get_highlight("Special").fg,
+          diag_warn = utils.get_highlight("DiagnosticWarn").fg,
+          diag_error = utils.get_highlight("DiagnosticError").fg,
+          diag_hint = utils.get_highlight("DiagnosticHint").fg,
+          diag_info = utils.get_highlight("DiagnosticInfo").fg,
+          git_del = utils.get_highlight("diffDeleted").fg,
+          git_add = utils.get_highlight("diffAdded").fg,
+          git_change = utils.get_highlight("diffChanged").fg
+        }
+      }
+    })
   end,
   -- We need to instantiate this plugin after lsp-config because we rely on Signs defined
   -- in that config
