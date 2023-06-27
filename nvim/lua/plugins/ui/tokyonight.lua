@@ -42,6 +42,13 @@ return {
           fg = "#7dcfff",
           bg = colors.bg,
         }
+
+        highlights.CursorLineNr = highlights.WarningMsg
+        highlights.WinBarNC = {
+            bold = false,
+            fg = require("tokyonight.util").darken("#cccccc", 0.9),
+            bg = require("tokyonight.util").darken("#dddddd", 0.9),
+        }
       end
     }
     vim.cmd [[ colorscheme tokyonight ]]

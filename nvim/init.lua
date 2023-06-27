@@ -211,7 +211,7 @@ function _G.dump(...)
   print(unpack(objects))
 end
 
-function lazyBootstrap()
+local function lazyBootstrap()
   local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
   if not vim.loop.fs_stat(lazypath) then
     vim.fn.system({
@@ -246,6 +246,10 @@ local function main()
       {import = "plugins.completion"}, {import = "plugins.ui"},
       {import = "plugins.others"}, {import = "plugins.git"},
       {import = "plugins.treesitter"}, {import = "plugins.lsp"}
+    },
+    dev = {
+      path = "~/code/forks",
+      fallback = false,
     }
   })
 

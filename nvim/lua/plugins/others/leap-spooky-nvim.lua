@@ -16,7 +16,7 @@ return {
       -- If this option is set to true, the yanked text will automatically be pasted
       -- at the cursor position if the unnamed register is in use (and the object is
       -- "non-magnetic").
-      yank_paste = false
+      yank_paste = true
     }
   end
 }
