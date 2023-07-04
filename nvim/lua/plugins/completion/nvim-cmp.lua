@@ -84,7 +84,8 @@ return {
       sources = cmp.config.sources({
         -- { name = 'luasnip' }, -- For luasnip users.
         {name = 'vsnip', priority = 1}, -- For vsnip users.
-        {name = 'nvim_lsp_signature_help', priority = 2},
+        -- NOTE: Disabling this because it's annoying
+        -- {name = 'nvim_lsp_signature_help', priority = 2},
         {name = 'nvim_lsp', priority = 2}, {name = 'path', priority = 3},
         {name = 'conjure'}
         -- {name = 'buffer', priority = 10}
@@ -112,7 +113,8 @@ return {
   dependencies = {
     'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-buffer', 'hrsh7th/cmp-path',
     'hrsh7th/cmp-cmdline', 'hrsh7th/cmp-vsnip',
-    'hrsh7th/cmp-nvim-lsp-signature-help', 'hrsh7th/vim-vsnip',
-    'onsails/lspkind.nvim', 'nvim-tree/nvim-web-devicons'
+    --     NOTE: Disabling this because it's annoying
+    --     'hrsh7th/cmp-nvim-lsp-signature-help'
+    'hrsh7th/vim-vsnip', 'onsails/lspkind.nvim', 'nvim-tree/nvim-web-devicons'
   }
 }

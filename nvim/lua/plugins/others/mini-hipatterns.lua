@@ -1,6 +1,8 @@
 return {
   'echasnovski/mini.hipatterns',
   event = "VeryLazy",
+  -- Trying out todo-comments instead
+  enabled = false,
   config = function()
     require'mini.hipatterns'.setup({
 
