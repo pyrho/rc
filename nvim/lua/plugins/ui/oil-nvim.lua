@@ -1,7 +1,11 @@
 return {
   'stevearc/oil.nvim',
-  cmd = "Oil",
+  lazy = false,
+  keys = {{"<LEADER>f", "<CMD>Oil<CR>"}},
+  dependencies = { "nvim-tree/nvim-web-devicons" },
   config = function()
+    vim.g.loaded_netrw = 1
+    vim.g.loaded_netrwPlugin = 1
     require("oil").setup({
       -- Id is automatically added at the beginning, and name at the end
       -- See :help oil-columns
@@ -107,5 +111,5 @@ return {
         win_options = {winblend = 0}
       }
     })
-  end,
+  end
 }

@@ -1,5 +1,7 @@
 return {
   'glepnir/lspsaga.nvim',
+  -- 2023-07-11: Just ain't working after the rewrite...
+  enabled = false,
   ft = require'pyrho.helpers'.getFiletypesForLSP(),
   config = function()
     require"lspsaga".setup({

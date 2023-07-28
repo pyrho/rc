@@ -83,11 +83,6 @@ function M.configureForLspSaga()
   --     "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",
   --     {silent = true, noremap = true})
 
-  map(0, "n", "gj", "<cmd>Lspsaga diagnostic_jump_next<cr>",
-      {silent = true, noremap = true})
-
-  map(0, "n", "gk", "<cmd>Lspsaga diagnostic_jump_prev<cr>",
-      {silent = true, noremap = true})
 end
 
 function M.configureForGlance()
@@ -102,11 +97,19 @@ function M.configureForGlance()
 end
 
 function M.configureMappings()
-  M.configureForLspSaga()
+  M.configureForTrouble()
   M.configureForGlance()
 end
 
 function M.configureForTrouble()
+  vim.keymap.set("n", "gj", function()
+      vim.diagnostic.goto_next()
+  end, {silent = true, noremap = true})
+
+  vim.keymap.set("n", "gk", function()
+      vim.diagnostic.goto_prev()
+  end, {silent = true, noremap = true})
+
   vim.keymap.set("n", "<leader>xx", "<cmd>TroubleToggle<cr>",
                  {silent = true, noremap = true})
   vim.keymap.set("n", "<leader>xw",
@@ -115,18 +118,22 @@ function M.configureForTrouble()
   vim.keymap.set("n", "<leader>xd",
                  "<cmd>TroubleToggle document_diagnostics<cr>",
                  {silent = true, noremap = true})
-  vim.keymap.set("n", "<leader>xl", "<cmd>TroubleToggle loclist<cr>",
+
+  vim.keymap.set("n", "gx",
+                 "<cmd>FzfLua lsp_code_actions<cr>",
                  {silent = true, noremap = true})
-  vim.keymap.set("n", "<leader>xq", "<cmd>TroubleToggle quickfix<cr>",
-                 {silent = true, noremap = true})
-  vim.keymap.set("n", "gr", "<cmd>TroubleToggle lsp_references<cr>",
-                 {silent = true, noremap = true})
-  vim.keymap.set("n", "gd", "<cmd>TroubleToggle lsp_definitions<cr>",
-                 {silent = true, noremap = true})
-  vim.keymap.set("n", "gy", "<cmd>TroubleToggle lsp_type_definitions<cr>",
-                 {silent = true, noremap = true})
-  vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<cr>",
-                 {silent = true, noremap = true})
+  -- vim.keymap.set("n", "<leader>xl", "<cmd>TroubleToggle loclist<cr>",
+  --                {silent = true, noremap = true})
+  -- vim.keymap.set("n", "<leader>xq", "<cmd>TroubleToggle quickfix<cr>",
+  --                {silent = true, noremap = true})
+  -- vim.keymap.set("n", "gr", "<cmd>TroubleToggle lsp_references<cr>",
+  --                {silent = true, noremap = true})
+  -- vim.keymap.set("n", "gd", "<cmd>TroubleToggle lsp_definitions<cr>",
+  --                {silent = true, noremap = true})
+  -- vim.keymap.set("n", "gy", "<cmd>TroubleToggle lsp_type_definitions<cr>",
+  --                {silent = true, noremap = true})
+  -- vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<cr>",
+  --                {silent = true, noremap = true})
 
 end
 
@@ -145,10 +152,9 @@ function M.dashboard()
   vim.keymap.set('n', 'e', ':enew<CR>', {buffer = true})
   vim.keymap.set('n', '0', '<cmd>SessionLoad<CR>', {buffer = true})
   vim.keymap.set('n', 'c', find_config_file, {buffer = true})
-  vim.keymap
-      .set('n', 's', require"telescope.builtin".live_grep, {buffer = true})
-  vim.keymap.set('n', 'o', require"telescope.builtin".fd, {buffer = true})
-  vim.keymap.set('n', 'O', require"telescope.builtin".oldfiles, {buffer = true})
+  vim.keymap.set('n', 's', "<CMD>FzfLua live_grep<CR>", {buffer = true})
+  vim.keymap.set('n', 'o', "<CMD>FzfLua files<CR>", {buffer = true})
+  vim.keymap.set('n', 'O', "<CMD>FzfLua oldfiles<CR>", {buffer = true})
 end
 
 return M

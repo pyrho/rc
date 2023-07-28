@@ -272,6 +272,36 @@ return {
         provider = ""
       }
     }
+
+    local WorkDirOil = {
+      provider = function(self)
+        self.icon = "  "
+        local cwd = require('oil').get_current_dir()
+        self.cwd = vim.fn.fnamemodify(cwd, ":~")
+      end,
+      hl = {fg = colors.blue, bold = false},
+
+      flexible = flexLowPriority,
+      {
+        -- evaluates to the full-lenth path
+        provider = function(self)
+          local trail = self.cwd:sub(-1) == "/" and "" or "/"
+          return self.icon .. self.cwd .. trail
+        end
+      },
+      {
+        -- evaluates to the shortened path
+        provider = function(self)
+          local cwd = vim.fn.pathshorten(self.cwd)
+          local trail = self.cwd:sub(-1) == "/" and "" or "/"
+          return self.icon .. cwd .. trail
+        end
+      },
+      {
+        -- evaluates to "", hiding the component
+        provider = ""
+      }
+    }
     -- }}}
 
     -- Lsp Stuff {{{
@@ -427,8 +457,8 @@ return {
           provider = function(self)
             local repo_name = vim.fn.fnamemodify(self.status_dict.root, ":t")
             return " " .. repo_name .. "  " ..
-                       (#self.status_dict.head > 10 and
-                           (string.sub(self.status_dict.head, 1, 10) .. "..") or
+                       (#self.status_dict.head > 40 and
+                           (string.sub(self.status_dict.head, 1, 40) .. "..") or
                            self.status_dict.head)
           end
         },
@@ -594,7 +624,7 @@ return {
           return {bg = colors.black, bold = true, fg = color}
 
         end
-      },
+      }
 
     }
 
@@ -630,6 +660,18 @@ return {
       FileType,
       Space,
       Align
+    }
+
+    local OilStatusLine = {
+      condition = function()
+        return conditions.buffer_matches({filetype = {"oil"}})
+      end,
+      ViMode,
+      Space,
+      WorkDirOil,
+      Align,
+      FileType,
+      Space
     }
 
     local TerminalStatusline = {
@@ -690,6 +732,7 @@ return {
 
       SpecialStatusline,
       TerminalStatusline,
+      OilStatusLine,
       InactiveStatusline,
       DefaultStatusline
     }

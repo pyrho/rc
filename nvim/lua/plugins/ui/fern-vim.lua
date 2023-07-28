@@ -1,11 +1,10 @@
 return {
   "lambdalisue/fern.vim",
-  keys = {
-      {"<LEADER>f", ":Fern . -reveal=%<CR>"}
-  },
+  enabled = false,
+  keys = {{"<LEADER>f", ":Fern . -reveal=%<CR>"}},
   config = function()
-    --vim.api.nvim_set_keymap('n', '<Leader>f', ':Fern . -reveal=%<CR>',
-                            --{noremap = true, silent = true})
+    -- vim.api.nvim_set_keymap('n', '<Leader>f', ':Fern . -reveal=%<CR>',
+    -- {noremap = true, silent = true})
     vim.g["fern#renderer"] = "nerdfont"
 
     local fern_aug = vim.api.nvim_create_augroup('MyFernStuff', {clear = true})

@@ -1,5 +1,6 @@
 # FZF {{{
-export FZF_ALT_C_COMMAND="cd $HOME; bfs -type d -nohidden 2>/dev/null | sed s@^\.@$HOME@"
+#export FZF_ALT_C_COMMAND="cd $HOME; bfs -type d -nohidden 2>/dev/null | sed s@^\.@$HOME@"
+export FZF_ALT_C_COMMAND="bfs -type d -nohidden 2>/dev/null"
 
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*" 2> /dev/null'
 # bindkey '^P' "nvim $(fzf)";

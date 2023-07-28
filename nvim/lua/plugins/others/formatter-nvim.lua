@@ -6,6 +6,7 @@ return {
     require("formatter").setup({
       logging = false,
       filetype = {
+        javascript = {require"formatter.defaults".prettierd},
         typescript = {require"formatter.defaults".prettierd},
         typescriptreact = {require"formatter.defaults".prettierd},
         elm = {

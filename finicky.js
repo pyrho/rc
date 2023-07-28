@@ -86,7 +86,7 @@ module.exports = {
       match: "http://localhost:3000/*",
       browser: {
         name: "Google Chrome",
-        profile: "Profile 1",
+        profile: "Profile 2",
       },
     },
 

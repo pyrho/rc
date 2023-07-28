@@ -6,6 +6,7 @@ return {
   priority = 1000,
   dependencies = { 
       'nvim-lua/telescope.nvim',
+  'ibhagwan/fzf-lua',
       'nvim-lua/plenary.nvim',
   },
   config = function()
