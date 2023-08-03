@@ -51,6 +51,11 @@ return {
         }
       end
     }
+      if require"pyrho.helpers".is_zen() then
+        vim.o.background = "light"
+      else
+        vim.o.background = "dark"
+      end
     vim.cmd [[ colorscheme tokyonight ]]
   end
   --   config = function()
