@@ -27,9 +27,10 @@ return {
     local opts = {noremap = true, silent = false}
 
     -- Create a new note after asking for its title.
-    vim.api.nvim_set_keymap("n", "gzn",
-                            "<Cmd>ZkNew { title = vim.fn.input('Title: ') }<CR>",
-                            opts)
+    vim.keymap.set("n", "gzn", function()
+      require('zk').new({title = vim.fn.input('Title: ')})
+    end, opts)
+    -- "<Cmd>ZkNew { title = vim.fn.input('Title: ') }<CR>",
 
     -- Open notes.
     vim.api.nvim_set_keymap("n", "gzz",
