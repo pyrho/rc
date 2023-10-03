@@ -29,10 +29,10 @@ snippets.snippets = {
     -- Equivalent to above.
     -- epoch = function() return os.time() end,
 
-    todo = note_snippet "@TODO",
-    note = note_snippet "@NOTE",
-    idea = note_snippet "@IDEA",
-    important = note_snippet "@IMPORTANT"
+    todo = note_snippet "TODO:",
+    note = note_snippet "NOTE:",
+    idea = note_snippet "IDEA:",
+    important = note_snippet "IMPORTANT:"
   },
   typescript = {
     cl = U.match_indentation [[console.log($0);]],
