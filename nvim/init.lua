@@ -233,6 +233,10 @@ local function lazyBootstrap()
   vim.opt.rtp:prepend(lazypath)
 end
 
+local function disable_lsp_logs()
+  vim.lsp.set_log_level("off")
+end
+
 local function main()
   lazyBootstrap()
   init_abbrev()
@@ -265,6 +269,7 @@ local function main()
   })
 
   require"pyrho.mappings".init()
+  disable_lsp_logs()
 end
 
 main()
