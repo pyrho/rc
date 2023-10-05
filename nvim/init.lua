@@ -256,7 +256,7 @@ local function main()
     spec = {
       {import = "plugins.completion"}, {import = "plugins.ui"},
       {import = "plugins.others"}, {import = "plugins.git"},
-      {import = "plugins.treesitter"}, {import = "plugins.lsp"}
+      {import = "plugins.treesitter"}, {import = "plugins.lsp"}, {import = "plugins.code"}
     },
     dev = {
       path = "~/code/forks",
