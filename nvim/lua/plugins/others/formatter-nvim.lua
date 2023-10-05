@@ -2,6 +2,7 @@ return {
   "mhartington/formatter.nvim",
   cmd = {"Format", "FormatWrite"},
   keys = {{"<LEADER>F", "<CMD>FormatWrite<CR>"}},
+  enabled = false,
   config = function()
     require("formatter").setup({
       logging = false,
