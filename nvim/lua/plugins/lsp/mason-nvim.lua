@@ -7,7 +7,7 @@ return {
       require("mason-lspconfig").setup({
         ensure_installed = {
           "lua_ls", "elixirls", "elmls", "prismals", "zk", "ltex",
-          "yamlls"
+          "yamlls", "vtsls"
         }
       })
       require("mason-lspconfig").setup_handlers {

@@ -21,4 +21,3 @@ require("lazy").setup({
     {"nvim-treesitter/nvim-treesitter"}
   }
 })
---require'lspconfig'.tsserver.setup {}

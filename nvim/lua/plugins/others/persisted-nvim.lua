@@ -1,6 +1,7 @@
 return {
   "olimorris/persisted.nvim",
   cmd = {"SessionLoad", "SessionStart", "SessionStop"},
+  event = "VeryLazy",
   config = function()
     require("persisted").setup({
       autosave = true,

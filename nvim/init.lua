@@ -34,7 +34,7 @@ set foldtext=NeatFoldText()
 end
 
 local function set_options()
-	opt.sessionoptions = "buffers,curdir,folds,winpos,winsize,tabpages"
+	opt.sessionoptions = "buffers,curdir,folds,winpos,winsize" -- this is causing issues upon session load ,tabpages"
 
 	-- 2022-11-03: Let's see how we fare without this..
 	-- opt.clipboard="unnamedplus"
@@ -235,8 +235,8 @@ local function lazyBootstrap()
 	vim.opt.rtp:prepend(lazypath)
 end
 
-local function disable_lsp_logs()
-	vim.lsp.set_log_level("off")
+local function set_lsp_logs()
+	vim.lsp.set_log_level("DEBUG")
 end
 
 local function main()
@@ -282,7 +282,7 @@ local function main()
 	})
 
 	require("pyrho.mappings").init()
-	disable_lsp_logs()
+	set_lsp_logs()
 end
 
 main()
