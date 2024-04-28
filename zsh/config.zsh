@@ -82,6 +82,8 @@ bindkey '^[OB' history-substring-search-down
 bindkey -M vicmd 'k' history-substring-search-up
 bindkey -M vicmd 'j' history-substring-search-down
 
+bindkey '^W' vi-backward-kill-word
+
 # ability to comment on cmd line
 setopt interactivecomments
 HISTORY_IGNORE="(pwd|cd|cd ..|ls|l|nvim|kill*|rm *|z *|gss|gd)"
