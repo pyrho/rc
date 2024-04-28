@@ -1,5 +1,5 @@
 module.exports = {
-  defaultBrowser: "Firefox",
+  defaultBrowser: "Arc",
   options: {
     // Hide the finicky icon from the top bar. Default: false
     hideIcon: false,
@@ -71,14 +71,6 @@ module.exports = {
   ],
   handlers: [
     {
-      match: ({ url }) => url.host.endsWith("cloud.google.com"),
-      url({ urlString }) {
-        return `ext+container:name=Caribou&url=${encodeURIComponent(urlString)}`;
-      },
-      browser: "Firefox"
-    },
-
-    {
       match: "ext+container:name=*",
       browser: "Firefox",
     },
@@ -89,19 +81,14 @@ module.exports = {
         profile: "Profile 2",
       },
     },
-
-    {
-      match: "https://linear.app/*",
-      browser: "Linear",
-    },
-    {
-      match: "https://www.figma.com/file/*",
-      browser: "Figma",
-    },
-    {
-      match: "https://www.notion.so/*",
-      browser: "Notion",
-    },
+    // {
+    //   match: "https://www.figma.com/file/*",
+    //   browser: "Figma",
+    // },
+    // {
+    //   match: "https://www.notion.so/*",
+    //   browser: "Notion",
+    // },
     // {
     //   match: ({ url }) => url.host.endsWith("cloud.google.com"),
     //   browser: "Firefox",
