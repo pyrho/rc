@@ -4,11 +4,8 @@ from kittens.tui.handler import result_handler
 from kitty.key_encoding import KeyEvent, parse_shortcut
 
 
-def matches_program(window, vim_id):
+def is_window_vim(window, vim_id):
     fp = window.child.foreground_processes
-    if any(re.search("ssh", p['cmdline'][0] if len(p['cmdline']) else '', re.I) for p in fp):
-        ft = window.title
-        return re.search(vim_id, ft if ft else '', re.I)
     return any(re.search(vim_id, p['cmdline'][0] if len(p['cmdline']) else '', re.I) for p in fp)
 
 
@@ -34,22 +31,17 @@ def main():
 
 @result_handler(no_ui=True)
 def handle_result(args, result, target_window_id, boss):
+    direction = args[1]
+    key_mapping = args[2]
+    vim_id = args[3] if len(args) > 3 else "n?vim"
+
     window = boss.window_id_map.get(target_window_id)
-    direction = args[2]
-    key_mapping = args[3]
-    vim_id = args[4] if len(args) > 4 else "n?vim"
 
     if window is None:
         return
-    if matches_program(window, vim_id):
-        encoded = encode_key_mapping(window, key_mapping)
-        window.write_to_child(encoded)
-    elif matches_program(window, 'tmux'):
-        encoded = encode_key_mapping(window, key_mapping)
-        window.write_to_child(encoded)
-        # 0 = 0
-        # this_function_does_not_exist(direction, window)
-        # extended = window.screen.extended_keyboard
+    if is_window_vim(window, vim_id):
+        for keymap in key_mapping.split(">"):
+            encoded = encode_key_mapping(window, keymap)
+            window.write_to_child(encoded)
     else:
         boss.active_tab.neighboring_window(direction)
-
