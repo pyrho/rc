@@ -4,8 +4,6 @@ return {
 	keys = { "<Leader>G" },
 	config = function()
 		require("gp").setup({
-			chat_model = { model = "gpt-4", temperature = 1.1, top_p = 1 },
-			command_model = { model = "gpt-4", temperature = 1.1, top_p = 1 },
 			hooks = {
 				-- example of adding command which writes unit tests for the selected code
 				UnitTests = function(gp, params)

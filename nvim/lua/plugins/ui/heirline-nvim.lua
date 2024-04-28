@@ -28,7 +28,7 @@ return {
       static = {
         mode_names = {
           -- change the strings if you like it vvvvverbose!
-          n = "NO",
+          n = "NORMAL",
           no = "N?",
           nov = "N?",
           noV = "N?",
@@ -37,16 +37,16 @@ return {
           niR = "Nr",
           niV = "Nv",
           nt = "Nt",
-          v = "VI",
+          v = "VISUAL",
           vs = "Vs",
-          V = "VI_",
+          V = "VISUAL LINE",
           Vs = "Vs",
           ["\22"] = "^V",
           ["\22s"] = "^V",
           s = "S",
           S = "S_",
           ["\19"] = "^S",
-          i = "IN",
+          i = "INSERT",
           ic = "Ic",
           ix = "Ix",
           R = "RE",
@@ -55,19 +55,19 @@ return {
           Rv = "Rv",
           Rvc = "Rv",
           Rvx = "Rv",
-          c = "CO",
+          c = "COMMAND",
           cv = "Ex",
           r = "...",
           rm = "M",
           ["r?"] = "?",
           ["!"] = "!",
-          t = "TERM"
+          t = "TERMINAL"
         }
       },
       provider = function(self)
         -- return " %2(" .. self.mode_names[vim.fn.mode(1)] .. "%)"
         -- return " %2(" .. self.mode_names[vim.fn.mode(1)] .. "%)"
-        return require'pyrho.helpers'.separators.circle .. " %2(" ..
+        return require'pyrho.helpers'.separators.evil .. " %2(" ..
                    self.mode_names[vim.fn.mode(1)] .. "%)"
       end,
       hl = function(self)
@@ -456,9 +456,9 @@ return {
         {
           provider = function(self)
             local repo_name = vim.fn.fnamemodify(self.status_dict.root, ":t")
-            return " " .. repo_name .. "  " ..
-                       (#self.status_dict.head > 40 and
-                           (string.sub(self.status_dict.head, 1, 40) .. "..") or
+            return " " .. repo_name .. "   " ..
+                       (#self.status_dict.head > 100 and
+                           (string.sub(self.status_dict.head, 1, 100) .. "..") or
                            self.status_dict.head)
           end
         },

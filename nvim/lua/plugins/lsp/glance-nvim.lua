@@ -1,6 +1,8 @@
 return {
   'DNLHC/glance.nvim',
   cmd = "Glance",
+  -- Replaced by fzf-lua
+  enabled = false,
   config = function()
     local glance = require('glance')
     -- local actions = glance.actions

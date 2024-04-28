@@ -9,10 +9,14 @@ return {
 			--
 			lua = { "stylua" },
 			-- Use a sub-list to run only the first available formatter
-			javascript = { { "prettierd", "prettier" } },
-			typescript = { { "prettierd", "prettier" } },
+			javascript = { { "prettier" } },
+			typescript = { { "prettier" } },
+			vue = { { "prettier" } },
+			-- javascript = { { "prettierd", "prettier" } },
+			-- typescript = { { "prettierd", "prettier" } },
+			typescriptreact = { { "prettierd", "prettier" } },
 			sql = { "sql_formatter" },
-            json = { "fixjson" }
+			json = { "fixjson" },
 		},
 	},
 }

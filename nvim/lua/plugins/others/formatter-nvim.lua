@@ -7,6 +7,7 @@ return {
     require("formatter").setup({
       logging = false,
       filetype = {
+        vue = {require"formatter.defaults".prettierd},
         javascript = {require"formatter.defaults".prettierd},
         typescript = {require"formatter.defaults".prettierd},
         typescriptreact = {require"formatter.defaults".prettierd},

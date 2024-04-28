@@ -236,7 +236,7 @@ local function lazyBootstrap()
 end
 
 local function set_lsp_logs()
-	vim.lsp.set_log_level("DEBUG")
+	vim.lsp.set_log_level("OFF")
 end
 
 local function main()
