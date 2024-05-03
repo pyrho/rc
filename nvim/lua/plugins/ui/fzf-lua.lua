@@ -35,5 +35,17 @@ return {
 				require("fzf-lua").lsp_code_actions({ sync = true })
 			end,
 		},
+		{
+			"gj",
+			function()
+				vim.diagnostic.goto_next()
+			end,
+		},
+		{
+			"gk",
+			function()
+				vim.diagnostic.goto_prev()
+			end,
+		},
 	},
 }

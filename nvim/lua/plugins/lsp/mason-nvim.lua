@@ -18,7 +18,6 @@ return {
           require("lspconfig")[server_name].setup {
             on_attach = function(client, bufnr)
               require('nvim-navic').attach(client, bufnr)
-              require'pyrho.mappings'.configureMappings()
             end
           }
         end,
@@ -28,7 +27,6 @@ return {
           require('lspconfig').ltex.setup {
             on_attach = function(client, bufnr)
               require('nvim-navic').attach(client, bufnr)
-              require'pyrho.mappings'.configureMappings()
             end,
             filetypes = {"markdown"},
             cmd = {"/opt/homebrew/bin/ltex-ls"},
@@ -50,7 +48,6 @@ return {
           require('lspconfig').yamlls.setup {
             on_attach = function(client, bufnr)
               require('nvim-navic').attach(client, bufnr)
-              require'pyrho.mappings'.configureMappings()
             end,
             settings = {
               yaml = {
