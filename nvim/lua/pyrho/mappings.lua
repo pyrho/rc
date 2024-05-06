@@ -47,6 +47,7 @@ function M.init()
 	-- See https://medium.com/@kadek/understanding-vims-jump-list-7e1bfc72cdf0
 	vim.api.nvim_set_keymap("n", "k", [[(v:count > 1 ? "m'" . v:count : '' ) . 'gk']], { noremap = true, expr = true })
 	vim.api.nvim_set_keymap("n", "j", [[(v:count > 1 ? "m'" . v:count : '' ) . 'gj']], { noremap = true, expr = true })
+
 end
 
 local function find_config_file()

@@ -23,6 +23,7 @@
   "goyo.vim": { "branch": "master", "commit": "fa0263d456dd43f5926484d1c4c7022dfcb21ba9" },
   "gp.nvim": { "branch": "main", "commit": "52938ffbd47b5e06d0f9b7c8b146f26d6021fbac" },
   "heirline.nvim": { "branch": "master", "commit": "03cff30d7e7d3ba6fdc00925f015822f79cef908" },
+  "hlsearch.nvim": { "branch": "main", "commit": "fdeb60b890d15d9194e8600042e5232ef8c29b0e" },
   "hover.nvim": { "branch": "main", "commit": "ebdc4c0f967bb36b70bb27763397dd71064c2067" },
   "lazy.nvim": { "branch": "main", "commit": "3f13f080434ac942b150679223d54f5ca91e0d52" },
   "leap-spooky.nvim": { "branch": "main", "commit": "5f44a1f63dc1c4ce50244e92da5bc0d8d1f6eb47" },
@@ -59,7 +60,6 @@
   "todo-comments.nvim": { "branch": "main", "commit": "a7e39ae9e74f2c8c6dc4eea6d40c3971ae84752d" },
   "tokyonight.nvim": { "branch": "main", "commit": "67afeaf7fd6ebba000633e89f63c31694057edde" },
   "treesj": { "branch": "main", "commit": "e1e82ab4237619d342c7102c9f13d4b9833bfd39" },
-  "trouble.nvim": { "branch": "main", "commit": "b9cf677f20bb2faa2dacfa870b084e568dca9572" },
   "vim-easy-align": { "branch": "master", "commit": "9815a55dbcd817784458df7a18acacc6f82b1241" },
   "vim-flog": { "branch": "master", "commit": "6289ab2e237ceeefdbcc7eb584b63d144bf88d94" },
   "vim-fugitive": { "branch": "master", "commit": "dac8e5c2d85926df92672bf2afb4fc48656d96c7" },
@@ -68,6 +68,5 @@
   "vim-matchup": { "branch": "master", "commit": "2d660e4aa7c566014c667af2cda0458043527902" },
   "vim-repeat": { "branch": "master", "commit": "24afe922e6a05891756ecf331f39a1f6743d3d5a" },
   "vim-rhubarb": { "branch": "master", "commit": "ee69335de176d9325267b0fd2597a22901d927b1" },
-  "vim-slash": { "branch": "master", "commit": "31aee09b7ea8893a18fa34f65e63e364fc998444" },
   "vim-vsnip": { "branch": "master", "commit": "02a8e79295c9733434aab4e0e2b8c4b7cea9f3a9" }
 }

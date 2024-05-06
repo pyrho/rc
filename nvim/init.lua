@@ -270,6 +270,7 @@ local function main()
 			{ import = "plugins.completion" },
 			{ import = "plugins.ui" },
 			{ import = "plugins.others" },
+			{ import = "plugins.search" },
 			{ import = "plugins.git" },
 			{ import = "plugins.treesitter" },
 			{ import = "plugins.lsp" },
