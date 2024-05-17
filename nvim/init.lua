@@ -118,47 +118,47 @@ local function set_options()
 
 	vim.g.mapleader = " "
 
-	if H.is_zen() then
-		opt.list = false
-		opt.conceallevel = 2
-		opt.colorcolumn = ""
-		opt.textwidth = 75
-		opt.shiftwidth = 4
-		opt.laststatus = 0
-		opt.concealcursor = "n"
-
-		vim.cmd([[
-    let bullet_point_1 = '◉'
-    let bullet_point_2 = '○'
-    let bullet_point_3 = '✸'
-    let bullet_point_4 = '✿'
-    let bullet_point_5 = '◇'
-    let checkbox_unchecked = "❏"
-    let checkbox_checked = "✓"
-
-      augroup MyBullets
-        au!
-    au BufEnter, *.md :syntax match markdownBullet1 "^-\s" contains=markdownBullet1_1
-    au BufEnter, *.md :execute 'syntax match markdownBullet1_1 "-" contained conceal cchar='.bullet_point_1
-
-    au BufEnter, *.md :syntax match markdownBullet2 "^\s\{4\}-\s" contains=markdownBullet2_2
-    au BufEnter, *.md :execute 'syntax match markdownBullet2_2 "-" contained conceal cchar='.bullet_point_2
-
-    au BufEnter, *.md :syntax match markdownBullet3 "^\s\{8\}-\s" contains=markdownBullet3_3
-    au BufEnter, *.md :execute 'syntax match markdownBullet3_3 "-" contained conceal cchar='.bullet_point_3
-
-    au BufEnter, *.md :syntax match markdownBullet4 "^\s\{12\}-\s" contains=markdownBullet4_4
-    au BufEnter, *.md :execute 'syntax match markdownBullet4_4 "-" contained conceal cchar='.bullet_point_4
-
-    au BufEnter, *.md :syntax match markdownBullet5 "^\s\{16\}-\s" contains=markdownBullet5_5
-    au BufEnter, *.md :execute 'syntax match markdownBullet5_5 "-" contained conceal cchar='.bullet_point_5
-
-    au BufEnter, *.md :syntax match markdownCheckbox "\(\[[ x]\]\) " contains=markdownCheckboxChecked,markdownCheckboxUnchecked
-    au BufEnter, *.md :execute 'syntax match markdownCheckboxUnchecked "\(\[ \]\)" contained conceal cchar='.checkbox_unchecked
-    au BufEnter, *.md :execute 'syntax match markdownCheckboxChecked "\(\[x\]\)" contained conceal cchar='.checkbox_checked
-      augroup END
-      ]])
-	end
+	-- if H.is_zen() then
+	-- 	opt.list = false
+	-- 	opt.conceallevel = 2
+	-- 	opt.colorcolumn = ""
+	-- 	opt.textwidth = 75
+	-- 	opt.shiftwidth = 4
+	-- 	opt.laststatus = 0
+	-- 	opt.concealcursor = "n"
+	--
+	-- 	vim.cmd([[
+ --    let bullet_point_1 = '◉'
+ --    let bullet_point_2 = '○'
+ --    let bullet_point_3 = '✸'
+ --    let bullet_point_4 = '✿'
+ --    let bullet_point_5 = '◇'
+ --    let checkbox_unchecked = "❏"
+ --    let checkbox_checked = "✓"
+	--
+ --      augroup MyBullets
+ --        au!
+ --    au BufEnter, *.md :syntax match markdownBullet1 "^-\s" contains=markdownBullet1_1
+ --    au BufEnter, *.md :execute 'syntax match markdownBullet1_1 "-" contained conceal cchar='.bullet_point_1
+	--
+ --    au BufEnter, *.md :syntax match markdownBullet2 "^\s\{4\}-\s" contains=markdownBullet2_2
+ --    au BufEnter, *.md :execute 'syntax match markdownBullet2_2 "-" contained conceal cchar='.bullet_point_2
+	--
+ --    au BufEnter, *.md :syntax match markdownBullet3 "^\s\{8\}-\s" contains=markdownBullet3_3
+ --    au BufEnter, *.md :execute 'syntax match markdownBullet3_3 "-" contained conceal cchar='.bullet_point_3
+	--
+ --    au BufEnter, *.md :syntax match markdownBullet4 "^\s\{12\}-\s" contains=markdownBullet4_4
+ --    au BufEnter, *.md :execute 'syntax match markdownBullet4_4 "-" contained conceal cchar='.bullet_point_4
+	--
+ --    au BufEnter, *.md :syntax match markdownBullet5 "^\s\{16\}-\s" contains=markdownBullet5_5
+ --    au BufEnter, *.md :execute 'syntax match markdownBullet5_5 "-" contained conceal cchar='.bullet_point_5
+	--
+ --    au BufEnter, *.md :syntax match markdownCheckbox "\(\[[ x]\]\) " contains=markdownCheckboxChecked,markdownCheckboxUnchecked
+ --    au BufEnter, *.md :execute 'syntax match markdownCheckboxUnchecked "\(\[ \]\)" contained conceal cchar='.checkbox_unchecked
+ --    au BufEnter, *.md :execute 'syntax match markdownCheckboxChecked "\(\[x\]\)" contained conceal cchar='.checkbox_checked
+ --      augroup END
+ --      ]])
+	-- end
 end
 
 local function init_abbrev()
@@ -269,6 +269,7 @@ local function main()
 			{ import = "plugins.motion" },
 			{ import = "plugins.completion" },
 			{ import = "plugins.ui" },
+			{ import = "plugins.syntax" },
 			{ import = "plugins.others" },
 			{ import = "plugins.search" },
 			{ import = "plugins.git" },
