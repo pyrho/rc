@@ -6,6 +6,10 @@ return {
 	config = function()
 		require("render-markdown").setup({
 			file_types = { "markdown", "typescript" },
+			highlights = {
+				-- Code blocks
+				code = "Pmenu",
+			},
 		})
 	end,
 }
