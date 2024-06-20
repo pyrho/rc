@@ -2,7 +2,7 @@
   "Write a note": {
     "prefix": ["note"],
     "body": [
-        "// ${1:NOTE}:",
+        "// ${1:@NOTE}",
         "// $0",
         "//  - dr, ${VIM:system('date +%Y-%m-%d')}"
     ]
