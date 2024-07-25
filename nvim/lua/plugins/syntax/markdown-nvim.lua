@@ -8,7 +8,7 @@ return {
 			file_types = { "markdown", "typescript" },
 			highlights = {
 				-- Code blocks
-				code = "Pmenu",
+				code = "markdownCode",
 			},
 		})
 	end,

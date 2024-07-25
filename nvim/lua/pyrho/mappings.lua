@@ -22,6 +22,10 @@ function M.init()
 	vim.api.nvim_set_keymap("n", "[l", ":lprev<CR>", { noremap = true, silent = true })
 	vim.api.nvim_set_keymap("n", "]l", ":lnext<CR>", { noremap = true, silent = true })
 
+	vim.api.nvim_set_keymap("i", "gj", "<Esc>", { noremap = true, silent = true })
+	vim.api.nvim_set_keymap("i", "jg", "<Esc>", { noremap = true, silent = true })
+	vim.api.nvim_set_keymap("i", "<S-Del>", "<Del>", { noremap = true, silent = true })
+
 	-- Helpers
 	vim.api.nvim_set_keymap(
 		"n",
