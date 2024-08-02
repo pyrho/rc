@@ -1,5 +1,6 @@
 return {
   "olimorris/persisted.nvim",
+  enabled = false,
   cmd = {"SessionLoad", "SessionStart", "SessionStop"},
   event = "VeryLazy",
   config = function()

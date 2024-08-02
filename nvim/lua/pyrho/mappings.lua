@@ -7,8 +7,8 @@ function M.init()
 	--vim.api.nvim_set_keymap("n", "<Leader>k", ":wincmd k<CR>", { noremap = true, silent = true })
 	--vim.api.nvim_set_keymap("n", "<Leader>l", ":wincmd l<CR>", { noremap = true, silent = true })
 
-    -- These mappings are actually used by kitty via the vim-kitty-navigator plugin. They are 
-    -- never issue by me directly, kitty sends them (via the pass_keys.py kitten) 
+	-- These mappings are actually used by kitty via the vim-kitty-navigator plugin. They are
+	-- never issue by me directly, kitty sends them (via the pass_keys.py kitten)
 	vim.api.nvim_set_keymap("n", "<C-h>", ":wincmd h<CR>", { noremap = true, silent = true })
 	vim.api.nvim_set_keymap("n", "<C-j>", ":wincmd j<CR>", { noremap = true, silent = true })
 	vim.api.nvim_set_keymap("n", "<C-k>", ":wincmd k<CR>", { noremap = true, silent = true })
@@ -52,6 +52,15 @@ function M.init()
 	vim.api.nvim_set_keymap("n", "k", [[(v:count > 1 ? "m'" . v:count : '' ) . 'gk']], { noremap = true, expr = true })
 	vim.api.nvim_set_keymap("n", "j", [[(v:count > 1 ? "m'" . v:count : '' ) . 'gj']], { noremap = true, expr = true })
 
+    -- Copy link to current file with line #
+	vim.keymap.set("n", "<Leader>yy", function()
+		local cword = vim.fn.expand("<cword>")
+		-- let @* = expand('%') . ':' . line('.')
+		local path_and_line = vim.fn.expand("%") .. ":" .. vim.fn.line(".")
+		local line = "- [" .. cword .. "](" .. path_and_line .. ")"
+        vim.fn.setreg("@", line)
+		print(line)
+	end, { noremap = true, expr= true })
 end
 
 local function find_config_file()

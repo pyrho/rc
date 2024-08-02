@@ -283,6 +283,10 @@ local function main()
 			path = "~/code/forks",
 			fallback = false,
 		},
+		rocks = {
+			root = vim.fn.stdpath("data") .. "/lazy-rocks",
+			server = "https://nvim-neorocks.github.io/rocks-binaries/",
+		},
 	})
 
 	require("pyrho.mappings").init()
