@@ -1,6 +1,5 @@
 #!/bin/zsh
 
-
 # source antidote
 source ${ZDOTDIR:-~}/.antidote/antidote.zsh
 

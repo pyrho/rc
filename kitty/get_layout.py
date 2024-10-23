@@ -1,0 +1,1 @@
+/Users/pyrho/.config/kitty/kittens/get_layout.py

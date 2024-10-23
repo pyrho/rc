@@ -5,6 +5,7 @@ return {
 		config = function()
 			require("mason-lspconfig").setup({
 				ensure_installed = {
+                    "r",
 					"lua_ls",
 					"elixirls",
 					"elmls",
@@ -12,7 +13,6 @@ return {
 					"zk",
 					"ltex",
 					"yamlls",
-					"vtsls",
 				},
 			})
 			require("mason-lspconfig").setup_handlers({

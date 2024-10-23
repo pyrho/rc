@@ -61,12 +61,12 @@ alias gpsup='git push --set-upstream origin $(git_current_branch)'
 alias grt='cd $(git rev-parse --show-toplevel || echo ".")'
 # }}}
 #
-alias l='exa --group-directories-first -lgm'
+alias l='eza --icons --group-directories-first -lgm'
 alias lt='l --sort=time'
 alias la='l -a'
-alias ls='exa -F'
+alias ls='eza -F'
 
-alias sl='exa --icons -l'
+alias sl='eza --icons -l'
 alias t='todo.sh'
 alias icat="kitty +kitten icat"
 alias ssk="kitty +kitten ssh"

@@ -403,10 +403,10 @@ return {
 			condition = conditions.has_diagnostics,
 
 			static = {
-				error_icon = (vim.fn.sign_getdefined("DiagnosticSignError")[1] or { text = "😡" }).text,
-				warn_icon = (vim.fn.sign_getdefined("DiagnosticSignWarn")[1] or { text = "😥" }).text,
-				info_icon = (vim.fn.sign_getdefined("DiagnosticSignInfo")[1] or { text = "😤" }).text,
-				hint_icon = (vim.fn.sign_getdefined("DiagnosticSignHint")[1] or { text = "😐" }).text,
+				error_icon = (vim.fn.sign_getdefined("DiagnosticSignError")[1] or { text = " " }).text,
+				warn_icon = (vim.fn.sign_getdefined("DiagnosticSignWarn")[1] or { text = " " }).text,
+				info_icon = (vim.fn.sign_getdefined("DiagnosticSignInfo")[1] or { text = " " }).text,
+				hint_icon = (vim.fn.sign_getdefined("DiagnosticSignHint")[1] or { text = " " }).text,
 			},
 
 			init = function(self)
@@ -615,7 +615,7 @@ return {
 			{
 				provider = function()
 					-- local obsession_status = vim.fn.ObsessionStatus("OBS  ", "OBS  ")
-					if vim.g.persisting then
+					if require'resession'.get_current() then
 						return "OBS   "
 					else
 						return "OBS   "

@@ -1,0 +1,1 @@
+/Users/pyrho/.config/kitty/kittens/pass_keys.py

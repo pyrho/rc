@@ -1,3 +1,7 @@
+local function get_current_area()
+	-- See :h filename-modifiers
+	local x = vim.fn.expand("%:h:t")
+end
 local function is_whitelisted_cwd()
 	local name = vim.fn.getcwd()
 	local whitelist = { "code/caribou" }
@@ -37,10 +41,21 @@ return {
 		-- 		end
 		-- 	end,
 		-- })
+		vim.api.nvim_create_user_command("ResessionDirStart", function()
+			resession.save(vim.fn.getcwd(), { dir = "dirsession", notify = false })
+		end, {})
+
+		vim.api.nvim_create_user_command("ResessionDirLoad", function()
+			resession.load(vim.fn.getcwd(), { dir = "dirsession", notify = false })
+		end, {})
+
+		vim.api.nvim_create_user_command("ResessionGitStart", function()
+			resession.save(get_session_name(), { dir = "gitsession", notify = false })
+		end, {})
 
 		vim.api.nvim_create_autocmd("VimLeavePre", {
 			callback = function()
-				if is_whitelisted_cwd() then
+				if resession.get_current() then
 					resession.save(get_session_name(), { dir = "gitsession", notify = false })
 				end
 			end,

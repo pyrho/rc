@@ -87,10 +87,11 @@ return {
         -- NOTE: Disabling this because it's annoying
         -- {name = 'nvim_lsp_signature_help', priority = 2},
         {name = 'nvim_lsp', priority = 2}, {name = 'path', priority = 3},
-        {name = 'conjure'}
+        {name = 'conjure'},
         -- {name = 'buffer', priority = 10}
         -- { name = 'ultisnips' }, -- For ultisnips users.
         -- { name = 'snippy' }, -- For snippy users.
+        { name = "lazydev", group_index = 0 }
       }, {})
     })
 

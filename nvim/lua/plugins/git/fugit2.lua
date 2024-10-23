@@ -1,7 +1,11 @@
 return {
 	"SuperBo/fugit2.nvim",
 	opts = {
-		width = 70,
+		width = "100%",
+		min_width = 50,
+		content_width = 60,
+		max_width = "90%",
+		height = "90%",
 		external_diffview = true, -- tell fugit2 to use diffview.nvim instead of builtin implementation.
 	},
 	dependencies = {

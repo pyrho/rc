@@ -172,16 +172,6 @@ local function init_abbrev()
   ]])
 end
 
-local function focus_previous_tab_on_close()
-	-- autocmd TabClosed * tabprevious
-	vim.api.nvim_create_autocmd("TabClosed", {
-		pattern = { "*" },
-		callback = function()
-			vim.cmd("tabprevious")
-		end,
-	})
-end
-
 local function highlight_yank_init()
 	vim.cmd([[
     augroup highlight_yank
@@ -245,7 +235,6 @@ local function main()
 	lazyBootstrap()
 	init_abbrev()
 	highlight_yank_init()
-	focus_previous_tab_on_close()
 
 	set_options()
 	fancy_fold()
