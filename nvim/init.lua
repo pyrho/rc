@@ -280,6 +280,7 @@ local function main()
 
 	require("pyrho.mappings").init()
 	set_lsp_logs()
+
 end
 
 main()

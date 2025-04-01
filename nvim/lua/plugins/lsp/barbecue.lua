@@ -7,8 +7,7 @@ return {
     "SmiteshP/nvim-navic", "nvim-tree/nvim-web-devicons" -- optional dependency
   },
   config = function()
-    require'barbecue'.setup {theme = 'tokyonight', show_modified = true}
+    require'barbecue'.setup {theme = 'auto', show_modified = true}
   end,
-  keys = {{"[[", function() require'pyrho.functions'.parent() end}},
   dev = false,
 }

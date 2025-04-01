@@ -21,7 +21,6 @@ return {
 				sidebars = "dark", -- style for sidebars, see below
 				floats = "dark", -- style for floating windows
 			},
-			sidebars = { "qf", "help", "packer", "defx", "lspsagafinder", "fern", "aerial" }, -- Set a darker background on sidebar-like windows. For example: `["qf", "vista_kind", "terminal", "packer"]`
 			day_brightness = 0.3, -- Adjusts the brightness of the colors of the **Day** style. Number between 0 and 1, from dull to vibrant colors
 			hide_inactive_statusline = true, -- Enabling this option, will hide inactive statuslines and replace them with a thin border instead. Should work with the standard **StatusLine** and **LuaLine**.
 			dim_inactive = false, -- dims inactive windows
@@ -30,7 +29,17 @@ return {
 			--- You can override specific color groups to use other groups or a hex color
 			--- function will be called with a ColorScheme table
 			---@param colors ColorScheme
-			on_colors = function(colors) end,
+			on_colors = function(colors_)
+				-- This is ugly hack to get alpha-nvim 's logo to get colors.
+				-- It looks like tokyonight wipes all pre-existing highlight groups
+				vim.cmd([[ hi Alphab guifg=#3399ff ctermfg=33 ]])
+				vim.cmd([[ hi Alphaa guifg=#53C670 ctermfg=35 ]])
+				vim.cmd([[ hi Alphag guifg=#39ac56 ctermfg=29 ]])
+				vim.cmd([[ hi Alphah guifg=#33994d ctermfg=23 ]])
+				vim.cmd([[ hi Alphai guifg=#33994d guibg=#39ac56 ctermfg=23 ctermbg=29 ]])
+				vim.cmd([[ hi Alphaj guifg=#53C670 guibg=#33994d ctermfg=35 ctermbg=23 ]])
+				vim.cmd([[ hi Alphak guifg=#30A572 ctermfg=36 ]])
+			end,
 
 			--- You can override specific highlights to use other groups or a hex color
 			--- function will be called with a Highlights and ColorScheme table
@@ -43,62 +52,24 @@ return {
 					bg = colors.bg,
 				}
 
-				highlights.CursorLineNr = highlights.WarningMsg
-				highlights.WinBarNC = {
-					bold = false,
-					fg = require("tokyonight.util").darken("#cccccc", 0.9),
-					bg = require("tokyonight.util").darken("#dddddd", 0.9),
+				highlights.TabLineFill = {
+					bg = colors.bg,
 				}
 
-				if vim.o.background == "light" then
-					highlights.TSCurrentScope = {
-						bg = "#d4d7e4",
-					}
-				end
+				highlights.TabLine = {
+					bg = colors.bg,
+				}
+				--
+				--
+				-- highlights.CursorLineNr = highlights.WarningMsg
+				--
+				-- if vim.o.background == "light" then
+				-- 	highlights.TSCurrentScope = {
+				-- 		bg = "#d4d7e4",
+				-- 	}
+				-- end
 			end,
 		})
 		vim.cmd([[ colorscheme tokyonight ]])
 	end,
-	--   config = function()
-	--     if require"pyrho.helpers".is_zen() then
-	--       vim.o.background = "light"
-	--     else
-	--       vim.o.background = "dark"
-	--     end
-	--
-	--     vim.g.tokyonight_style = "storm"
-	--     vim.g.tokyonight_italic_functions = 0
-	--     vim.g.tokyonight_italic_keywords = 0
-	--     vim.g.tokyonight_italic_variables = 0
-	--     vim.g.tokyonight_sidebars = {
-	--       "qf", "vista_kind",
-	--       -- Can't have this and the nice neovim logo in Dashboard
-	--       --[["terminal"]]
-	--       "packer", "defx", "lspsagafinder", "fern"
-	--     }
-	--     vim.g.tokyonight_hide_inactive_statusline = true
-	--
-	--     -- vim.cmd [[ autocommand ColorScheme tokyonight call MyHighlight() ]]
-	--
-	--     --[[
-	--   --
-	--   function! MyHighlights() abort
-	--     highlight Visual     cterm=NONE ctermbg=76  ctermfg=16  gui=NONE guibg=#5fd700 guifg=#000000
-	--     highlight StatusLine cterm=NONE ctermbg=231 ctermfg=160 gui=NONE guibg=#ffffff guifg=#d70000
-	--     highlight Normal     cterm=NONE ctermbg=17              gui=NONE guibg=#00005f
-	--     highlight NonText    cterm=NONE ctermbg=17              gui=NONE guibg=#00005f
-	-- endfunction
-	-- --]]
-	--     -- local tokyoNightsOverrides = -- Vimscript function name (as a string)
-	--     -- local myvimfun = "g:MyVimFunction"
-	--     vim.api.nvim_create_autocmd({"ColorScheme"}, {
-	--       pattern = {"tokyonight"},
-	--       callback = function()
-	--         vim.api
-	--             .nvim_command [[ highlight TabLineSel gui=bold guifg=#7dcfff guibg=#1f2335 ]]
-	--       end -- Or myvimfun
-	--     })
-	--
-	--     vim.cmd [[ colorscheme tokyonight ]]
-	--   end
 }

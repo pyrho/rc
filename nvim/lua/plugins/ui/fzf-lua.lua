@@ -45,19 +45,5 @@ return {
 			end,
 			desc = "LSP Code actions",
 		},
-		{
-			"gj",
-			function()
-				vim.diagnostic.goto_next()
-			end,
-			desc = "LSP Next diagnostic",
-		},
-		{
-			"gk",
-			function()
-				vim.diagnostic.goto_prev()
-			end,
-			desc = "LSP Previous diagnostic",
-		},
 	},
 }

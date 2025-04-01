@@ -5,7 +5,7 @@ return {
 		config = function()
 			require("mason-lspconfig").setup({
 				ensure_installed = {
-                    "r",
+                    "r_language_server",
 					"lua_ls",
 					"elixirls",
 					"elmls",
@@ -92,6 +92,7 @@ return {
 			-- Highlight entire line for errors
 			-- Highlight the line number for warnings
 			vim.diagnostic.config({
+                virtual_text = false,
 				signs = {
 					text = {
 						[vim.diagnostic.severity.ERROR] = " ",

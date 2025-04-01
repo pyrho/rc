@@ -9,7 +9,9 @@ config.set_environment_variables = {
 
 config.show_new_tab_button_in_tab_bar = false
 config.show_close_tab_button_in_tabs = false
-config.pane_focus_follows_mouse = true
+
+-- 2024-11-07 This causes a bug where the focus is going haywire
+-- config.pane_focus_follows_mouse = true
 config.tab_bar_at_bottom = false
 
 local resurrect = wezterm.plugin.require("https://github.com/MLFlexer/resurrect.wezterm")
@@ -71,7 +73,7 @@ else
 	}
 end
 
-config.font = wezterm.font_with_fallback({ "Iosevka Custom", "Apple Color Emoji" })
+config.font = wezterm.font_with_fallback({ "Iosevka Custom", "Apple Color Emoji", "Flog Symbols" })
 config.font_rules = {
 	{
 		intensity = "Bold",
@@ -247,6 +249,13 @@ config.leader = { key = "a", mods = "CTRL", timeout_milliseconds = 1000 }
 -- Table mapping keypresses to actions
 config.keys = {
 	{
+		key = "0",
+		mods = "CTRL",
+		action = wezterm.action.PaneSelect({
+			mode = "SwapWithActive",
+		}),
+	},
+	{
 		key = "W",
 		mods = "LEADER",
 		action = wezterm.action_callback(function(win, pane)
@@ -335,9 +344,11 @@ config.keys = {
 			end),
 		}),
 	},
-	{ key = "s", mods = "CTRL", action = wezterm.action.PaneSelect({
+
+	{ key = "s", mods = "LEADER", action = wezterm.action.PaneSelect({
 		alphabet = "arstneoi",
 	}) },
+
 	-- Sends ESC + b and ESC + f sequence, which is used
 	-- for telling your shell to jump back/forward.
 	{
@@ -548,7 +559,6 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
 		}
 	end
 end)
-
 
 wezterm.on("user-var-changed", function(window, pane, name, value)
 	local overrides = window:get_config_overrides() or {}

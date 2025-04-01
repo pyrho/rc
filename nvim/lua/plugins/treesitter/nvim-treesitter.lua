@@ -12,6 +12,7 @@ return {
 				additional_vim_regex_highlighting = false,
 				disable = {
 					"dashboard",
+					"alpha",
 					"help",
 					-- 2022-02-08 Disabling markdown for now because it's messing with concealing (see https://github.com/nvim-treesitter/nvim-treesitter/issues/959)
 					-- 2023-06-02: Trying again
