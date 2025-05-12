@@ -10,6 +10,9 @@ mattmc3/zephyr path:plugins/homebrew
 robbyrussell/oh-my-zsh path:plugins/ssh-agent
 robbyrussell/oh-my-zsh path:plugins/vi-mode
 robbyrussell/oh-my-zsh path:plugins/fzf
+robbyrussell/oh-my-zsh path:plugins/volta
+robbyrussell/oh-my-zsh path:plugins/virtualenvwrapper
+robbyrussell/oh-my-zsh path:plugins/direnv
 
 zsh-users/zsh-autosuggestions
 
@@ -18,11 +21,15 @@ romkatv/powerlevel10k
 
 larkery/zsh-histdb
 m42e/zsh-histdb-fzf
+# Tried the skim version, didn't like it
+#m42e/zsh-histdb-skim
 
 zsh-users/zsh-syntax-highlighting
 zsh-users/zsh-history-substring-search
 
 trystan2k/zsh-tab-title
+
+z-shell/zsh-eza
 
 # Important to run this last !
 mattmc3/zephyr path:plugins/completion
@@ -30,3 +37,4 @@ mattmc3/zephyr path:plugins/completion
 # This needs to be ran after for some reason, but other completions must 
 # run before
 lukechilds/zsh-better-npm-completion 
+chrisands/zsh-yarn-completions
