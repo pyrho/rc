@@ -1,1 +1,1 @@
-export BAT_THEME="OneHalfDark"
+export BAT_THEME="base16-256"
