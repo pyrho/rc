@@ -1,5 +1,8 @@
 #!/bin/zsh
 
+ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/oh-my-zsh"
+[[ -d $ZSH_CACHE_DIR ]] || mkdir -p $ZSH_CACHE_DIR
+
 # source antidote
 source ${ZDOTDIR:-~}/.antidote/antidote.zsh
 
