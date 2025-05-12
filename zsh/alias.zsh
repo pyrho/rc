@@ -30,7 +30,7 @@ alias gc!='git commit -v --amend'
 alias gca='git commit -v -a'
 alias gca!='git commit -v -a --amend'
 alias gcb='git checkout -b'
-alias gcm='git checkout master'
+alias gcm='git com'
 alias gcs='git checkout staging'
 alias gco='git checkout'
 alias gcf='git config --list'
@@ -61,12 +61,6 @@ alias gpsup='git push --set-upstream origin $(git_current_branch)'
 alias grt='cd $(git rev-parse --show-toplevel || echo ".")'
 # }}}
 #
-alias l='eza --icons --group-directories-first -lgm'
-alias lt='l --sort=time'
-alias la='l -a'
-alias ls='eza -F'
-
-alias sl='eza --icons -l'
 alias t='todo.sh'
 alias icat="kitty +kitten icat"
 alias ssk="kitty +kitten ssh"
