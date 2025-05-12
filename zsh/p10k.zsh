@@ -209,7 +209,7 @@
   # prefix. The shortened directory can be tab-completed to the original.
   typeset -g POWERLEVEL9K_SHORTEN_STRATEGY=truncate_to_unique
   # Replace removed segment suffixes with this symbol.
-  typeset -g POWERLEVEL9K_SHORTEN_DELIMITER=""
+  typeset -g POWERLEVEL9K_SHORTEN_DELIMITER="󰇘"
   # Color of the shortened directory segments.
   typeset -g POWERLEVEL9K_DIR_SHORTENED_FOREGROUND=81
   # Color of the anchor directory segments. Anchor segments are never shortened. The first
@@ -691,7 +691,7 @@
   # Nnn shell color.
   typeset -g POWERLEVEL9K_NNN_FOREGROUND=72
   # Custom icon.
-  # typeset -g POWERLEVEL9K_NNN_VISUAL_IDENTIFIER_EXPANSION='⭐'
+  typeset -g POWERLEVEL9K_NNN_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
   ###########################[ vim_shell: vim shell indicator (:sh) ]###########################
   # Vim shell indicator color.
