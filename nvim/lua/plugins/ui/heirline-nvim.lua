@@ -403,10 +403,10 @@ return {
 			condition = conditions.has_diagnostics,
 
 			static = {
-				error_icon = (vim.fn.sign_getdefined("DiagnosticSignError")[1] or { text = " " }).text,
-				warn_icon = (vim.fn.sign_getdefined("DiagnosticSignWarn")[1] or { text = " " }).text,
-				info_icon = (vim.fn.sign_getdefined("DiagnosticSignInfo")[1] or { text = " " }).text,
-				hint_icon = (vim.fn.sign_getdefined("DiagnosticSignHint")[1] or { text = " " }).text,
+				error_icon = (vim.fn.sign_getdefined("DiagnosticSignError")[1] or { text = " " }).text,
+				warn_icon = (vim.fn.sign_getdefined("DiagnosticSignWarn")[1] or { text = " " }).text,
+				info_icon = (vim.fn.sign_getdefined("DiagnosticSignInfo")[1] or { text = " " }).text,
+				hint_icon = (vim.fn.sign_getdefined("DiagnosticSignHint")[1] or { text = " " }).text,
 			},
 
 			init = function(self)
@@ -481,9 +481,9 @@ return {
 				{
 					provider = function(self)
 						local repo_name = vim.fn.fnamemodify(self.status_dict.root, ":t")
-						return " "
+						return " "
 							.. repo_name
-							.. "   "
+							.. "  "
 							.. (
 								#self.status_dict.head > 100 and (string.sub(self.status_dict.head, 1, 100) .. "..")
 								or self.status_dict.head
@@ -492,7 +492,7 @@ return {
 				},
 				{
 					provider = function(self)
-						return " " .. string.sub(self.status_dict.head, 1, 5) .. "..."
+						return " " .. string.sub(self.status_dict.head, 1, 5) .. "..."
 					end,
 				},
 			},
@@ -510,7 +510,7 @@ return {
 					condition = function(self)
 						return self.has_changes
 					end,
-					provider = "  ",
+					provider = "   ",
 				},
 			},
 
@@ -637,7 +637,7 @@ return {
 		--
 		-- }}} !Components
 
-		local DefaultStatusline_left_old = { ViMode, Space, Diagnostics, Space, Git }
+		local DefaultStatusline_left_old = { ViMode, Space, Diagnostics, Git }
 
 		local DefaultStatusline_left = {
 			{

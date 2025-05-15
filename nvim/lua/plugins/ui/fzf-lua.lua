@@ -1,15 +1,19 @@
 return {
 	"ibhagwan/fzf-lua",
 	dependencies = { "nvim-tree/nvim-web-devicons" },
-	opts = {
-		winopts = {
-			fullscren = true,
-			preview = {
-				layout = "vertical",
+    event = "VeryLazy",
+	config = function()
+		require("fzf-lua").setup({
+			winopts = {
+				fullscren = true,
+				preview = {
+					layout = "vertical",
+				},
 			},
-		},
-		-- treesitter = { enable = true, disable = {} },
-	},
+			-- treesitter = { enable = true, disable = {} },
+		})
+		-- require("fzf-lua").register_ui_select()
+	end,
 	keys = {
 		{ "<LEADER>o", "<CMD>FzfLua files<CR>", desc = "File fuzzy finder" },
 		{ "<LEADER>s", "<CMD>FzfLua live_grep<CR>", desc = "Live grep" },
@@ -27,7 +31,7 @@ return {
 		{
 			"gd",
 			function()
-				require("fzf-lua").lsp_definitions({ jump_to_single_result = true })
+				require("fzf-lua").lsp_definitions({ jump1 = true })
 			end,
 			desc = "LSP Definitions",
 		},

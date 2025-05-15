@@ -10,7 +10,10 @@ return {
 					"elixirls",
 					"elmls",
 					"prismals",
-					"zk",
+
+					-- 2025-04-03 as of this date, there's an issue with the manifest for this
+                    -- "zk",
+
 					"ltex",
 					"yamlls",
 				},
@@ -26,14 +29,14 @@ return {
 						end,
 					})
 				end,
-				["zk"] = function()
-					require("lspconfig").zk.setup({
-						on_attach = function(client, bufnr)
-							require("nvim-navic").attach(client, bufnr)
-							vim.diagnostic.config({ signs = false, underline = false })
-						end,
-					})
-				end,
+				-- ["zk"] = function()
+				-- 	require("lspconfig").zk.setup({
+				-- 		on_attach = function(client, bufnr)
+				-- 			require("nvim-navic").attach(client, bufnr)
+				-- 			vim.diagnostic.config({ signs = false, underline = false })
+				-- 		end,
+				-- 	})
+				-- end,
 				-- Next, you can provide a dedicated handler for specific servers.
 				-- For example, a handler override for the `rust_analyzer`:
 				["ltex"] = function()
@@ -95,10 +98,10 @@ return {
                 virtual_text = false,
 				signs = {
 					text = {
-						[vim.diagnostic.severity.ERROR] = " ",
-						[vim.diagnostic.severity.WARN] = " ",
-						[vim.diagnostic.severity.HINT] = " ",
-						[vim.diagnostic.severity.INFO] = " ",
+						[vim.diagnostic.severity.ERROR] = " ",
+						[vim.diagnostic.severity.WARN] = " ",
+						[vim.diagnostic.severity.HINT] = " ",
+						[vim.diagnostic.severity.INFO] = " ",
 					},
 					linehl = {
 						-- [vim.diagnostic.severity.ERROR] = "",

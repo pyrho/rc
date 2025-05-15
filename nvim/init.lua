@@ -161,6 +161,7 @@ local function set_options()
 	--      augroup END
 	--      ]])
 	-- end
+    opt.exrc = true 
 end
 
 local function init_abbrev()

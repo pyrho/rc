@@ -20,7 +20,7 @@ return {
         },
 
         -- automatically attach buffers in a zk notebook that match the given filetypes
-        auto_attach = {enabled = false, filetypes = {"markdown"}}
+        auto_attach = {enabled = true, filetypes = {"markdown"}}
       }
     })
 

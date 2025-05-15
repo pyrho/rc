@@ -13,7 +13,7 @@ return {
 			cpp = { "clang-format" },
 			go = { "goimports", "gofmt" },
 			-- Use a sub-list to run only the first available formatter
-			javascript = { "prettierd", "prettier", stop_after_first = true },
+			javascript = { "prettier", "prettierd", stop_after_first = true },
 			typescript = { "prettierd", "prettier", stop_after_first = true },
 			vue = { "prettierd", "prettier", stop_after_first = true },
 			-- javascript = { { "prettierd", "prettier" } },
