@@ -4,7 +4,6 @@
 ;;; A lightweight Emacs config containing only the essentials: shipped with a custom theme!
 ;;; Code:
 (defvar file-name-handler-alist-original file-name-handler-alist)
-
 (setq gc-cons-threshold most-positive-fixnum
       gc-cons-percentage 0.6
       file-name-handler-alist nil
@@ -50,6 +49,7 @@
   (load bootstrap-file nil 'nomessage))
 
 (straight-use-package 'use-package)
+(straight-use-package 'org)
 
 (use-package straight
   :custom
@@ -76,7 +76,7 @@
 ;;; Loading of config.org (main config file)
 
 ;; Tangle config.org if it's newer than config.el and load it
-(let ((config-org (expand-file-name "config.org" user-emacs-directory))
+(let ((config-org (expand-file-name "config.org" "~/rc/emacs"))
       (config-el (expand-file-name "config.el" user-emacs-directory)))
   (when (or (not (file-exists-p config-el))
             (file-newer-than-file-p config-org config-el))
