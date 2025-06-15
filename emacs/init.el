@@ -22,14 +22,6 @@
 (add-hook 'minibuffer-exit-hook (lambda ()
                                   (garbage-collect)
                                   (setq gc-cons-threshold ian/gc-cons-threshold)))
-
-(require 'package)
-(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/"))
-(setq package-enable-at-startup nil)
-(package-initialize)
-
 
 ;;; Straight.el -- Package manager
 (defvar bootstrap-version)
@@ -55,24 +47,14 @@
   :custom
   (straight-use-package-by-default t))
 
+(if init-file-debug
+    (setq use-package-verbose t
+          use-package-expand-minimally nil
+          use-package-compute-statistics t
+          debug-on-error t)
+  (setq use-package-verbose nil
+        use-package-expand-minimally t))
 
-
-;;; General -- Keymaps
-;; (use-package general
-;;   :demand t)
-;; (require 'general)
-;; (general-evil-setup)
-;; ;; * Global Keybindings
-;; ;; all keywords arguments are still supported
-;; ;; these are just wrappers around `general-def' that set a default :states
-;; (general-nmap
-;;    :prefix "SPC"
-;;    "x" 'execute-extended-command)
-;; (general-nmap
-;;    :prefix "SPC"
-;;    "b" 'switch-to-buffer)
-
-
 ;;; Loading of config.org (main config file)
 
 ;; Tangle config.org if it's newer than config.el and load it
