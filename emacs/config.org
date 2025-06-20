@@ -1,6 +1,6 @@
 #+TITLE: pyrho's Emacs Conf
 #+AUTHOR: pyrho
-#+DATE: 2025
+#+DATE: 2025-06-01
 #+STARTUP: content indent
 #+DESCRIPTION: Modified version of Yay-Evil distro by Ian Y.E. Pan, available at https://github.com/ianyepan/yay-evil-emacs/blob/master/config.org
 #+PROPERTY: header-args :tangle yes
@@ -18,47 +18,85 @@ which integrated into Emacs's native auth-source function.
      (shell-command-to-string
       (format "op read --no-newline %s" secret-reference))))
 #+END_SRC
+** Discard buffer edits and reload
+#+begin_src emacs-lisp
+  (defun pyrho/revert-buffer()
+    "Revert the buffer (:e!), but ask for confirmation if the buffer is modified"
+    (interactive)
+    (revert-buffer t (not (buffer-modified-p)) t))
+#+end_src
 * Settings without corresponding packages
 ** Base
 #+BEGIN_SRC emacs-lisp
-  (use-package emacs
-    :straight nil
-    :preface
-    (defvar pyrho/indent-width 2) ; change this value to your preferred width
-    :config
-    (setq frame-title-format '("Yay-Evil") ; Yayyyyy Evil!
-          ring-bell-function 'ignore       ; minimize distraction
-          frame-resize-pixelwise t
-          default-directory "~/")
+(use-package emacs
+  :straight nil
+  :preface
+  (defvar pyrho/indent-width 2) ; change this value to your preferred width
+  :config
+  (setq frame-title-format '("Yay-Evil") ; Yayyyyy Evil!
+        ring-bell-function 'ignore       ; minimize distraction
+        frame-resize-pixelwise t
+        default-directory "~/")
 
-    (tool-bar-mode -1)
-    (menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (menu-bar-mode -1)
 
-    (setq native-comp-async-report-warnings-errors nil)
+  (setq native-comp-async-report-warnings-errors nil)
 
-    (setq backup-directory-alist `(("." . "~/.emacsbackups")))
+  (setq backup-directory-alist `(("." . "~/.emacsbackups")))
 
-    ;; better scrolling experience
-    (setq scroll-margin 0
-          scroll-conservatively 101 ; gt 100
-          scroll-preserve-screen-position t
-          auto-window-vscroll nil)
+  ;; better scrolling experience
+  (setq scroll-margin 0
+        scroll-conservatively 101 ; gt 100
+        scroll-preserve-screen-position t
+        auto-window-vscroll nil)
 
-    ;; Always use spaces for indentation
-    (setq-default indent-tabs-mode nil
-                  tab-width pyrho/indent-width)
+  ;; Always use spaces for indentation
+  (setq-default indent-tabs-mode nil
+                tab-width pyrho/indent-width)
 
-    ;; Omit default startup screen
-    (setq inhibit-startup-screen t)
+  ;; Omit default startup screen
+  (setq inhibit-startup-screen t)
 
-    (add-hook 'prog-mode-hook 'display-line-numbers-mode)
-    (winner-mode 1))
+  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+  (winner-mode 1)
+
+  ;; Automatically switch to help windows
+  (setq help-window-select t)
+
+ ;; Buffer rules
+  (add-to-list 'display-buffer-alist
+             '("\\*Org Src.*\\*"
+               (display-buffer-pop-up-window)
+               (window-width . 0.8)   ; 80% of frame width
+               (window-height . 0.8))) ; 80% of frame height
+
+    ;; Auto-select new window after splitting
+ (advice-add 'split-window :after
+   (lambda (&rest _)
+     (select-window (get-lru-window)))))
   #+END_SRC
+** Fonts
+This is a test
+Mx
+Id
+#+begin_src emacs-lisp
+  (use-package emacs
+    :config
+    (when (member "Aporetic Serif Mono" (font-family-list))
+      (set-face-attribute 'default nil :font "Aporetic Serif Mono" :height 150)
+      (set-face-attribute 'fixed-pitch nil :family "Aporetic Serif Mono"))
+
+    (when (member "Aporetic Sans" (font-family-list))
+      (set-face-attribute 'variable-pitch nil :family "Aporetic Sans" :height 1.18)))
+#+end_src
 ** Fontaine config
 Fontaine is a package to configure different set of fonts. For example, you can have a set of fonts for
 coding, another for org mode etc.
 #+BEGIN_SRC emacs-lisp
   (use-package fontaine
+    :disabled
+    :if (display-graphic-p)
     :hook
     ;; Persist the latest font preset when closing/starting Emacs.
     ((after-init . fontaine-mode)
@@ -84,7 +122,7 @@ coding, another for org mode etc.
             (medium
              :default-height 115)
             (large
-             :default-height 150)
+             :default-height 160)
             (presentation
              :default-height 180)
             (jumbo
@@ -146,7 +184,7 @@ coding, another for org mode etc.
              :tab-bar-weight nil
              :tab-bar-slant nil
              :tab-bar-width nil
-             :tab-bar-height 1.5
+             :tab-bar-height 1.0
 
              :tab-line-family nil
              :tab-line-weight nil
@@ -203,13 +241,7 @@ Some minimal org mode tweaks: org-bullets gives our headings
    (setq org-outline-path-complete-in-steps nil)         ; Refile in a single go
    (setq org-refile-use-outline-path t)                  ; Show full paths for refiling
 
-   (setq org-refile-targets (list (list (concat org-directory "/todo.org") :maxlevel 3)
-                                  (list (concat org-directory "/todo.org") :maxlevel 3)))
-
-    ;; Replace list bullets
-   (font-lock-add-keywords 'org-mode
-                           '(("^ *\\([-]\\) "
-                              (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+   (setq org-refile-targets (list (list (concat org-directory "/todo.org") :maxlevel 5)))
 
    (setq org-agenda-custom-commands
                 '(("W" "Weekly review"
@@ -219,7 +251,7 @@ Some minimal org mode tweaks: org-bullets gives our headings
                     (org-agenda-start-on-weekday 1)
                     (org-agenda-start-with-log-mode '(closed))
                     (org-agenda-archives-mode t)
-                    (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp "^\\*\\* DONE "))))
+                    (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp "^\\*+ DONE "))))
                   ("n" "Agenda and all TODOs"
                    agenda ""
                    ((alltodo ""))))))
@@ -232,8 +264,46 @@ Some minimal org mode tweaks: org-bullets gives our headings
      'org-babel-load-languages
      '((shell . t)
        (sql . t)))
+
+  ;; https://andreamaglie.com/2025-03-25-emacs-org-mode-auto-clock-in-when-doing
+  (defun pyrho--org-clock-in-when-doing ()
+    "Clock in when the TODO state is switched to IN_PROGRESS."
+    (when (string= org-state "DOING")
+      (unless (org-clocking-p)
+        (org-clock-in))))
+
+  (add-hook 'org-after-todo-state-change-hook #'pyrho--org-clock-in-when-doing)
+  (setq org-clock-out-when-done t)
+
+  ;; Function to archive all DONE tasks in current subtree
+  (defun my/archive-done-tasks-in-subtree ()
+    "Archive all DONE tasks in the current subtree."
+    (interactive)
+    (org-map-entries
+     (lambda ()
+       (when (member (org-get-todo-state) '("DONE" "CANCELED"))
+         (org-archive-subtree)))
+     t 'tree))
+
+  ;; Function to archive DONE tasks older than N days
+  (defun my/archive-old-done-tasks (days)
+    "Archive DONE tasks in current subtree older than DAYS."
+    (interactive "nArchive DONE tasks older than how many days? ")
+    (let ((cutoff-time (time-subtract (current-time)
+                                     (days-to-time days))))
+      (org-map-entries
+       (lambda ()
+         (when (and (member (org-get-todo-state) '("DONE" "CANCELED"))
+                    (let ((closed-time (org-entry-get (point) "CLOSED")))
+                      (and closed-time
+                           (time-less-p (org-time-string-to-time closed-time)
+                                       cutoff-time))))
+           (org-archive-subtree)))
+       t 'tree)))
 #+END_SRC
 ** Font Customization for org-mode
+Mx
+Id
 #+BEGIN_SRC emacs-lisp
   ;(use-package emacs
   ;  :straight nil
@@ -249,7 +319,44 @@ Some minimal org mode tweaks: org-bullets gives our headings
   ;          (set-face-attribute level-face nil
   ;                              :family "Aporetic Sans"
   ;                              :height size))))))
+  (use-package org
+    :hook (org-mode . variable-pitch-mode)
+    :after doom-themes
+    :config
+
+   (defun pyrho--set-faces()
+       ;; Resize Org headings
+     (dolist (face '((org-level-1 . 1.35)
+                     (org-level-2 . 1.3)
+                     (org-level-3 . 1.2)
+                     (org-level-4 . 1.1)
+                     (org-level-5 . 1.1)
+                     (org-level-6 . 1.1)
+                     (org-level-7 . 1.1)
+                     (org-level-8 . 1.1)))
+       (set-face-attribute (car face) nil :font "Aporetic Sans" :weight 'bold :height (cdr face)))
+
+     ;; Make the document title a bit bigger
+     (set-face-attribute 'org-document-title nil :font "Aporetic Sans" :weight
+                         'bold :height 1.8)
+     ;; Make the document title a bit bigger
+     (set-face-attribute 'org-document-title nil :font "Aporetic Sans" :weight
+                         'bold :height 1.8)
+     (require 'org-indent)
+
+     (set-face-attribute 'org-block nil            :foreground nil :inherit 'fixed-pitch :height 0.85)
+     (set-face-attribute 'org-code nil             :inherit '(shadow fixed-pitch) :height 0.85)
+     (set-face-attribute 'org-indent nil           :inherit '(org-hide fixed-pitch))
+     (set-face-attribute 'org-verbatim nil         :inherit '(shadow fixed-pitch))
+     (set-face-attribute 'org-special-keyword nil  :inherit '(font-lock-comment-face
+                                                              fixed-pitch))
+     (set-face-attribute 'org-meta-line nil        :inherit '(font-lock-comment-face fixed-pitch))
+     (set-face-attribute 'org-checkbox nil         :inherit 'fixed-pitch))
+
+
+   (add-hook 'after-enable-theme-hook 'pyrho--set-faces))
 #+END_SRC
+d *bold*
 ** Org Roam
 *** Basic setup
 #+BEGIN_SRC emacs-lisp
@@ -331,6 +438,175 @@ Some minimal org mode tweaks: org-bullets gives our headings
     :straight nil
     :after org)
 #+END_SRC
+** Beautify Org
+Mostly stolen from [[https://web.archive.org/web/20250601133505/https://sophiebos.io/posts/prettifying-emacs-org-mode/][this blog post]].
+*** SVG Tag
+#+begin_src emacs-lisp
+(use-package svg-tag-mode
+  :config
+  (defconst date-re "[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}")
+  (defconst time-re "[0-9]\\{2\\}:[0-9]\\{2\\}")
+  (defconst day-re "[A-Za-z]\\{3\\}")
+  (defconst day-time-re (format "\\(%s\\)? ?\\(%s\\)?" day-re time-re))
+
+  (defun svg-progress-percent (value)
+        (svg-image (svg-lib-concat
+                                        (svg-lib-progress-bar (/ (string-to-number value) 100.0)
+                                         nil :margin 0 :stroke 2 :radius 3 :padding 2 :width 11)
+                                        (svg-lib-tag (concat value "%")
+                                         nil :stroke 0 :margin 0)) :ascent 'center))
+
+  (defun svg-progress-count (value)
+        (let* ((seq (mapcar #'string-to-number (split-string value "/")))
+               (count (float (car seq)))
+               (total (float (cadr seq))))
+         (svg-image (svg-lib-concat
+                     (svg-lib-progress-bar (/ count total) nil
+                                                                  :margin 0 :stroke 2 :radius 3 :padding 2 :width 11)
+                     (svg-lib-tag value nil
+                                                                  :stroke 0 :margin 0)) :ascent 'center)))
+  (setq svg-tag-tags
+      `(
+        ;; Task priority
+        ("\\[#[A-Z]\\]" . ( (lambda (tag)
+                              (svg-tag-make tag :face 'org-priority
+                                            :beg 2 :end -1 :margin 0))))
+
+        ;; Progress
+        ("\\(\\[[0-9]\\{1,3\\}%\\]\\)" . ((lambda (tag)
+                                           (svg-progress-percent (substring tag 1 -2)))))
+        ("\\(\\[[0-9]+/[0-9]+\\]\\)" . ((lambda (tag)
+                                         (svg-progress-count (substring tag 1 -1)))))
+
+        ;; Citation of the form [cite:@Knuth:1984]
+        ("\\(\\[cite:@[A-Za-z]+:\\)" . ((lambda (tag)
+                                          (svg-tag-make tag
+                                                        :inverse t
+                                                        :beg 7 :end -1
+                                                        :crop-right t))))
+        ("\\[cite:@[A-Za-z]+:\\([0-9]+\\]\\)" . ((lambda (tag)
+                                                  (svg-tag-make tag
+                                                                :end -1
+                                                                :crop-left t))))
+
+
+        ;; Active date (with or without day name, with or without time)
+        (,(format "\\(<%s>\\)" date-re) .
+         ((lambda (tag)
+            (svg-tag-make tag :beg 1 :end -1 :margin 0))))
+        (,(format "\\(<%s \\)%s>" date-re day-time-re) .
+         ((lambda (tag)
+            (svg-tag-make tag :beg 1 :inverse nil :crop-right t :margin 0))))
+        (,(format "<%s \\(%s>\\)" date-re day-time-re) .
+         ((lambda (tag)
+            (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0))))
+
+        ;; Inactive date  (with or without day name, with or without time)
+        (,(format "\\(\\[%s\\]\\)" date-re) .
+         ((lambda (tag)
+            (svg-tag-make tag :beg 1 :end -1 :margin 0 :face 'org-date))))
+        (,(format "\\(\\[%s \\)%s\\]" date-re day-time-re) .
+         ((lambda (tag)
+            (svg-tag-make tag :beg 1 :inverse nil
+                  :crop-right t :margin 0 :face 'org-date))))
+        (,(format "\\[%s \\(%s\\]\\)" date-re day-time-re) .
+         ((lambda (tag)
+            (svg-tag-make tag :end -1 :inverse t
+                  :crop-left t :margin 0 :face 'org-date)))))))
+
+(add-hook 'org-mode-hook 'svg-tag-mode)
+(add-hook 'org-mode-hook (lambda ()
+                           (add-hook 'meow-insert-enter-hook
+                                     #'svg-tag-mode-off
+                                     nil
+                                     t)
+                           (add-hook 'meow-insert-exit-hook
+                                     #'svg-tag-mode-on
+                                     nil
+                                     t)))
+#+end_src
+*** Org Appear
+#+begin_src emacs-lisp
+(use-package org
+  :hook (org-mode . variable-pitch-mode)
+  :after doom-themes
+  :config
+  (setq org-adapt-indentation t
+      org-hide-leading-stars t
+      org-pretty-entities t
+      org-ellipsis "  ·")
+
+  (setq org-src-fontify-natively t
+      org-src-tab-acts-natively t
+      org-edit-src-content-indentation 0)
+
+  (setq org-log-done                       t
+     org-auto-align-tags                t
+     org-tags-column                    -80
+     org-fold-catch-invisible-edits     'show-and-error
+     org-special-ctrl-a/e               t
+     org-insert-heading-respect-content t)
+
+  (add-hook 'org-mode-hook 'visual-line-mode)
+
+
+  (use-package org-appear)
+  :commands (org-appear-mode)
+  :hook     (org-mode . org-appear-mode)
+  :config
+   (setq org-hide-emphasis-markers t  ; Must be activated for org-appear to work
+         org-appear-autoemphasis   t   ; Show bold, italics, verbatim, etc.
+         org-appear-autolinks      t   ; Show links
+         org-appear-autosubmarkers t)
+
+   (setq org-appear-trigger 'manual)
+   (add-hook 'org-mode-hook (lambda ()
+                              (add-hook 'meow-insert-enter-hook
+                                        #'org-appear-manual-start
+                                        nil
+                                        t)
+                              (add-hook 'meow-insert-exit-hook
+                                        #'org-appear-manual-stop
+                                        nil
+                                        t))))
+#+end_src
+*** Prettify Symbols
+#+begin_src emacs-lisp
+(defun pyrho--prettify-symbols-setup ()
+  ;; Checkboxes
+  (push '("[ ]" . "") prettify-symbols-alist)
+  (push '("[X]" . "") prettify-symbols-alist)
+  (push '("[-]" . "" ) prettify-symbols-alist)
+
+  ;; org-abel
+  (push '("#+BEGIN_SRC" . ?≫) prettify-symbols-alist)
+  (push '("#+END_SRC" . ?≫) prettify-symbols-alist)
+  (push '("#+begin_src" . ?≫) prettify-symbols-alist)
+  (push '("#+end_src" . ?≫) prettify-symbols-alist)
+
+  (push '("#+BEGIN_QUOTE" . ?❝) prettify-symbols-alist)
+  (push '("#+END_QUOTE" . ?❞) prettify-symbols-alist)
+  (push '("#+begin_quote" . ?❝) prettify-symbols-alist)
+  (push '("#+end_quote" . ?❞) prettify-symbols-alist)
+
+  ;; Drawers
+  (push '(":PROPERTIES:" . "") prettify-symbols-alist)
+  (push '(":LOGBOOK:" . "") prettify-symbols-alist)
+
+  ;; Tags
+  (push '(":projects:" . "") prettify-symbols-alist)
+  (push '(":personal:" . "") prettify-symbols-alist)
+  (push '(":work:"     . "") prettify-symbols-alist)
+  (push '(":inbox:"    . "") prettify-symbols-alist)
+  (push '(":task:"     . "") prettify-symbols-alist)
+  (push '(":emacs:"    . "") prettify-symbols-alist)
+  (push '(":learn:"    . "") prettify-symbols-alist)
+  (push '(":code:"     . "") prettify-symbols-alist)
+
+  (prettify-symbols-mode))
+(add-hook 'org-mode-hook        #'pyrho--prettify-symbols-setup)
+(add-hook 'org-agenda-mode-hook #'pyrho--prettify-symbols-setup)
+#+end_src
 * Configuration for built-in packages
 Since we're using use-package as our package management system, we
 might as well try to organize under the same syntax as much as
@@ -338,6 +614,13 @@ possible to keep the configuration consistent. The option
 ~use-package-always-ensure~ is turned on in ~init.el~, so we'll add
 ~:straight nil~ when configuring the built-In packages.
 #+END_SRC
+** Calendar Location
+I'm using this mostly for Circadian.
+See [[info:emacs#Sunrise/Sunset][emacs#Sunrise/Sunset]] for more information.
+#+begin_src emacs-lisp
+  (setq calendar-latitude 48.856613)
+  (setq calendar-longitude 2.352222)
+#+end_src
 ** Modernize selection behavior
 Replace the active region just by typing text, just like modern
 editors.
@@ -433,19 +716,19 @@ Reduce the highlight delay to instantly.
 ** Setting up some frame defaults
 Maximize the frame by default on start-up. Set the Font to size 12.
 #+BEGIN_SRC emacs-lisp
-  (use-package frame
-    :preface
-    (defun ian/set-default-font ()
-      (interactive)
-      (when (member "Aporetic Serif Mono" (font-family-list))
-        (set-face-attribute 'default nil :family "Aporetic Serif Mono"))
-      (set-face-attribute 'default nil
-                          :height 180
-                          :weight 'normal))
-    :straight nil
-    :config
-    (setq initial-frame-alist '((fullscreen . maximized)))
-    (ian/set-default-font))
+; (use-package frame
+;   :preface
+;   (defun ian/set-default-font ()
+;     (interactive)
+;     (when (member "Aporetic Serif Mono" (font-family-list))
+;       (set-face-attribute 'default nil :family "Aporetic Serif Mono"))
+;     (set-face-attribute 'default nil
+;                         :height 180
+;                         :weight 'normal))
+;   :straight nil
+;   :config
+;   (setq initial-frame-alist '((fullscreen . maximized)))
+;   (ian/set-default-font))
 #+END_SRC
 ** Ediff tweaks
 Enter ediff with side-by-side buffers to better compare the
@@ -581,6 +864,7 @@ Delete intermediate buffers when navigating through dired.
 ** Tab Bar
 #+begin_src emacs-lisp
   (use-package vim-tab-bar
+    :disabled ;i'm an emacser now
     :commands vim-tab-bar-mode
     :hook
     (tab-bar-mode)
@@ -612,23 +896,36 @@ controls the Evil behaviors.
 
 Normally, we need to add ~:ensure t~ to tell ~use-package~ to download packages when it's not available. But since we've added ~use-package-always-ensure~ in ~init.el~, we can omit it.
 ** GUI enhancements
+*** Solaire
+#+begin_src emacs-lisp
+;; (use-package solaire-mode
+;;   :config
+;;    (solaire-global-mode +1))
+#+end_src
 *** Nerd Fonts
 #+begin_src emacs-lisp
   (use-package nerd-icons
     :custom
-    (nerd-icons-font-family "Symbols Nerd Font Mono")
-    (nerd-icons-scale-factor 1.5))
+    (nerd-icons-font-family "Symbols Nerd Font Mono"))
+                                          ;(nerd-icons-scale-factor 1.5))
+#+end_src
+*** Tokyonight Theme
+#+begin_src emacs-lisp
+  (use-package tokyonight-themes
+    :straight (tokyonight-themes
+               :type git
+               :host github
+               :repo "xuchengpeng/tokyonight-themes"))
+    ;(load-theme 'tokyonight-day :no-confirm))
+
 #+end_src
 *** Doom themes
 #+BEGIN_SRC emacs-lisp
   (use-package doom-themes
-    :disabled ; Using ef-themes
     :config
     ;; Global settings (defaults)
     (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
           doom-themes-enable-italic t) ; if nil, italics is universally disabled
-    ;; Let auto-dark load the themes
-                                          ;(load-theme 'doom-nova t)
 
     ;; Enable flashing mode-line on errors
     (doom-themes-visual-bell-config)
@@ -636,33 +933,45 @@ Normally, we need to add ~:ensure t~ to tell ~use-package~ to download packages 
     (doom-themes-neotree-config)
     ;; or for treemacs user s
     ;;(setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
-    (doom-themes-treemacs-config)
+    ;; (doom-themes-treemacs-config)
     ;; Corrects (and improves) org-mode's native fontification.
-    (doom-themes-org-config))
+    (doom-themes-org-config)
+
+    (defvar after-enable-theme-hook nil
+     "Normal hook run after enabling a theme.")
+    (defun run-after-enable-theme-hook (&rest _args))
+    "Run `after-enable-theme-hook'."
+    (run-hooks 'after-enable-theme-hook)
+
+    (advice-add 'enable-theme :after #'run-after-enable-theme-hook))
 #+END_SRC
 *** ef-themes
 #+begin_src emacs-lisp
-  (use-package ef-themes
-    :config
-    (setq ef-themes-headings ; read the manual's entry or the doc string
-        '((0 variable-pitch 1.4)
-          (1 variable-pitch 1.3)
-          (2 variable-pitch 1.2)
-          (3 variable-pitch 1.1)
-          (4 variable-pitch 1 regular)
-          (5 variable-pitch 1 regular) ; absence of weight means `bold'
-          (6 variable-pitch 1 light)
-          (7 variable-pitch 1 light)
-          (t variable-pitch 1 light)))
+(use-package ef-themes
+  :after doom-themes
+  :disabled
+  :config
+  (setq ef-themes-headings ; read the manual's entry or the doc string
+      '((0 variable-pitch 1.4)
+        (1 variable-pitch 1.3)
+        (2 variable-pitch 1.2)
+        (3 variable-pitch 1.1)
+        (4 variable-pitch 1 regular)
+        (5 variable-pitch 1 regular) ; absence of weight means `bold'
+        (6 variable-pitch 1 light)
+        (7 variable-pitch 1 light)
+        (t variable-pitch 1 light)))
 
-    (setq ef-themes-to-toggle '(ef-deuteranopia-light ef-night))
-    ;; They are nil by default...
-    (setq ef-themes-mixed-fonts t
-          ef-themes-variable-pitch-ui t)
+  (setq ef-themes-to-toggle '(ef-frost ef-night))
+  ;; They are nil by default...
+  (setq ef-themes-mixed-fonts t
+        ef-themes-variable-pitch-ui t)
 
-    ;; Disable all other themes to avoid awkward blending:
-    (mapc #'disable-theme custom-enabled-themes)
-    (load-theme 'ef-night :no-confirm))
+  ;; Disable all other themes to avoid awkward blending:
+  (mapc #'disable-theme custom-enabled-themes)
+  (if (display-graphic-p)
+    (load-theme 'ef-night :no-confirm)
+   (load-theme 'doom-moonlight :no-confirm)))
 #+end_src
 *** Zen Mode / Writeroom
 #+BEGIN_SRC emacs-lisp
@@ -673,32 +982,46 @@ Normally, we need to add ~:ensure t~ to tell ~use-package~ to download packages 
                               (display-line-numbers-mode
                                (if writeroom-mode -1 1)))))
 #+END_SRC
-*** Auto Dark
-Switch between themes depending on system
+*** Circadian
+Allows to automatically switch between a dark and a light theme
+depending on the time of day.
 #+begin_src emacs-lisp
-  (use-package auto-dark
-    :if (display-graphic-p)
-    ;; Disabling for now, ef-themes provides a toggle. I think that's good enough
-    :disabled
-    :init
-    (setq custom-safe-themes t)
-    :custom
-    (auto-dark-themes '((ef-dark) (ef-light)))
-    (auto-dark-polling-interval-seconds 5)
-    (auto-dark-allow-osascript nil)
-    (auto-dark-allow-powershell nil)
-    ;; (auto-dark-detection-method nil) ;; dangerous to be set manually
-    ;; :hook
-    ;; (auto-dark-dark-mode
-    ;;  . (lambda ()))
-    ;;       ;; something to execute when dark mode is detected
+  (use-package circadian
+    :after (tokyonight-themes doom-themes)
+    :config
+     (setq circadian-themes '((:sunrise . doom-winter-is-coming-light)
+                              (:sunset . doom-moonlight)))
+     (add-hook 'circadian-after-load-theme-hook #'(lambda (theme)
+                                                    (pyrho--set-faces)))
+     ;; (add-hook 'circadian-after-load-theme-hook
+     ;;           #'(lambda (theme)
+     ;;               (dolist (face '((org-level-1 . 1.35)
+     ;;                               (org-level-2 . 1.3)
+     ;;                               (org-level-3 . 1.2)
+     ;;                               (org-level-4 . 1.1)
+     ;;                               (org-level-5 . 1.1)
+     ;;                               (org-level-6 . 1.1)
+     ;;                               (org-level-7 . 1.1)
+     ;;                               (org-level-8 . 1.1)))
+     ;;                 (set-face-attribute (car face) nil :font "Aporetic Sans" :weight 'bold :height (cdr face)))
 
-    ;; (auto-dark-light-mode
-    ;;  . (lambda ()))
-    ;;       ;; something to execute when light mode is detected
+     ;;                   ;; Make the document title a bit bigger
+     ;;               (set-face-attribute 'org-document-title nil :font "Aporetic Sans" :weight
+     ;;                                   'bold :height 1.8)
+     ;;                   ;; Make the document title a bit bigger
+     ;;               (set-face-attribute 'org-document-title nil :font "Aporetic Sans" :weight
+     ;;                                   'bold :height 1.8)
 
-    :init (auto-dark-mode))
-
+     ;;               (set-face-attribute 'org-block nil            :foreground nil :inherit
+     ;;                                   'fixed-pitch)
+     ;;               (set-face-attribute 'org-code nil             :inherit '(shadow fixed-pitch))
+     ;;                   ;;(set-face-attribute 'org-indent nil           :inherit '(org-hide fixed-pitch)
+     ;;               (set-face-attribute 'org-verbatim nil         :inherit '(shadow fixed-pitch))
+     ;;               (set-face-attribute 'org-special-keyword nil  :inherit '(font-lock-comment-face
+     ;;                                                                        fixed-pitch))
+     ;;               (set-face-attribute 'org-meta-line nil        :inherit '(font-lock-comment-face fixed-pitch))
+     ;;               (set-face-attribute 'org-checkbox nil         :inherit 'fixed-pitch)))
+     (circadian-setup))
 #+end_src
 *** Beacon
 #+begin_src emacs-lisp
@@ -710,14 +1033,18 @@ Switch between themes depending on system
 *** Doom Modeline
 #+BEGIN_SRC emacs-lisp
   (use-package doom-modeline
-    :disabled
     :init (doom-modeline-mode 1)
     :config
-    (setq doom-modeline-modal-icon nil))
+    (setq doom-modeline-modal-icon t
+          doom-modeline-height 30
+          doom-modeline-spc-face-overrides (list :family (face-attribute 'fixed-pitch :family))
+          doom-modeline-buffer-modification-icon nil)
+    :hook after-init)
 #+END_SRC
 *** Mood-Line
 #+begin_src emacs-lisp
   (use-package mood-line
+    :disabled
     ;; Enable mood-line
     :config
 
@@ -760,13 +1087,23 @@ Switch between themes depending on system
             ((mood-line-segment-misc-info)   . "  ")
             ((mood-line-segment-checker)     . "  ")
             ((mood-line-segment-process)     . "  "))))
-
-    (with-eval-after-load 'mood-line
-     (set-face-attribute 'mode-line nil
-                      :box `(:line-width 5 :color ,(face-background 'mode-line)))
-     (set-face-attribute 'mode-line-inactive nil
-                      :box `(:line-width 5 :color ,(face-background 'mode-line-inactive))))
    (mood-line-mode)
+
+   (defun pyrho/set-mode-line-boxes ()
+    "Set mode-line box attributes."
+    (set-face-attribute 'mode-line nil
+                        :box `(:line-width 5 :color ,(face-background 'mode-line)))
+    (set-face-attribute 'mode-line-inactive nil
+                        :box `(:line-width 5 :color ,(face-background 'mode-line-inactive))))
+
+    ;; Apply now and after theme changes
+   (pyrho/set-mode-line-boxes)
+   (add-hook 'enable-theme-functions (lambda (&rest _) (pyrho/set-mode-line-boxes)))
+    ;; (with-eval-after-load 'mood-line
+    ;;  (set-face-attribute 'mode-line nil
+    ;;                   :box `(:line-width 5 :color ,(face-background 'mode-line)))
+    ;;  (set-face-attribute 'mode-line-inactive nil
+    ;;                   :box `(:line-width 5 :color ,(face-background 'mode-line-inactive))))
 
   ;; Use pretty Fira Code-compatible glyphs
    :custom
@@ -786,172 +1123,213 @@ sequences (e.g. ~\n, \t~).
 #+END_SRC
 *** Dashboard
 #+begin_src emacs-lisp
-  (use-package welcome-dashboard
-    :disabled
-    :straight (
-               :host github
-               :repo "konrad1977/welcome-dashboard"
-               :files ("welcome-dashboard.el")
-               :ensure t
-               :after nerd-icons)
+;; use-package with package.el:
+(use-package dashboard
+  :config
+  (dashboard-setup-startup-hook)
+  (setq dashboard-center-content t)
+  (setq dashboard-startup-banner "~/rc/emacs/splash.txt")
+  ;; vertically center content
+  (setq dashboard-vertically-center-content t)
+  (setq dashboard-items '((recents   . 5)
+                          (bookmarks . 5)
+                          (projects  . 5)
+                          (agenda    . 5)))
+  (setq dashboard-display-icons-p t)
+  (setq dashboard-icon-type 'nerd-icons)
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons t))
+#+end_src
+** Perspective
+#+begin_src emacs-lisp
+(use-package perspective
+  :bind (("C-x b" . persp-switch-to-buffer*)
+         ("C-x k" . persp-kill-buffer*))
+  :custom
+  (persp-state-default-file "~/.emacs.d/perspectives/defaut")
+  (persp-mode-prefix-key (kbd "C-c M-p"))  ; pick your own prefix key here
+  :init
+  (persp-mode)
+  :hook
+  (kill-emacs-hook . persp-state-save)
+  :config
+   (defun my/switch-to-project-perspective (project-dir)
+    "Switch to or create a perspective for PROJECT-DIR."
+    (let ((persp-name (file-name-nondirectory
+                       (directory-file-name project-dir))))
+      (persp-switch persp-name)))
 
-    :demand
-
-    :init
-    (setq welcome-dashboard-use-nerd-icons t
-          ;; welcome-dashboard-longitude 6.0440
-          ;; welcome-dashboard-latitude 53.0825
-          welcome-dashboard-path-max-length 75
-          welcome-dashboard-show-file-path t
-          welcome-dashboard-use-fahrenheit nil
-          welcome-dashboard-min-left-padding 10
-          ;; welcome-dashboard-image-file "~/path/yourimage.png"
-          ;; welcome-dashboard-image-height 169
-          ;; welcome-dashboard-image-width 200
-          welcome-dashboard-max-number-of-todos 5
-          welcome-dashboard-title (concat "Welcome " user-full-name))
-    :config
-    (welcome-dashboard-create-welcome-hook))
+   (advice-add 'project-switch-project :after
+               (lambda (dir &rest _)
+                 (my/switch-to-project-perspective dir))))
 #+end_src
 ** Meow - Modal Editing
 *** Basic setup
 #+begin_src emacs-lisp
-  (use-package meow
-    :demand t
+(use-package meow
+  :demand t
 
-    :custom
-    (meow-use-clipboard t)
-    (meow-goto-line-function 'consult-goto-line)
+  :custom
+  (meow-use-clipboard t)
+  (meow-goto-line-function 'consult-goto-line)
 
-    :straight (meow :type git :host github :repo "meow-edit/meow")
+  :straight (meow :type git :host github :repo "meow-edit/meow")
 
-    :config
-    (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
-    (setq meow-cheatsheet-physical-layout meow-cheatsheet-physical-layout-ansi)
+  :config
+  (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+  (setq meow-cheatsheet-physical-layout meow-cheatsheet-physical-layout-ansi)
 
-    (add-to-list 'meow-mode-state-list '(pgmacs-mode . motion))
+  (add-to-list 'meow-mode-state-list '(pgmacs-mode . motion))
 
-    (defun meow-negative-find ()
-      (interactive) (let
+  (defun meow-negative-find ()
+    (interactive) (let
+                    ((current-prefix-arg -1))
+                    (call-interactively 'meow-find)))
+  (defun meow-negative-till ()
+    (interactive) (let
                       ((current-prefix-arg -1))
-                      (call-interactively 'meow-find)))
-    (defun meow-negative-till ()
-      (interactive) (let
-                        ((current-prefix-arg -1))
-                        (call-interactively 'meow-till)))
+                      (call-interactively 'meow-till)))
 
-    ;; Create a code block meow-thing for org and markdown
-    (meow-thing-register 'org-md-block
-                     '(regexp "^[ \\|\t]*\\(#\\+begin_\\|```\\)[^\n]*\n" "^[ \\|\t]*\\(#\\+end_[^\n]*\\|```\\)$")
-                     '(regexp "^[ \\|\t]*\\(#\\+begin_\\|```\\)[^\n]*\n" "^[ \\|\t]*\\(#\\+end_[^\n]*\\|```\\)$"))
+  ;; Create a code block meow-thing for org and markdown
+  (meow-thing-register 'org-md-block
+                   '(regexp "^[ \\|\t]*\\(#\\+begin_\\|```\\)[^\n]*\n" "^[ \\|\t]*\\(#\\+end_[^\n]*\\|```\\)$")
+                   '(regexp "^[ \\|\t]*\\(#\\+begin_\\|```\\)[^\n]*\n" "^[ \\|\t]*\\(#\\+end_[^\n]*\\|```\\)$"))
 
-    (add-to-list 'meow-char-thing-table '(?B . org-md-block))
+  (add-to-list 'meow-char-thing-table '(?B . org-md-block))
+
+  ;; Remove some native emacs bindings that interfer with meow.
+  (dolist (key (list (kbd "C-x C-t")
+                     (kbd "C-x C-o")
+                     (kbd "C-x C-0")))
+    (global-unset-key key))
+
+  ;; Custom keymap dispatch
+     ;; This is the default state for special buffers (like dired)
+     ;; Only j and k are bound to move up and down, SPC is still bound to the
+     ;; leader key, to access actual SPC, press it twice.
+ (meow-motion-define-key
+  '("j" . meow-next)
+  '("k" . meow-prev)
+  '("<escape>" . ignore))
+
+ (meow-leader-define-key
+  ;; Use SPC (0-9) for digit arguments.
+  '("1" . meow-digit-argument)
+  '("2" . meow-digit-argument)
+  '("3" . meow-digit-argument)
+  '("4" . meow-digit-argument)
+  '("5" . meow-digit-argument)
+  '("6" . meow-digit-argument)
+  '("7" . meow-digit-argument)
+  '("8" . meow-digit-argument)
+  '("9" . meow-digit-argument)
+  '("0" . meow-digit-argument)
+  '("/" . meow-keypad-describe-key)
+  '("?" . meow-cheatsheet)
+
+  '("P" . perspective-map)
+  ;; The key concept is that you want to bind
+  ;; here things that would have to be escaped with SPC during the sequence.
+  ;; For example here for ~C-x p~, without this you would have to do
+  ;; SPC x SPC P
+  '("p" . "C-x p")
+  '("b" . "C-x C-b")
+  '("w" . "C-x w"))
 
 
-    ;; This is the default state for special buffers (like dired)
-    ;; Only j and k are bound to move up and down, SPC is still bound to the
-    ;; leader key, to access actual SPC, press it twice.
-    (meow-motion-define-key
-     '("j" . meow-next)
-     '("k" . meow-prev)
-     '("<escape>" . ignore))
+ (meow-normal-define-key
+  '("0" . meow-expand-0)
+  '("9" . meow-expand-9)
+  '("8" . meow-expand-8)
+  '("7" . meow-expand-7)
+  '("6" . meow-expand-6)
+  '("5" . meow-expand-5)
+  '("4" . meow-expand-4)
+  '("3" . meow-expand-3)
+  '("2" . meow-expand-2)
+  '("1" . meow-expand-1)
+  '("`" . avy-goto-char-2)
+  '("-" . negative-argument)
+  '(";" . meow-reverse)
+  '("," . meow-inner-of-thing)
+  '("/" . consult-line)
+  '("." . meow-bounds-of-thing)
+  '("[" . meow-beginning-of-thing)
+  '("]" . meow-end-of-thing)
+  '("a" . meow-append)
+  '("A" . meow-open-below)
+  '("b" . meow-back-word)
+  '("B" . meow-back-symbol)
+  '("c" . meow-change)
+  '("C" . meow-comment)
+  '("d" . meow-delete)
+  ;; '("<down>" . (lambda()
+  ;;               (interactive)
+  ;;               (scroll-up-command (/ (window-height) 2))))
+  ;; '("<up>" . (lambda()
+  ;;             (interactive)
+  ;;             (scroll-down-command (/ (window-height) 2))))
+  '("D" . meow-backward-delete)
+  '("e" . meow-next-word)
+  '("E" . meow-next-symbol)
+  '("f" . meow-find)
+  '("g" . meow-cancel-selection)
+  '("G" . meow-grab)
+  '("h" . meow-left)
+  '("H" . meow-left-expand)
+  '("i" . meow-insert)
+  '("I" . meow-open-above)
+  '("j" . meow-next)
+  '("J" . meow-next-expand)
+  '("k" . meow-prev)
+  '("K" . meow-prev-expand)
+  '("l" . meow-right)
+  '("L" . meow-right-expand)
+  '("m" . meow-join)
+  '("n" . meow-search)
+  '("o" . meow-block)
+  '("O" . meow-to-block)
+  '("p" . meow-yank)
+  ;;'("q" . meow-quit)
+  '("Q" . meow-goto-line)
+  '("r" . meow-replace)
+  '("R" . meow-swap-grab)
+  '("s" . meow-kill)
+  '("t" . meow-till)
+  '("u" . meow-undo)
+  '("U" . undo-redo)
+  '("v" . meow-visit)
+  '("w" . meow-mark-word)
+  '("W" . meow-mark-symbol)
+  '("x" . meow-line)
+  '("y" . meow-save)
+  '("Y" . meow-sync-grab)
+  '("z" . meow-pop-selection)
+  '("'" . repeat)
 
-    (meow-leader-define-key
-     ;; Use SPC (0-9) for digit arguments.
-     '("1" . meow-digit-argument)
-     '("2" . meow-digit-argument)
-     '("3" . meow-digit-argument)
-     '("4" . meow-digit-argument)
-     '("5" . meow-digit-argument)
-     '("6" . meow-digit-argument)
-     '("7" . meow-digit-argument)
-     '("8" . meow-digit-argument)
-     '("9" . meow-digit-argument)
-     '("0" . meow-digit-argument)
-     '("b" . consult-buffer)
-     '("t" . "C-x t")
-     '("/" . meow-keypad-describe-key)
-     '("?" . meow-cheatsheet))
+  ;; Embrace
+  '("\"" . embrace-commander)
 
-    (meow-normal-define-key
-     '("0" . meow-expand-0)
-     '("9" . meow-expand-9)
-     '("8" . meow-expand-8)
-     '("7" . meow-expand-7)
-     '("6" . meow-expand-6)
-     '("5" . meow-expand-5)
-     '("4" . meow-expand-4)
-     '("3" . meow-expand-3)
-     '("2" . meow-expand-2)
-     '("1" . meow-expand-1)
-     '("`" . avy-goto-char-2)
-     '("-" . negative-argument)
-     '(";" . meow-reverse)
-     '("," . meow-inner-of-thing)
-     '("/" . consult-line)
-     '("." . meow-bounds-of-thing)
-     '("[" . meow-beginning-of-thing)
-     '("]" . meow-end-of-thing)
-     '("a" . meow-append)
-     '("A" . meow-open-below)
-     '("b" . meow-back-word)
-     '("B" . meow-back-symbol)
-     '("c" . meow-change)
-     '("C" . meow-comment)
-     '("d" . meow-delete)
-     '("<down>" . (lambda()
-                   (interactive)
-                   (scroll-up-command (/ (window-height) 2))))
-     '("<up>" . (lambda()
-                 (interactive)
-                 (scroll-down-command (/ (window-height) 2))))
-     '("D" . meow-backward-delete)
-     '("e" . meow-next-word)
-     '("E" . meow-next-symbol)
-     '("f" . meow-find)
-     '("g" . meow-cancel-selection)
-     '("G" . meow-grab)
-     '("h" . meow-left)
-     '("H" . meow-left-expand)
-     '("i" . meow-insert)
-     '("I" . meow-open-above)
-     '("j" . meow-next)
-     '("J" . meow-next-expand)
-     '("k" . meow-prev)
-     '("K" . meow-prev-expand)
-     '("l" . meow-right)
-     '("L" . meow-right-expand)
-     '("m" . meow-join)
-     '("n" . meow-search)
-     '("o" . meow-block)
-     '("O" . meow-to-block)
-     '("p" . meow-yank)
-     '("q" . meow-quit)
-     '("Q" . meow-goto-line)
-     '("r" . meow-replace)
-     '("R" . meow-swap-grab)
-     '("s" . meow-kill)
-     '("t" . meow-till)
-     '("u" . meow-undo)
-     '("U" . undo-redo)
-     '("v" . meow-visit)
-     '("w" . meow-mark-word)
-     '("W" . meow-mark-symbol)
-     '("x" . meow-line)
-     '("y" . meow-save)
-     '("Y" . meow-sync-grab)
-     '("z" . meow-pop-selection)
-     '("'" . repeat)
+  ;; Jumps ?
+  '("!" . meow-pop-to-mark)
+  '("@" . meow-unpop-to-mark)
 
-     ;; Embrace
-     '("\"" . embrace-commander)
+  '("\\ s" . save-buffer)
 
-     ;; Jumps ?
-     '("!" . meow-pop-to-mark)
-     '("@" . meow-unpop-to-mark)
+  ;; vim-isms
+  '(": w" . save-buffer)
+  ;; '("C-u" . scroll-down)
+  ;; '("C-d" . scroll-up)
 
-     '("<escape>" . ignore))
-    (meow-global-mode 1))
+  '("<escape>" . ignore))
+
+ (meow-define-keys 'insert
+     '("C-u" . scroll-down)
+     '("C-d" . scroll-up)
+     '("s-s" . save-buffer))
+
+ (meow-global-mode 1))
+
 #+end_src
 
 *** Org-mode specific meow mode
@@ -1031,6 +1409,28 @@ Tell magit to automatically put us in vi-insert-mode when committing a change.
   (use-package magit
     :bind ("C-x g" . magit-status))
 #+END_SRC
+
+*** Git gutter
+#+begin_src emacs-lisp
+(use-package git-gutter
+  :hook (prog-mode . git-gutter-mode)
+  :config
+  (setq git-gutter:update-interval 0.02))
+
+(use-package git-gutter-fringe
+  :config
+  (define-fringe-bitmap 'git-gutter-fr:added [224] nil nil '(center repeated))
+  (define-fringe-bitmap 'git-gutter-fr:modified [224] nil nil '(center repeated))
+  (define-fringe-bitmap 'git-gutter-fr:deleted [128 192 224 240] nil nil 'bottom))
+#+end_src
+
+*** Forge
+#+begin_src emacs-lisp
+(use-package forge
+  :after magit)
+
+#+end_src
+
 ** Searching/sorting enhancements & project management
 *** Vertico, consult and marginalia
 #+BEGIN_SRC emacs-lisp
@@ -1169,32 +1569,45 @@ Tell magit to automatically put us in vi-insert-mode when committing a change.
 
 *** Consult
 #+begin_src emacs-lisp
-  (use-package consult
+(use-package consult
+  :after perspective
+  :bind
+  ("C-x C-b" . consult-buffer)
 
-    :bind
-    ("C-x b" . consult-buffer)
+  :config
+  ;; Define the custom source for org files
+  (defvar consult--source-org-files
+    `(:name "Org Files"
+            :narrow ?o
+            :category file
+            :face consult-file
+            :history file-name-history
+            :action ,(lambda (file)
+                       (find-file (expand-file-name file "~/org/")))
+            :items ,(lambda ()
+                      (mapcar (lambda (file)
+                                (file-relative-name file "~/org/"))
+                              (seq-filter (lambda (file)
+                                            (not (string-match-p "/roam/" file)))
+                                          (directory-files-recursively "~/org/" "\\.org$")))))
+    "Custom consult source for org files in ~/org directory.")
 
-    :config
-    ;; Define the custom source for org files
-    (defvar consult--source-org-files
-      `(:name "Org Files"
-              :narrow ?o
-              :category file
-              :face consult-file
-              :history file-name-history
-              :action ,(lambda (file)
-                         (find-file (expand-file-name file "~/org/")))
-              :items ,(lambda ()
-                        (mapcar (lambda (file)
-                                  (file-relative-name file "~/org/"))
-                                (seq-filter (lambda (file)
-                                              (not (string-match-p "/roam/" file)))
-                                            (directory-files-recursively "~/org/" "\\.org$")))))
-      "Custom consult source for org files in ~/org directory.")
+  ;; Add the source to consult-buffer-sources
+  (add-to-list 'consult-buffer-sources 'consult--source-org-files 'append)
 
-    ;; Add the source to consult-buffer-sources
-    (add-to-list 'consult-buffer-sources 'consult--source-org-files 'append))
+  (consult-customize consult--source-buffer :hidden t :default nil)
+  (add-to-list 'consult-buffer-sources persp-consult-source)
 
+  ;; Add to isearch history, press C-s C-s to continue search
+  ;; From https://github.com/minad/consult/issues/318#issuecomment-878810528
+  ;; Allows to continue `consult-line` searches after the fact
+  (advice-add #'consult-line :after
+              (lambda (&rest _)
+                (when consult--line-history
+                  (add-to-history
+                   'search-ring ;; or regexp-search-ring
+                   (car consult--line-history)
+                   search-ring-max))))) ;; or regexp-search-ring-max
 #+end_src
 ** Programming language support and utilities
 *** Postgres
@@ -1480,7 +1893,7 @@ https://github.com/akermu/emacs-libvterm#given-that-eshell-shell-and-ansi-term-a
     :bind ; Bind `dirvish-fd|dirvish-side|dirvish-dwim' as you see fit
     (("C-c f" . dirvish)
       :map dirvish-mode-map               ; Dirvish inherits `dired-mode-map'
-      (";"   . dired-up-directory)        ; So you can adjust `dired' bindings here
+      ("h"   . dired-up-directory)        ; So you can adjust `dired' bindings here
       ("?"   . dirvish-dispatch)          ; [?] a helpful cheatsheet
       ("a"   . dirvish-setup-menu)        ; [a]ttributes settings:`t' toggles mtime, `f' toggles fullframe, etc.
       ("f"   . dirvish-file-info-menu)    ; [f]ile info
@@ -1516,8 +1929,14 @@ Example see: [[https://start.1password.com/open/i?a=6PAWPJHKQRBVFL4DWVL3I2X7SI&v
 ** Ace Window
 #+begin_src emacs-lisp
   (use-package ace-window
+    :bind (("C-x w w" . ace-window)
+           ("C-x w d" . ace-delete-window)
+           ("C-x w s" . ace-swap-window)
+           ("C-x w o" . ace-delete-other-windows))
+
     :config
-    (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+    (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+    (setq aw-dispatch-always t))
 #+end_src
 ** Miscellaneous
 *** Diminish minor modes

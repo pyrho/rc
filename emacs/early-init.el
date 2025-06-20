@@ -29,5 +29,21 @@
 ;; Always follow links
 (setq vc-follow-symlinks t)
 
+;; Set default font for all frames (including daemon)
+;; (setq default-frame-alist
+;;       (append '((font . "Aporetic Serif Mono-18"))
+;;               default-frame-alist))
+
+;; Set additional face types
+;; (defun pyrho--set-variable-pitch ()
+;;   (when (member "Aporetic Sans" (font-family-list))
+;;     (set-face-attribute 'variable-pitch nil :font "Aporetic Sans" :height 180)))
+
+;; (if (daemonp)
+;;     (add-hook 'after-make-frame-functions
+;;               (lambda (frame)
+;;                 (with-selected-frame frame
+;;                   (pyrho--set-variable-pitch))))
+;;   (pyrho--set-variable-pitch))
 
 ;;; early-init.el ends here
