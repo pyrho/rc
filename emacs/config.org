@@ -1,9 +1,9 @@
-#+TITLE: pyrho's Emacs Conf
-#+AUTHOR: pyrho
-#+DATE: 2025-06-01
-#+STARTUP: content indent
-#+DESCRIPTION: Modified version of Yay-Evil distro by Ian Y.E. Pan, available at https://github.com/ianyepan/yay-evil-emacs/blob/master/config.org
-#+PROPERTY: header-args :tangle yes
+#+title: pyrho's Emacs Conf
+#+author: pyrho
+#+date: 2025-06-01
+#+startup: overview
+#+description: Modified version of Yay-Evil distro by Ian Y.E. Pan, available at https://github.com/ianyepan/yay-evil-emacs/blob/master/config.org
+#+property: header-args :tangle yes
 
 My emacs config, currently for Emacs 30.1
 
@@ -74,7 +74,13 @@ which integrated into Emacs's native auth-source function.
     ;; Auto-select new window after splitting
  (advice-add 'split-window :after
    (lambda (&rest _)
-     (select-window (get-lru-window)))))
+     (select-window (get-lru-window))))
+
+ (global-hi-lock-mode 1)
+
+ ;; Allows poping the mark multiple times in a row
+ ;; by just using C-SPC
+ (setq set-mark-command-repeat-pop t))
   #+END_SRC
 ** Fonts
 This is a test
@@ -211,99 +217,120 @@ coding, another for org mode etc.
 Some minimal org mode tweaks: org-bullets gives our headings
 (h1, h2, h3...) a more visually pleasing look.
 #+BEGIN_SRC emacs-lisp
-  (use-package org
-    :hook ((org-mode . visual-line-mode)
-           (org-mode . org-indent-mode))
-    :bind (("C-c a" . org-agenda)
-           ("C-c c" . org-capture))
-    :config
-    (setq org-M-RET-may-split-line nil)
-    ;; https://emacs.stackexchange.com/questions/62720/open-org-link-in-the-same-window
-    ;; Open links in current window
-    (setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
+(use-package org
+  :hook ((org-mode . visual-line-mode)
+         (org-mode . org-indent-mode))
+  :bind (("C-c a" . org-agenda)
+         ("C-c c" . org-capture))
+  :config
+  (setq org-M-RET-may-split-line nil)
+  ;; https://emacs.stackexchange.com/questions/62720/open-org-link-in-the-same-window
+  ;; Open links in current window
+  (setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
 
-    (setq org-return-follows-link t)
-    (global-set-key (kbd "C-c l") #'org-store-link)
-    (global-set-key (kbd "C-c a") #'org-agenda)
-    (global-set-key (kbd "C-c c") #'org-capture)
+  (setq org-return-follows-link t)
+  (global-set-key (kbd "C-c l") #'org-store-link)
+  (global-set-key (kbd "C-c a") #'org-agenda)
+  (global-set-key (kbd "C-c c") #'org-capture)
 
-     ;; Hide *~_/ characeters (like conceal).
-     ;; To show them, enter (visible-mode).
-   (setq org-hide-emphasis-markers t)
+   ;; Hide *~_/ characeters (like conceal).
+   ;; To show them, enter (visible-mode).
+ (setq org-hide-emphasis-markers t)
 
-   (setq org-directory "~/org")
-   (setq org-default-notes-file (concat org-directory "/inbox.org"))
-   (setq org-agenda-files (list
-                           (concat org-directory "/todo.org")
-                           (concat org-directory "/calendar-beorg.org")
-                           (concat org-directory "/events.org")))
+ (setq org-directory "~/org")
+ (setq org-default-notes-file (concat org-directory "/inbox.org"))
+ (setq org-agenda-files (list
+                         (concat org-directory "/todo.org")
+                         (concat org-directory "/calendar-beorg.org")
+                         (concat org-directory "/events.org")))
 
-   (setq org-outline-path-complete-in-steps nil)         ; Refile in a single go
-   (setq org-refile-use-outline-path t)                  ; Show full paths for refiling
+ (setq org-outline-path-complete-in-steps nil)         ; Refile in a single go
+ (setq org-refile-use-outline-path t)                  ; Show full paths for refiling
 
-   (setq org-refile-targets (list (list (concat org-directory "/todo.org") :maxlevel 5)))
+ (setq org-refile-targets (list (list (concat org-directory "/todo.org") :maxlevel 5)))
 
-   (setq org-agenda-custom-commands
-                '(("W" "Weekly review"
-                   agenda ""
-                   ((org-agenda-start-day "-14d")
-                    (org-agenda-span 14)
-                    (org-agenda-start-on-weekday 1)
-                    (org-agenda-start-with-log-mode '(closed))
-                    (org-agenda-archives-mode t)
-                    (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp "^\\*+ DONE "))))
-                  ("n" "Agenda and all TODOs"
-                   agenda ""
-                   ((alltodo ""))))))
+ (setq org-agenda-custom-commands
+              '(("W" "Weekly review"
+                 agenda ""
+                 ((org-agenda-start-day "-14d")
+                  (org-agenda-span 14)
+                  (org-agenda-start-on-weekday 1)
+                  (org-agenda-start-with-log-mode '(closed))
+                  (org-agenda-archives-mode t)
+                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp "^\\*+ DONE "))))
+                ("n" "Agenda and all TODOs"
+                 agenda ""
+                 ((alltodo ""))))))
 
 
-  (use-package org-bullets :hook (org-mode . org-bullets-mode))
+(use-package org-bullets :hook (org-mode . org-bullets-mode))
 
-  ;; Org Babel stuff
-  (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((shell . t)
-       (sql . t)))
+;; Org Babel stuff
+(org-babel-do-load-languages
+   'org-babel-load-languages
+   '((shell . t)
+     (sql . t)))
 
-  ;; https://andreamaglie.com/2025-03-25-emacs-org-mode-auto-clock-in-when-doing
-  (defun pyrho--org-clock-in-when-doing ()
-    "Clock in when the TODO state is switched to IN_PROGRESS."
-    (when (string= org-state "DOING")
-      (unless (org-clocking-p)
-        (org-clock-in))))
+;; https://andreamaglie.com/2025-03-25-emacs-org-mode-auto-clock-in-when-doing
+(defun pyrho--org-clock-in-when-doing ()
+  "Clock in when the TODO state is switched to IN_PROGRESS."
+  (when (string= org-state "DOING")
+    (unless (org-clocking-p)
+      (org-clock-in))))
 
-  (add-hook 'org-after-todo-state-change-hook #'pyrho--org-clock-in-when-doing)
-  (setq org-clock-out-when-done t)
+(add-hook 'org-after-todo-state-change-hook #'pyrho--org-clock-in-when-doing)
+(setq org-clock-out-when-done t)
 
-  ;; Function to archive all DONE tasks in current subtree
-  (defun my/archive-done-tasks-in-subtree ()
-    "Archive all DONE tasks in the current subtree."
-    (interactive)
+;; Function to archive all DONE tasks in current subtree
+(defun my/archive-done-tasks-in-subtree ()
+  "Archive all DONE tasks in the current subtree."
+  (interactive)
+  (org-map-entries
+   (lambda ()
+     (when (member (org-get-todo-state) '("DONE" "CANCELED"))
+       (org-archive-subtree)))
+   t 'tree))
+
+;; Function to archive DONE tasks older than N days
+(defun my/archive-old-done-tasks (days)
+  "Archive DONE tasks in current subtree older than DAYS."
+  (interactive "nArchive DONE tasks older than how many days? ")
+  (let ((cutoff-time (time-subtract (current-time)
+                                   (days-to-time days))))
     (org-map-entries
      (lambda ()
-       (when (member (org-get-todo-state) '("DONE" "CANCELED"))
+       (when (and (member (org-get-todo-state) '("DONE" "CANCELED"))
+                  (let ((closed-time (org-entry-get (point) "CLOSED")))
+                    (and closed-time
+                         (time-less-p (org-time-string-to-time closed-time)
+                                     cutoff-time))))
          (org-archive-subtree)))
-     t 'tree))
+     t 'tree)))
 
-  ;; Function to archive DONE tasks older than N days
-  (defun my/archive-old-done-tasks (days)
-    "Archive DONE tasks in current subtree older than DAYS."
-    (interactive "nArchive DONE tasks older than how many days? ")
-    (let ((cutoff-time (time-subtract (current-time)
-                                     (days-to-time days))))
-      (org-map-entries
-       (lambda ()
-         (when (and (member (org-get-todo-state) '("DONE" "CANCELED"))
-                    (let ((closed-time (org-entry-get (point) "CLOSED")))
-                      (and closed-time
-                           (time-less-p (org-time-string-to-time closed-time)
-                                       cutoff-time))))
-           (org-archive-subtree)))
-       t 'tree)))
+(defun my-org-tab-with-smart-cycle ()
+  "Enhanced TAB that works regardless of position after ellipsis."
+  (interactive)
+  (cond
+   ;; If we're on a heading line
+   ((org-at-heading-p)
+    (org-cycle))
+   ;; If we're on a line with ellipsis, find the heading and cycle it
+   ((save-excursion
+      (beginning-of-line)
+      (re-search-forward "\\.\\.\\." (line-end-position) t))
+    (save-excursion
+      (beginning-of-line)
+      (org-cycle)))
+   ;; Otherwise, use default TAB behavior
+   (t
+    (org-cycle))))
+
+;; Replace the default TAB binding in org-mode
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "TAB") #'my-org-tab-with-smart-cycle))
 #+END_SRC
 ** Font Customization for org-mode
-Mx
-Id
+
 #+BEGIN_SRC emacs-lisp
   ;(use-package emacs
   ;  :straight nil
@@ -527,48 +554,28 @@ Mostly stolen from [[https://web.archive.org/web/20250601133505/https://sophiebo
 #+end_src
 *** Org Appear
 #+begin_src emacs-lisp
-(use-package org
-  :hook (org-mode . variable-pitch-mode)
-  :after doom-themes
-  :config
-  (setq org-adapt-indentation t
-      org-hide-leading-stars t
-      org-pretty-entities t
-      org-ellipsis "  ·")
-
-  (setq org-src-fontify-natively t
-      org-src-tab-acts-natively t
-      org-edit-src-content-indentation 0)
-
-  (setq org-log-done                       t
-     org-auto-align-tags                t
-     org-tags-column                    -80
-     org-fold-catch-invisible-edits     'show-and-error
-     org-special-ctrl-a/e               t
-     org-insert-heading-respect-content t)
-
-  (add-hook 'org-mode-hook 'visual-line-mode)
 
 
-  (use-package org-appear)
-  :commands (org-appear-mode)
-  :hook     (org-mode . org-appear-mode)
-  :config
-   (setq org-hide-emphasis-markers t  ; Must be activated for org-appear to work
-         org-appear-autoemphasis   t   ; Show bold, italics, verbatim, etc.
-         org-appear-autolinks      t   ; Show links
-         org-appear-autosubmarkers t)
+(use-package org-appear
 
-   (setq org-appear-trigger 'manual)
-   (add-hook 'org-mode-hook (lambda ()
-                              (add-hook 'meow-insert-enter-hook
-                                        #'org-appear-manual-start
-                                        nil
-                                        t)
-                              (add-hook 'meow-insert-exit-hook
-                                        #'org-appear-manual-stop
-                                        nil
-                                        t))))
+ :commands (org-appear-mode)
+ :hook     (org-mode . org-appear-mode)
+ :config
+  (setq org-hide-emphasis-markers t  ; Must be activated for org-appear to work
+        org-appear-autoemphasis   t   ; Show bold, italics, verbatim, etc.
+        org-appear-autolinks      t   ; Show links
+        org-appear-autosubmarkers t
+        org-appear-trigger 'manual)
+
+  (add-hook 'org-mode-hook (lambda ()
+                             (add-hook 'meow-insert-enter-hook
+                                       #'org-appear-manual-start
+                                       nil
+                                       t)
+                             (add-hook 'meow-insert-exit-hook
+                                       #'org-appear-manual-stop
+                                       nil
+                                       t))))
 #+end_src
 *** Prettify Symbols
 #+begin_src emacs-lisp
@@ -606,6 +613,29 @@ Mostly stolen from [[https://web.archive.org/web/20250601133505/https://sophiebo
   (prettify-symbols-mode))
 (add-hook 'org-mode-hook        #'pyrho--prettify-symbols-setup)
 (add-hook 'org-agenda-mode-hook #'pyrho--prettify-symbols-setup)
+#+end_src
+*** Other nice things
+#+begin_src emacs-lisp
+(use-package org
+  :hook (org-mode . variable-pitch-mode)
+  :config
+  (setq org-adapt-indentation t
+    org-hide-leading-stars t
+    org-pretty-entities t
+    org-ellipsis "  ·")
+
+  (setq org-src-fontify-natively t
+      org-src-tab-acts-natively t
+      org-edit-src-content-indentation 0)
+
+  (setq org-log-done                       t
+     org-auto-align-tags                t
+     org-tags-column                    -80
+     org-fold-catch-invisible-edits     'show-and-error
+     org-special-ctrl-a/e               t
+     org-insert-heading-respect-content t)
+
+  (add-hook 'org-mode-hook 'visual-line-mode))
 #+end_src
 * Configuration for built-in packages
 Since we're using use-package as our package management system, we
@@ -863,17 +893,76 @@ Delete intermediate buffers when navigating through dired.
 #+END_SRC
 ** Tab Bar
 #+begin_src emacs-lisp
-  (use-package vim-tab-bar
-    :disabled ;i'm an emacser now
-    :commands vim-tab-bar-mode
-    :hook
-    (tab-bar-mode)
-    :config
-    (advice-add 'tab-bar-close-tab
-                 :after
-                 (lambda (&rest r) (if (= 1 (length (tab-bar-tabs)))
-                                       (tab-bar-mode -1)))
-                 '((name . "hide-tabbar-if-one-tab"))))
+(use-package tab-bar
+  :straight nil
+  :after ef-themes
+  :defer t
+  :custom
+  (tab-bar-close-button-show nil)
+  (tab-bar-new-button-show nil)
+  (tab-bar-tab-hints t)
+  (tab-bar-auto-width nil)
+  (tab-bar-separator " ")
+  (tab-bar-format '(tab-bar-format-tabs-groups
+                                                        Tab-bar-format-tabs tab-bar-separator
+                                                        tab-bar-format-add-tab))
+  :init
+  ;;; --- OPTIONAL INTERNAL FN OVERRIDES TO DECORATE NAMES
+  (defun tab-bar-tab-name-format-hints (name _tab i)
+          (if tab-bar-tab-hints (concat (format "»%d«" i) "") name))
+
+  (defun tab-bar-tab-group-format-default (tab _i &optional current-p)
+        (propertize
+         (concat (funcall tab-bar-tab-group-function tab))
+         'face (if current-p 'tab-bar-tab-group-current 'tab-bar-tab-group-inactive)))
+
+
+     ;;; --- UTILITIES FUNCTIONS
+  (defun emacs-solo/tab-group-from-project ()
+        "Call `tab-group` with the current project name as the group."
+        (interactive)
+        (when-let* ((proj (project-current))
+                    (name (file-name-nondirectory
+                           (directory-file-name (project-root proj)))))
+         (tab-group (format "[%s]" name))))
+
+  (defun emacs-solo/tab-switch-to-group ()
+   "Prompt for a tab group and switch to its first tab.
+Uses position instead of index field."
+   (interactive)
+   (let* ((tabs (funcall tab-bar-tabs-function)))
+        (let* ((groups (delete-dups (mapcar (lambda (tab)
+                                             (funcall tab-bar-tab-group-function tab))
+                                            tabs)))
+               (group (completing-read "Switch to group: " groups nil t)))
+         (let ((i 1) (found nil))
+              (dolist (tab tabs)
+               (let ((tab-group (funcall tab-bar-tab-group-function tab)))
+                    (when (and (not found)
+                           (string= tab-group group))
+                     (setq found t)
+                     (tab-bar-select-tab i)))
+               (setq i (1+ i)))))))
+
+             ;;; --- EXTRA KEYBINDINGS
+  (global-set-key (kbd "C-x t P") #'emacs-solo/tab-group-from-project)
+  (global-set-key (kbd "C-x t g") #'emacs-solo/tab-switch-to-group)
+
+  ;; (custom-set-faces
+  ;;  `(tab-bar
+  ;;    ((t (:background ,(ef-themes-with-colors bg-main) :foreground ,(ef-themes-with-colors fg-alt)))))
+  ;;  `(tab-bar-tab
+  ;;    ((t (:background ,(ef-themes-with-colors bg-alt) :underline t))))
+  ;;  '(tab-bar-tab-inactive
+  ;;    ((t ()))) ;; :background "#232635" ;; uncomment to use this
+  ;;  ;; :box (:line-width 1 :color "#676E95")
+
+  ;; '(tab-bar-tab-group-current
+  ;;   ((t (:background "#232635" :foreground "#A6Accd" :underline t))))
+   ;;'(tab-bar-tab-group-inactive
+    ;; ((t (:background "#232635" :foreground "#777")))))
+                                                                   ;;; --- TURNS ON BY DEFAULT
+  (tab-bar-mode 1))
 #+end_src
 ** Dump custom-set-variables to a garbage file and don't load it
 #+BEGIN_SRC emacs-lisp
@@ -882,6 +971,107 @@ Delete intermediate buffers when navigating through dired.
     :config
     (setq custom-file (concat user-emacs-directory "to-be-dumped.el")))
   #+END_SRC
+** Emails
+#+begin_src emacs-lisp
+;; === WORKING GNUS + AUTH-SOURCE-1PASSWORD CONFIGURATION ===
+
+;; === AUTH-SOURCE-1PASSWORD SETUP ===
+(use-package auth-source-1password
+  :straight (auth-source-1password
+             :type git
+             :host github
+             :repo "dlobraico/auth-source-1password")
+  :config
+  (auth-source-1password-enable))
+
+;; === FIX FOR AUTH-SOURCE-1PASSWORD BUG ===
+;; auth-source-1password can't handle hostname lists, but Gnus passes lists
+;; This advice converts lists to strings for compatibility
+(defun fix-1password-host-list (orig-fun &rest args)
+  "Convert hostname list to string for auth-source-1password compatibility."
+  (let ((host (plist-get args :host)))
+    (when (listp host)
+      ;; Convert list to single hostname string
+      (setq args (plist-put args :host
+                           (or (seq-find (lambda (h) (string-match-p "\\." h)) host)
+                               (car host))))))
+  (apply orig-fun args))
+
+(advice-add 'auth-source-search :around #'fix-1password-host-list)
+
+;; === BASIC USER INFORMATION ===
+(setq user-full-name "dr"
+      user-mail-address "d@25.wf")  ; Match your 1Password entry
+
+;; === AUTH-SOURCE CONFIGURATION ===
+(setq auth-sources '(1password))
+
+;; === GNUS SERVER CONFIGURATION ===
+(setq gnus-select-method '(nnnil ""))
+
+;; Configure Fastmail IMAP - using full hostname as server name
+(setq gnus-secondary-select-methods
+      '((nnimap "imap.fastmail.com"
+                (nnimap-address "imap.fastmail.com")
+                (nnimap-server-port 993)
+                (nnimap-stream ssl))))
+
+;; === SMTP CONFIGURATION ===
+(setq message-send-mail-function 'smtpmail-send-it
+      smtpmail-smtp-server "smtp.fastmail.com"
+      smtpmail-smtp-service 587
+      smtpmail-stream-type 'starttls)
+
+;; === SENT MAIL CONFIGURATION ===
+(setq gnus-message-archive-group "nnimap+imap.fastmail.com:Sent")
+
+;; === BASIC GNUS PREFERENCES ===
+(setq gnus-auto-select-first nil
+      gnus-thread-sort-functions '(gnus-thread-sort-by-most-recent-date))
+
+;; === HTML EMAIL SUPPORT WITH W3M ===
+;; Install w3m first: brew install w3m (macOS) or apt-get install w3m (Linux)
+
+;; Configure w3m for HTML email rendering
+(when (executable-find "w3m")
+  (setq gnus-html-renderer 'w3m)
+
+  ;; w3m-specific settings for better email rendering
+  (setq w3m-display-inline-images t          ; Show images in HTML emails
+        w3m-use-cookies nil                   ; Don't use cookies for email
+        w3m-default-display-inline-images t   ; Auto-display images
+        w3m-toggle-inline-images-permanently t)
+
+  ;; Configure how w3m handles HTML content
+  (setq gnus-article-wash-function 'gnus-article-wash-html-with-w3m)
+
+  ;; Show images by default (can be toggled with 'i' in article view)
+  (setq gnus-blocked-images nil)
+
+  ;; Better text wrapping in w3m
+  (setq w3m-fill-column 80)
+
+  ;; Configure w3m to work better with dark themes (if applicable)
+  ;; (setq w3m-default-background-color "black")
+  ;; (setq w3m-default-foreground-color "white")
+
+  (message "w3m configured for HTML email rendering"))
+
+;; Fallback to built-in renderer if w3m not available
+(unless (executable-find "w3m")
+  (setq gnus-html-renderer 'shr)
+  (message "w3m not found, using built-in shr renderer"))
+
+;; === HTML EMAIL VIEWING ENHANCEMENTS ===
+;; Better handling of multipart emails
+(setq gnus-mime-display-multipart-related-as-mixed t)
+
+;; Show more MIME parts by default
+(setq gnus-mime-display-multipart-alternative-as-mixed nil)
+
+;; Configure article washing for HTML content
+(setq gnus-article-wash-function 'gnus-article-wash-html)
+#+end_src
 * Third-party packages
 Many Emacsers love having tons of packages -- and that's absolutely
 fine! However, one of the goals of the Yay-Evil distro is to provide
@@ -896,12 +1086,6 @@ controls the Evil behaviors.
 
 Normally, we need to add ~:ensure t~ to tell ~use-package~ to download packages when it's not available. But since we've added ~use-package-always-ensure~ in ~init.el~, we can omit it.
 ** GUI enhancements
-*** Solaire
-#+begin_src emacs-lisp
-;; (use-package solaire-mode
-;;   :config
-;;    (solaire-global-mode +1))
-#+end_src
 *** Nerd Fonts
 #+begin_src emacs-lisp
   (use-package nerd-icons
@@ -909,17 +1093,8 @@ Normally, we need to add ~:ensure t~ to tell ~use-package~ to download packages 
     (nerd-icons-font-family "Symbols Nerd Font Mono"))
                                           ;(nerd-icons-scale-factor 1.5))
 #+end_src
-*** Tokyonight Theme
-#+begin_src emacs-lisp
-  (use-package tokyonight-themes
-    :straight (tokyonight-themes
-               :type git
-               :host github
-               :repo "xuchengpeng/tokyonight-themes"))
-    ;(load-theme 'tokyonight-day :no-confirm))
-
-#+end_src
-*** Doom themes
+*** Themes
+**** Doom themes
 #+BEGIN_SRC emacs-lisp
   (use-package doom-themes
     :config
@@ -945,84 +1120,70 @@ Normally, we need to add ~:ensure t~ to tell ~use-package~ to download packages 
 
     (advice-add 'enable-theme :after #'run-after-enable-theme-hook))
 #+END_SRC
-*** ef-themes
+**** ef-themes
 #+begin_src emacs-lisp
-(use-package ef-themes
-  :after doom-themes
-  :disabled
-  :config
-  (setq ef-themes-headings ; read the manual's entry or the doc string
-      '((0 variable-pitch 1.4)
-        (1 variable-pitch 1.3)
-        (2 variable-pitch 1.2)
-        (3 variable-pitch 1.1)
-        (4 variable-pitch 1 regular)
-        (5 variable-pitch 1 regular) ; absence of weight means `bold'
-        (6 variable-pitch 1 light)
-        (7 variable-pitch 1 light)
-        (t variable-pitch 1 light)))
+(use-package ef-themes)
+  ;; :config)
+  ;; (setq ef-themes-headings ; read the manual's entry or the doc string
+  ;;     '((0 variable-pitch 1.4)
+  ;;       (1 variable-pitch 1.3)
+  ;;       (2 variable-pitch 1.2)
+  ;;       (3 variable-pitch 1.1)
+  ;;       (4 variable-pitch 1 regular)
+  ;;       (5 variable-pitch 1 regular) ; absence of weight means `bold'
+  ;;       (6 variable-pitch 1 light)
+  ;;       (7 variable-pitch 1 light)
+  ;;       (t variable-pitch 1 light)))
 
-  (setq ef-themes-to-toggle '(ef-frost ef-night))
-  ;; They are nil by default...
-  (setq ef-themes-mixed-fonts t
-        ef-themes-variable-pitch-ui t)
+  ;; ;; ;; (setq ef-themes-to-toggle '(ef-frost ef-night))
+  ;; ;; ;; They are nil by default...
+  ;; (setq ef-themes-mixed-fonts t
+  ;;       ef-themes-variable-pitch-ui t)
 
-  ;; Disable all other themes to avoid awkward blending:
-  (mapc #'disable-theme custom-enabled-themes)
-  (if (display-graphic-p)
-    (load-theme 'ef-night :no-confirm)
-   (load-theme 'doom-moonlight :no-confirm)))
+  ;; ;; ;; Disable all other themes to avoid awkward blending:
+  ;; (mapc #'disable-theme custom-enabled-themes))
+  ;; ;; (if (display-graphic-p)
+  ;; ;;   (load-theme 'ef-night :no-confirm)
+  ;; ;;  (load-theme 'doom-moonlight :no-confirm)))
 #+end_src
-*** Zen Mode / Writeroom
-#+BEGIN_SRC emacs-lisp
-  (use-package writeroom-mode
-    :ensure t
-    :config (setq writeroom-fullscreen-effect 'maximized)
-    :hook (writeroom-mode . (lambda ()
-                              (display-line-numbers-mode
-                               (if writeroom-mode -1 1)))))
-#+END_SRC
-*** Circadian
+**** Circadian
 Allows to automatically switch between a dark and a light theme
 depending on the time of day.
 #+begin_src emacs-lisp
-  (use-package circadian
-    :after (tokyonight-themes doom-themes)
-    :config
-     (setq circadian-themes '((:sunrise . doom-winter-is-coming-light)
-                              (:sunset . doom-moonlight)))
-     (add-hook 'circadian-after-load-theme-hook #'(lambda (theme)
-                                                    (pyrho--set-faces)))
-     ;; (add-hook 'circadian-after-load-theme-hook
-     ;;           #'(lambda (theme)
-     ;;               (dolist (face '((org-level-1 . 1.35)
-     ;;                               (org-level-2 . 1.3)
-     ;;                               (org-level-3 . 1.2)
-     ;;                               (org-level-4 . 1.1)
-     ;;                               (org-level-5 . 1.1)
-     ;;                               (org-level-6 . 1.1)
-     ;;                               (org-level-7 . 1.1)
-     ;;                               (org-level-8 . 1.1)))
-     ;;                 (set-face-attribute (car face) nil :font "Aporetic Sans" :weight 'bold :height (cdr face)))
+(use-package circadian
+  :after (tokyonight-themes doom-themes)
+  :config
+   (setq circadian-themes '((:sunrise . ef-light)
+                            (:sunset . ef-night)))
 
-     ;;                   ;; Make the document title a bit bigger
-     ;;               (set-face-attribute 'org-document-title nil :font "Aporetic Sans" :weight
-     ;;                                   'bold :height 1.8)
-     ;;                   ;; Make the document title a bit bigger
-     ;;               (set-face-attribute 'org-document-title nil :font "Aporetic Sans" :weight
-     ;;                                   'bold :height 1.8)
-
-     ;;               (set-face-attribute 'org-block nil            :foreground nil :inherit
-     ;;                                   'fixed-pitch)
-     ;;               (set-face-attribute 'org-code nil             :inherit '(shadow fixed-pitch))
-     ;;                   ;;(set-face-attribute 'org-indent nil           :inherit '(org-hide fixed-pitch)
-     ;;               (set-face-attribute 'org-verbatim nil         :inherit '(shadow fixed-pitch))
-     ;;               (set-face-attribute 'org-special-keyword nil  :inherit '(font-lock-comment-face
-     ;;                                                                        fixed-pitch))
-     ;;               (set-face-attribute 'org-meta-line nil        :inherit '(font-lock-comment-face fixed-pitch))
-     ;;               (set-face-attribute 'org-checkbox nil         :inherit 'fixed-pitch)))
-     (circadian-setup))
+   ;; Ef theme handles this directly, this hook's needed for other
+   ;; themes tho
+   (add-hook 'circadian-after-load-theme-hook #'(lambda (theme)
+                                                  (pyrho--set-faces)))
+   (circadian-setup))
 #+end_src
+**** Tokyonight Theme
+#+begin_src emacs-lisp
+  (use-package tokyonight-themes
+    :straight (tokyonight-themes
+               :type git
+               :host github
+               :repo "xuchengpeng/tokyonight-themes"))
+    ;(load-theme 'tokyonight-day :no-confirm))
+
+#+end_src
+*** Zen Mode / Writeroom
+#+BEGIN_SRC emacs-lisp
+(use-package writeroom-mode
+  :config
+  (setq writeroom-fullscreen-effect 'maximized)
+  (add-to-list 'writeroom-global-effects 'writeroom-set-internal-border-width)
+  :hook (writeroom-mode . (lambda ()
+                            (display-line-numbers-mode
+                             (if writeroom-mode -1 1))
+                            (tab-bar-mode
+                             (if writeroom-mode -1 1)))))
+#+END_SRC
 *** Beacon
 #+begin_src emacs-lisp
   (use-package beacon
@@ -1141,8 +1302,11 @@ sequences (e.g. ~\n, \t~).
   (setq dashboard-set-file-icons t))
 #+end_src
 ** Perspective
+I find it buggy, and it doesn't integrate well to project.el
+
 #+begin_src emacs-lisp
 (use-package perspective
+  :disabled
   :bind (("C-x b" . persp-switch-to-buffer*)
          ("C-x k" . persp-kill-buffer*))
   :custom
@@ -1180,6 +1344,7 @@ sequences (e.g. ~\n, \t~).
   (setq meow-cheatsheet-physical-layout meow-cheatsheet-physical-layout-ansi)
 
   (add-to-list 'meow-mode-state-list '(pgmacs-mode . motion))
+  (add-to-list 'meow-mode-state-list '(vterm-mode . insert))
 
   (defun meow-negative-find ()
     (interactive) (let
@@ -1227,14 +1392,14 @@ sequences (e.g. ~\n, \t~).
   '("/" . meow-keypad-describe-key)
   '("?" . meow-cheatsheet)
 
-  '("P" . perspective-map)
   ;; The key concept is that you want to bind
   ;; here things that would have to be escaped with SPC during the sequence.
   ;; For example here for ~C-x p~, without this you would have to do
   ;; SPC x SPC P
   '("p" . "C-x p")
   '("b" . "C-x C-b")
-  '("w" . "C-x w"))
+  '("w" . "C-x w")
+  (cons "s" search-map))
 
 
  (meow-normal-define-key
@@ -1570,7 +1735,6 @@ Tell magit to automatically put us in vi-insert-mode when committing a change.
 *** Consult
 #+begin_src emacs-lisp
 (use-package consult
-  :after perspective
   :bind
   ("C-x C-b" . consult-buffer)
 
@@ -1594,9 +1758,6 @@ Tell magit to automatically put us in vi-insert-mode when committing a change.
 
   ;; Add the source to consult-buffer-sources
   (add-to-list 'consult-buffer-sources 'consult--source-org-files 'append)
-
-  (consult-customize consult--source-buffer :hidden t :default nil)
-  (add-to-list 'consult-buffer-sources persp-consult-source)
 
   ;; Add to isearch history, press C-s C-s to continue search
   ;; From https://github.com/minad/consult/issues/318#issuecomment-878810528
@@ -1645,117 +1806,118 @@ A modern on-the-fly syntax checking extension -- absolute essential
 Another popuplar option is ~eglot~ which is now shipped with Emacs.
 Though ~lsp-mode~ is said to be more featureful.
 #+BEGIN_SRC emacs-lisp
-  (use-package lsp-mode
-    :diminish "LSP"
-    :hook ((lsp-mode . lsp-diagnostics-mode)
-           (lsp-mode . lsp-enable-which-key-integration)
-           ((tsx-ts-mode
-             typescript-ts-mode
-             sql-mode
-             js-ts-mode) . lsp-deferred))
-    :custom
-    (lsp-keymap-prefix "C-c l")           ; Prefix for LSP actions
-    (lsp-completion-provider :none)       ; Using Corfu as the provider
-    (lsp-diagnostics-provider :flycheck)
-    (lsp-session-file (locate-user-emacs-file ".lsp-session"))
-    (lsp-log-io nil)                      ; IMPORTANT! Use only for debugging! Drastically affects performance
-    (lsp-keep-workspace-alive nil)        ; Close LSP server if all project buffers are closed
-    (lsp-idle-delay 0.5)                  ; Debounce timer for `after-change-function'
-    ;; core
-    (lsp-enable-xref nil)                   ; Use xref to find references
-    (lsp-auto-configure t)                ; Used to decide between current active servers
-    (lsp-eldoc-enable-hover t)            ; Display signature information in the echo area
-    (lsp-enable-dap-auto-configure t)     ; Debug support
-    (lsp-enable-file-watchers nil)
-    (lsp-enable-folding t)              ; I disable folding since I use origami
-    (lsp-enable-imenu t)
-    (lsp-enable-indentation nil)          ; I use prettier
-    (lsp-enable-links nil)                ; No need since we have `browse-url'
-    (lsp-enable-on-type-formatting nil)   ; Prettier handles this
-    (lsp-enable-suggest-server-download t) ; Useful prompt to download LSP providers
-    (lsp-enable-symbol-highlighting t)     ; Shows usages of symbol at point in the current buffer
-    (lsp-enable-text-document-color nil)   ; This is Treesitter's job
+(use-package lsp-mode
+  :diminish "LSP"
+  :hook ((lsp-mode . lsp-diagnostics-mode)
+         (lsp-mode . lsp-enable-which-key-integration)
+         ((tsx-ts-mode
+           typescript-ts-mode
+           sql-mode
+           js-ts-mode) . lsp-deferred))
+  :custom
+  (lsp-keymap-prefix "C-c l")           ; Prefix for LSP actions
+  (lsp-completion-provider :none)       ; Using Corfu as the provider
+  (lsp-diagnostics-provider :flycheck)
+  (lsp-session-file (locate-user-emacs-file ".lsp-session"))
+  (lsp-log-io nil)                      ; IMPORTANT! Use only for debugging! Drastically affects performance
+  (lsp-keep-workspace-alive nil)        ; Close LSP server if all project buffers are closed
+  (lsp-idle-delay 0.5)                  ; Debounce timer for `after-change-function'
+  ;; core
+  (lsp-enable-xref nil)                   ; Use xref to find references
+  (lsp-auto-configure t)                ; Used to decide between current active servers
+  (lsp-eldoc-enable-hover t)            ; Display signature information in the echo area
+  (lsp-enable-dap-auto-configure t)     ; Debug support
+  (lsp-enable-file-watchers nil)
+  (lsp-enable-folding t)              ; I disable folding since I use origami
+  (lsp-enable-imenu t)
+  (lsp-enable-indentation nil)          ; I use prettier
+  (lsp-enable-links nil)                ; No need since we have `browse-url'
+  (lsp-enable-on-type-formatting nil)   ; Prettier handles this
+  (lsp-enable-suggest-server-download t) ; Useful prompt to download LSP providers
+  (lsp-enable-symbol-highlighting t)     ; Shows usages of symbol at point in the current buffer
+  (lsp-enable-text-document-color nil)   ; This is Treesitter's job
 
-    (lsp-ui-sideline-show-hover nil)      ; Sideline used only for diagnostics
-    (lsp-ui-sideline-diagnostic-max-lines 20) ; 20 lines since typescript errors can be quite big
-    ;; completion
-    (lsp-completion-enable t)
-    (lsp-completion-enable-additional-text-edit t) ; Ex: auto-insert an import for a completion candidate
-    (lsp-enable-snippet t)                         ; Important to provide full JSX completion
-    (lsp-completion-show-kind t)                   ; Optional
-    ;; headerline
-    (lsp-headerline-breadcrumb-enable t)  ; Optional, I like the breadcrumbs
-    (lsp-headerline-breadcrumb-enable-diagnostics nil) ; Don't make them red, too noisy
-    (lsp-headerline-breadcrumb-enable-symbol-numbers nil)
-    (lsp-headerline-breadcrumb-icons-enable t)
-    ;; modeline
-    (lsp-modeline-code-actions-enable nil) ; Modeline should be relatively clean
-    (lsp-modeline-diagnostics-enable nil)  ; Already supported through `flycheck'
-    (lsp-modeline-workspace-status-enable nil) ; Modeline displays "LSP" when lsp-mode is enabled
-    (lsp-signature-doc-lines 1)                ; Don't raise the echo area. It's distracting
-    (lsp-ui-doc-use-childframe t)              ; Show docs for symbol at point
-    (lsp-eldoc-render-all nil)            ; This would be very useful if it would respect `lsp-signature-doc-lines', currently it's distracting
-    ;; lens
-    (lsp-lens-enable t)                 ; Optional, I don't need it
-    ;; semantic
-    (lsp-semantic-tokens-enable nil)      ; Related to highlighting, and we defer to treesitter
+  (lsp-ui-sideline-show-hover nil)      ; Sideline used only for diagnostics
+  (lsp-ui-sideline-diagnostic-max-lines 20) ; 20 lines since typescript errors can be quite big
+  ;; completion
+  (lsp-completion-enable t)
+  (lsp-completion-enable-additional-text-edit t) ; Ex: auto-insert an import for a completion candidate
+  (lsp-enable-snippet t)                         ; Important to provide full JSX completion
+  (lsp-completion-show-kind t)                   ; Optional
+  ;; headerline
+  (lsp-headerline-breadcrumb-enable t)  ; Optional, I like the breadcrumbs
+  (lsp-headerline-breadcrumb-enable-diagnostics nil) ; Don't make them red, too noisy
+  (lsp-headerline-breadcrumb-enable-symbol-numbers nil)
+  (lsp-headerline-breadcrumb-icons-enable t)
+  ;; modeline
+  (lsp-modeline-code-actions-enable nil) ; Modeline should be relatively clean
+  (lsp-modeline-diagnostics-enable nil)  ; Already supported through `flycheck'
+  (lsp-modeline-workspace-status-enable nil) ; Modeline displays "LSP" when lsp-mode is enabled
+  (lsp-signature-doc-lines 1)                ; Don't raise the echo area. It's distracting
+  (lsp-ui-doc-use-childframe t)              ; Show docs for symbol at point
+  (lsp-eldoc-render-all nil)            ; This would be very useful if it would respect `lsp-signature-doc-lines', currently it's distracting
+  ;; lens
+  (lsp-lens-enable t)                 ; Optional, I don't need it
+  ;; semantic
+  (lsp-semantic-tokens-enable nil)      ; Related to highlighting, and we defer to treesitter
 
-    :init
-    (setq lsp-use-plists t)
-    (defun lsp-booster--advice-json-parse (old-fn &rest args)
-       "Try to parse bytecode instead of json."
-       (or
-        (when (equal (following-char) ?#)
-          (let ((bytecode (read (current-buffer))))
-            (when (byte-code-function-p bytecode)
-              (funcall bytecode))))
-        (apply old-fn args)))
-    (advice-add (if (progn (require 'json)
-                           (fboundp 'json-parse-buffer))
-                    'json-parse-buffer
-                  'json-read)
-                :around
-                #'lsp-booster--advice-json-parse)
+  :init
+  (setq lsp-use-plists t)
+  (defun lsp-booster--advice-json-parse (old-fn &rest args)
+     "Try to parse bytecode instead of json."
+     (or
+      (when (equal (following-char) ?#)
+        (let ((bytecode (read (current-buffer))))
+          (when (byte-code-function-p bytecode)
+            (funcall bytecode))))
+      (apply old-fn args)))
+  (advice-add (if (progn (require 'json)
+                         (fboundp 'json-parse-buffer))
+                  'json-parse-buffer
+                'json-read)
+              :around
+              #'lsp-booster--advice-json-parse)
 
-    (defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
-      "Prepend emacs-lsp-booster command to lsp CMD."
-      (let ((orig-result (funcall old-fn cmd test?)))
-        (if (and (not test?)                             ;; for check lsp-server-present?
-                 (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
-                 lsp-use-plists
-                 (not (functionp 'json-rpc-connection))  ;; native json-rpc
-                 (executable-find "emacs-lsp-booster"))
-            (progn
-              (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
-                (setcar orig-result command-from-exec-path))
-              (message "Using emacs-lsp-booster for %s!" orig-result)
-              (cons "emacs-lsp-booster" orig-result))
-          orig-result)))
-    (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
-    :config
-    (setq lsp-sqls-workspace-config-path nil))
-    ;; this does not work, see https://github.com/emacs-lsp/lsp-mode/issues/3200
-    ;; (setq lsp-sqls-connections
-    ;;     '(((driver . "postgresql") (dataSourceName . "host=127.0.0.1 port=5433 user=postgres password=postres dbname=reel sslmode=disable")))))
+  (defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
+    "Prepend emacs-lsp-booster command to lsp CMD."
+    (let ((orig-result (funcall old-fn cmd test?)))
+      (if (and (not test?)                             ;; for check lsp-server-present?
+               (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
+               lsp-use-plists
+               (not (functionp 'json-rpc-connection))  ;; native json-rpc
+               (executable-find "emacs-lsp-booster"))
+          (progn
+            (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
+              (setcar orig-result command-from-exec-path))
+            (message "Using emacs-lsp-booster for %s!" orig-result)
+            (cons "emacs-lsp-booster" orig-result))
+        orig-result)))
+  (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
+  :config
+  (setq lsp-sqls-workspace-config-path nil))
+  ;; this does not work, see https://github.com/emacs-lsp/lsp-mode/issues/3200
+  ;; (setq lsp-sqls-connections
+  ;;     '(((driver . "postgresql") (dataSourceName . "host=127.0.0.1 port=5433 user=postgres password=postres dbname=reel sslmode=disable")))))
 
-  (use-package lsp-completion
-    :straight nil
-    :no-require
-    :hook ((lsp-mode . lsp-completion-mode)))
+(use-package lsp-completion
+  :straight nil
+  :no-require
+  :hook ((lsp-mode . lsp-completion-mode)))
 
-  (use-package lsp-ui
-    :commands
-    (lsp-ui-doc-show
-     lsp-ui-doc-glance)
-    :bind (:map lsp-mode-map
-                ("C-c C-d" . 'lsp-ui-doc-glance))
-    :after (lsp-mode)
-    :config (setq lsp-ui-doc-enable t
-                                          ;evil-lookup-func #'lsp-ui-doc-glance ; Makes K in evil-mode toggle the doc for symbol at point
-                  lsp-ui-doc-show-with-cursor nil      ; Don't show doc when cursor is over symbol - too distracting
-                  lsp-ui-doc-include-signature t       ; Show signature
-                  lsp-ui-doc-position 'at-point))
+(use-package lsp-ui
+  :commands
+  (lsp-ui-doc-show
+   lsp-ui-doc-glance)
+  :bind (:map lsp-mode-map
+              ("C-c C-d" . 'lsp-ui-doc-glance))
+  :after (lsp-mode)
+  :config (setq lsp-ui-doc-enable t
+                                        ;evil-lookup-func #'lsp-ui-doc-glance ; Makes K in evil-mode toggle the doc for symbol at point
+                lsp-ui-doc-show-with-cursor nil      ; Don't show doc when cursor is over symbol - too distracting
+                lsp-ui-doc-include-signature t       ; Show signature
+                lsp-ui-doc-position 'at-point))
 
+(use-package consult-lsp)
 #+END_SRC
 *** Parinfer
 A very useful mode to automatically handle parenthesis for lisp.
@@ -1828,6 +1990,12 @@ Markdown mode and Web mode, the latter covers our usages of HTML/CSS/JS/JSX/TS/T
     :config (require 'mcp-hub)
     :hook (after-init . mcp-hub-start-all-server))
 
+#+end_src
+
+*** Claude Code
+#+begin_src emacs-lisp
+(use-package claude-code-ide
+  :straight (:type git :host github :repo "manzaltu/claude-code-ide.el"))
 #+end_src
 
 ** Docker
@@ -1918,14 +2086,24 @@ The format should be, name of the credential mapped to ~:host~ and the field map
 Example see: [[https://start.1password.com/open/i?a=6PAWPJHKQRBVFL4DWVL3I2X7SI&v=pdplc7lo7t7wyl2ellpfzvr56a&i=hr4ooptsav6wmivbzqqsbxvtb4&h=my.1password.com][Anthropic API key]].
 
 #+begin_src emacs-lisp
-  (use-package auth-source-1password
-    :straight (auth-source-1password
-               :type git
-               :host github
-               :repo "dlobraico/auth-source-1password")
-    :config
-    (auth-source-1password-enable))
+;; (use-package auth-source-1password
+;;   :straight (auth-source-1password
+;;              :type git
+;;              :host github
+;;              :repo "dlobraico/auth-source-1password")
+;;   :config
+;;   (auth-source-1password-enable))
+
+(use-package 1password
+  :straight  (1password
+              :type git
+              :host github
+              :repo "justinbarclay/1password.el")
+ :init
+ (1password-enable-auth-source))
+
 #+end_src
+
 ** Ace Window
 #+begin_src emacs-lisp
   (use-package ace-window
