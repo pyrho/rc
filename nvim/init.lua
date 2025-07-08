@@ -85,7 +85,8 @@ local function set_options()
 	opt.wildmenu = true
 
 	-- Redraw only when we need to.
-	opt.lazyredraw = true
+	-- 2025-05-28: noice.nvim advised against setting this to `true`
+	opt.lazyredraw = false
 
 	-- Process file specific options
 	opt.modelines = 1
@@ -161,7 +162,11 @@ local function set_options()
 	--      augroup END
 	--      ]])
 	-- end
-    opt.exrc = true 
+	opt.exrc = true
+
+	if not require("pyrho.helpers").is_zen() then
+		opt.winborder = "rounded"
+	end
 end
 
 local function init_abbrev()
@@ -212,6 +217,14 @@ function _G.dump(...)
 	local objects = vim.tbl_map(vim.inspect, { ... })
 	print(unpack(objects))
 end
+
+_G.dd = function(...)
+	require("snacks").debug.inspect(...)
+end
+_G.bt = function()
+	require("snacks").debug.backtrace()
+end
+vim.print = _G.dd
 
 local function lazyBootstrap()
 	local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -268,6 +281,7 @@ local function main()
 			{ import = "plugins.treesitter" },
 			{ import = "plugins.lsp" },
 			{ import = "plugins.code" },
+			{ import = "plugins.ai" },
 		},
 		dev = {
 			path = "~/code/forks",
@@ -281,7 +295,6 @@ local function main()
 
 	require("pyrho.mappings").init()
 	set_lsp_logs()
-
 end
 
 main()

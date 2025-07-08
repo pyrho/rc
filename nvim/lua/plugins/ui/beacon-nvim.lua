@@ -1,2 +1,3 @@
 --  Highlight where the cursor jumped
-return {"danilamihailov/beacon.nvim", event = "VeryLazy"}
+-- tags:cursor:highlight:
+return {"shettysach/beacon.nvim", event = "VeryLazy"}

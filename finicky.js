@@ -78,17 +78,30 @@ module.exports = {
       match: "http://localhost:3000/*",
       browser: {
         name: "Google Chrome",
-        profile: "Profile 2",
+        profile: "Profile 1",
       },
     },
-    // {
-    //   match: "https://www.figma.com/file/*",
-    //   browser: "Figma",
-    // },
-    // {
-    //   match: "https://www.notion.so/*",
-    //   browser: "Notion",
-    // },
+      {
+      match: "http://localhost:8088/*",
+      browser: {
+        name: "Google Chrome",
+        profile: "Profile 1",
+      },
+    },{
+      match: "http://localhost:5173/*",
+      browser: {
+        name: "Google Chrome",
+        profile: "Profile 1",
+      },
+    },
+    {
+      match: "https://www.figma.com/file/*",
+      browser: "Figma",
+    },
+    {
+      match: "https://www.notion.so/*",
+      browser: "Notion",
+    },
     // {
     //   match: ({ url }) => url.host.endsWith("cloud.google.com"),
     //   browser: "Firefox",

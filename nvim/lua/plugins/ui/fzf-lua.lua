@@ -1,7 +1,7 @@
 return {
 	"ibhagwan/fzf-lua",
 	dependencies = { "nvim-tree/nvim-web-devicons" },
-    event = "VeryLazy",
+	event = "VeryLazy",
 	config = function()
 		require("fzf-lua").setup({
 			winopts = {
@@ -13,6 +13,17 @@ return {
 			-- treesitter = { enable = true, disable = {} },
 		})
 		-- require("fzf-lua").register_ui_select()
+		require("fzf-lua").register_ui_select(function(ui_opts, _)
+			return {
+				prompt = "❯ ",
+				winopts = {
+					title = ui_opts.prompt:gsub(":%s*$", ""),
+					title_pos = "center",
+					height = 0.33,
+					width = 0.5,
+				},
+			}
+		end)
 	end,
 	keys = {
 		{ "<LEADER>o", "<CMD>FzfLua files<CR>", desc = "File fuzzy finder" },

@@ -328,6 +328,10 @@ Some minimal org mode tweaks: org-bullets gives our headings
 ;; Replace the default TAB binding in org-mode
 (with-eval-after-load 'org
   (define-key org-mode-map (kbd "TAB") #'my-org-tab-with-smart-cycle))
+
+;; Start calendar on monday
+(setq org-agenda-start-on-weekday 1)
+
 #+END_SRC
 ** Font Customization for org-mode
 
@@ -371,7 +375,7 @@ Some minimal org mode tweaks: org-bullets gives our headings
                          'bold :height 1.8)
      (require 'org-indent)
 
-     (set-face-attribute 'org-block nil            :foreground nil :inherit 'fixed-pitch :height 0.85)
+     (set-face-attribute 'org-block nil            :inherit 'fixed-pitch :height 0.85)
      (set-face-attribute 'org-code nil             :inherit '(shadow fixed-pitch) :height 0.85)
      (set-face-attribute 'org-indent nil           :inherit '(org-hide fixed-pitch))
      (set-face-attribute 'org-verbatim nil         :inherit '(shadow fixed-pitch))
@@ -597,9 +601,8 @@ Mostly stolen from [[https://web.archive.org/web/20250601133505/https://sophiebo
   (push '("#+end_quote" . ?❞) prettify-symbols-alist)
 
   ;; Drawers
-  (push '(":PROPERTIES:" . "") prettify-symbols-alist)
-  (push '(":LOGBOOK:" . "") prettify-symbols-alist)
-
+  ;; (push '(":PROPERTIES:" . "") prettify-symbols-alist)
+  ;; (push '(":LOGBOOK:" . "") prettify-symbols-alist)
   ;; Tags
   (push '(":projects:" . "") prettify-symbols-alist)
   (push '(":personal:" . "") prettify-symbols-alist)
@@ -636,6 +639,26 @@ Mostly stolen from [[https://web.archive.org/web/20250601133505/https://sophiebo
      org-insert-heading-respect-content t)
 
   (add-hook 'org-mode-hook 'visual-line-mode))
+#+end_src
+** Org Roam UI
+#+begin_src emacs-lisp
+(use-package org-roam-ui
+  :straight
+    (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
+    :after org-roam
+;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+;;         a hookable mode anymore, you're advised to pick something yourself
+;;         if you don't care about startup time, use
+;;  :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+#+end_src
+** Org Web Tools
+#+begin_src emacs-lisp
+(use-package org-web-tools)
 #+end_src
 * Configuration for built-in packages
 Since we're using use-package as our package management system, we
@@ -1153,14 +1176,15 @@ depending on the time of day.
 (use-package circadian
   :after (tokyonight-themes doom-themes)
   :config
-   (setq circadian-themes '((:sunrise . ef-light)
-                            (:sunset . ef-night)))
+  (setq circadian-themes '((:sunrise . ef-light)
+                           (:sunset . doom-one)))
+                           ;; (:sunset . ef-night)))
 
    ;; Ef theme handles this directly, this hook's needed for other
    ;; themes tho
-   (add-hook 'circadian-after-load-theme-hook #'(lambda (theme)
-                                                  (pyrho--set-faces)))
-   (circadian-setup))
+  (add-hook 'circadian-after-load-theme-hook #'(lambda (theme)
+                                                 (pyrho--set-faces)))
+  (circadian-setup))
 #+end_src
 **** Tokyonight Theme
 #+begin_src emacs-lisp
@@ -1289,7 +1313,13 @@ sequences (e.g. ~\n, \t~).
   :config
   (dashboard-setup-startup-hook)
   (setq dashboard-center-content t)
-  (setq dashboard-startup-banner "~/rc/emacs/splash.txt")
+  ;; (setq dashboard-startup-banner "~/rc/emacs/splash.txt")
+  (setq dashboard-startup-banner (cons
+                                  "~/rc/emacs/doom.svg"
+                                  "~/rc/emacs/splash.txt"))
+  (setq dashboard-image-banner-max-width 200)
+  (setq dashboard-image-banner-max-height 200)
+
   ;; vertically center content
   (setq dashboard-vertically-center-content t)
   (setq dashboard-items '((recents   . 5)
@@ -1396,9 +1426,9 @@ I find it buggy, and it doesn't integrate well to project.el
   ;; here things that would have to be escaped with SPC during the sequence.
   ;; For example here for ~C-x p~, without this you would have to do
   ;; SPC x SPC P
-  '("p" . "C-x p")
-  '("b" . "C-x C-b")
-  '("w" . "C-x w")
+  ;; '("p" . "C-x p")
+  ;; '("b" . "C-x C-b")
+  ;; '("w" . "C-x w")
   (cons "s" search-map))
 
 
@@ -1739,6 +1769,89 @@ Tell magit to automatically put us in vi-insert-mode when committing a change.
   ("C-x C-b" . consult-buffer)
 
   :config
+
+
+  ;; Add the source to consult-buffer-sources
+  (add-to-list 'consult-buffer-sources 'consult--source-org-files 'append))
+
+;; Example configuration for Consult
+(use-package consult
+  ;; Replace bindings. Lazily loaded by `use-package'.
+  :bind (;; C-c bindings in `mode-specific-map'
+         ("C-c M-x" . consult-mode-command)
+         ("C-c h" . consult-history)
+         ("C-c k" . consult-kmacro)
+         ("C-c m" . consult-man)
+         ("C-c i" . consult-info)
+         ([remap Info-search] . consult-info)
+         ;; C-x bindings in `ctl-x-map'
+         ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+         ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
+         ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+         ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+         ("C-x t b" . consult-buffer-other-tab)    ;; orig. switch-to-buffer-other-tab
+         ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
+         ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
+         ;; Custom M-# bindings for fast register access
+         ("M-#" . consult-register-load)
+         ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
+         ("C-M-#" . consult-register)
+         ;; Other custom bindings
+         ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+         ;; M-g bindings in `goto-map'
+         ("M-g e" . consult-compile-error)
+         ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
+         ("M-g g" . consult-goto-line)             ;; orig. goto-line
+         ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+         ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
+         ("M-g m" . consult-mark)
+         ("M-g k" . consult-global-mark)
+         ("M-g i" . consult-imenu)
+         ("M-g I" . consult-imenu-multi)
+         ;; M-s bindings in `search-map'
+         ("M-s d" . consult-find)                  ;; Alternative: consult-fd
+         ("M-s c" . consult-locate)
+         ("M-s g" . consult-grep)
+         ("M-s G" . consult-git-grep)
+         ("M-s r" . consult-ripgrep)
+         ("M-s l" . consult-line)
+         ("M-s L" . consult-line-multi)
+         ("M-s k" . consult-keep-lines)
+         ("M-s u" . consult-focus-lines)
+         ;; Isearch integration
+         ("M-s e" . consult-isearch-history)
+         :map isearch-mode-map
+         ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
+         ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
+         ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
+         ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
+         ;; Minibuffer history
+         :map minibuffer-local-map
+         ("M-s" . consult-history)                 ;; orig. next-matching-history-element
+         ("M-r" . consult-history))                ;; orig. previous-matching-history-element
+
+  ;; Enable automatic preview at point in the *Completions* buffer. This is
+  ;; relevant when you use the default completion UI.
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+
+  ;; The :init configuration is always executed (Not lazy)
+  :init
+
+  ;; Tweak the register preview for `consult-register-load',
+  ;; `consult-register-store' and the built-in commands.  This improves the
+  ;; register formatting, adds thin separator lines, register sorting and hides
+  ;; the window mode line.
+  (advice-add #'register-preview :override #'consult-register-window)
+  (setq register-preview-delay 0.5)
+
+  ;; Use Consult to select xref locations with preview
+  (setq xref-show-xrefs-function #'consult-xref
+        xref-show-definitions-function #'consult-xref)
+
+  ;; Configure other variables and modes in the :config section,
+  ;; after lazily loading the package.
+
+  :config
   ;; Define the custom source for org files
   (defvar consult--source-org-files
     `(:name "Org Files"
@@ -1756,19 +1869,30 @@ Tell magit to automatically put us in vi-insert-mode when committing a change.
                                           (directory-files-recursively "~/org/" "\\.org$")))))
     "Custom consult source for org files in ~/org directory.")
 
-  ;; Add the source to consult-buffer-sources
-  (add-to-list 'consult-buffer-sources 'consult--source-org-files 'append)
 
-  ;; Add to isearch history, press C-s C-s to continue search
-  ;; From https://github.com/minad/consult/issues/318#issuecomment-878810528
-  ;; Allows to continue `consult-line` searches after the fact
-  (advice-add #'consult-line :after
-              (lambda (&rest _)
-                (when consult--line-history
-                  (add-to-history
-                   'search-ring ;; or regexp-search-ring
-                   (car consult--line-history)
-                   search-ring-max))))) ;; or regexp-search-ring-max
+  ;; Optionally configure preview. The default value
+  ;; is 'any, such that any key triggers the preview.
+  ;; (setq consult-preview-key 'any)
+  ;; (setq consult-preview-key "M-.")
+  ;; (setq consult-preview-key '("S-<down>" "S-<up>"))
+  ;; For some commands and buffer sources it is useful to configure the
+  ;; :preview-key on a per-command basis using the `consult-customize' macro.
+  (consult-customize
+   consult-theme :preview-key '(:debounce 0.2 any)
+   consult-ripgrep consult-git-grep consult-grep consult-man
+   consult-bookmark consult-recent-file consult-xref
+   consult--source-bookmark consult--source-file-register
+   consult--source-recent-file consult--source-project-recent-file
+   ;; :preview-key "M-."
+   :preview-key '(:debounce 0.4 any))
+
+  ;; Optionally configure the narrowing key.
+  ;; Both < and C-+ work reasonably well.
+  (setq consult-narrow-key "<") ;; "C-+"
+
+  ;; Optionally make narrowing help available in the minibuffer.
+  ;; You may want to use `embark-prefix-help-command' or which-key instead.
+  (keymap-set consult-narrow-map (concat consult-narrow-key " ?") #'consult-narrow-help))
 #+end_src
 ** Programming language support and utilities
 *** Postgres
@@ -2025,59 +2149,51 @@ https://github.com/akermu/emacs-libvterm#given-that-eshell-shell-and-ansi-term-a
 
 ** Dirvish (Dired replacement)
 #+begin_src emacs-lisp
-  (use-package dired
-    :straight nil
-    :config
-    (setq dired-listing-switches
-          "-l --almost-all --human-readable --group-directories-first --no-group")
-    ;; this command is useful when you want to close the window of `dirvish-side'
-    ;; automatically when opening a file
-    (put 'dired-find-alternate-file 'disabled nil))
-
-  (use-package dirvish
-    :init
-    (dirvish-override-dired-mode)
-    :custom
-    (dirvish-quick-access-entries ; It's a custom option, `setq' won't work
-     '(("h" "~/"                          "Home")
-       ("d" "~/Downloads/"                "Downloads")
-       ("c" "~/code"                       "Code")
-       ("s" "/ssh:olympus.lan:/etc"      "SSH server")))
-    :config
-    ;(dirvish-peek-mode)             ; Preview files in minibuffer
-    (dirvish-side-follow-mode)      ; similar to `treemacs-follow-mode'
-    (setq dirvish-mode-line-format
-          '(:left (sort symlink) :right (omit yank index)))
-
-    (setq dirvish-attributes           ; The order *MATTERS* for some attributes
-          ;;'(vc-state subtree-state nerd-icons collapse git-msg file-time file-size)
-          '(vc-state subtree-state nerd-icons collapse)
-
-          dirvish-side-attributes
-          '(vc-state nerd-icons collapse file-size))
-
-    ;; open large directory (over 20000 files) asynchronously with `fd' command
-    (setq dirvish-large-directory-threshold 20000)
-    :bind ; Bind `dirvish-fd|dirvish-side|dirvish-dwim' as you see fit
-    (("C-c f" . dirvish)
-      :map dirvish-mode-map               ; Dirvish inherits `dired-mode-map'
-      ("h"   . dired-up-directory)        ; So you can adjust `dired' bindings here
-      ("?"   . dirvish-dispatch)          ; [?] a helpful cheatsheet
-      ("a"   . dirvish-setup-menu)        ; [a]ttributes settings:`t' toggles mtime, `f' toggles fullframe, etc.
-      ("f"   . dirvish-file-info-menu)    ; [f]ile info
-      ("o"   . dirvish-quick-access)      ; [o]pen `dirvish-quick-access-entries'
-      ("s"   . dirvish-quicksort)         ; [s]ort flie list
-      ("r"   . dirvish-history-jump)      ; [r]ecent visited
-      ("l"   . dirvish-ls-switches-menu)  ; [l]s command flags
-      ("v"   . dirvish-vc-menu)           ; [v]ersion control commands
-      ("*"   . dirvish-mark-menu)
-      ("y"   . dirvish-yank-menu)
-      ("N"   . dirvish-narrow)
-      ("^"   . dirvish-history-last)
-      ("TAB" . dirvish-subtree-toggle)
-      ("M-f" . dirvish-history-go-forward)
-      ("M-b" . dirvish-history-go-backward)
-      ("M-e" . dirvish-emerge-menu)))
+(use-package dirvish
+  :init
+  (dirvish-override-dired-mode)
+  :after nerd-icons
+  :custom
+  (dirvish-quick-access-entries
+   '(("h" "~/"                          "Home")
+     ("d" "~/.emacs.d/"                 "Emacs")
+     ("p" "~/projects"                  "Projects")
+     ("t" "~/.local/share/Trash/files/" "TrashCan")))
+  (dirvish-mode-line-format
+   '(:left (sort file-time " " file-size symlink) :right (omit yank index)))
+  ;; Don't worry, Dirvish is still performant even you enable all these attributes
+  (dirvish-attributes '(nerd-icons collapse subtree-state vc-state git-msg))
+  :config
+  (setq dired-dwim-target t)
+  (setq delete-by-moving-to-trash t)
+  ;; Enable mouse drag-and-drop files to other applications
+  (setq dired-mouse-drag-files t)                   ; added in Emacs 29
+  (setq mouse-drag-and-drop-region-cross-program t) ; added in Emacs 29
+  (setq dired-listing-switches
+        "-l --almost-all --human-readable --time-style=long-iso --group-directories-first --no-group")
+  :bind
+  ;; Bind `dirvish|dirvish-side|dirvish-dwim' as you see fit
+  (("C-c f" . dirvish-fd)
+   ;; Dirvish has all the keybindings in `dired-mode-map' already
+   :map dirvish-mode-map
+   ("a"   . dirvish-quick-access)
+   ("f"   . dirvish-file-info-menu)
+   ("y"   . dirvish-yank-menu)
+   ("N"   . dirvish-narrow)
+   ("^"   . dirvish-history-last)
+   ("H"   . dired-up-directory)
+   ("h"   . dirvish-history-jump) ; remapped `describe-mode'
+   ("s"   . dirvish-quicksort)    ; remapped `dired-sort-toggle-or-edit'
+   ("v"   . dirvish-vc-menu)      ; remapped `dired-view-file'
+   ("TAB" . dirvish-subtree-toggle)
+   ("M-f" . dirvish-history-go-forward)
+   ("M-b" . dirvish-history-go-backward)
+   ("M-l" . dirvish-ls-switches-menu)
+   ("M-m" . dirvish-mark-menu)
+   ("M-t" . dirvish-layout-toggle)
+   ("M-s" . dirvish-setup-menu)
+   ("M-e" . dirvish-emerge-menu)
+   ("M-j" . dirvish-fd-jump)))
 #+end_src
 ** 1password Auth Source
 This hooks into the ~auth-sources~ variable and makes the ~op~ CLI tool available
@@ -2145,6 +2261,10 @@ Provides us with hints on available keystroke combinations.
     :config (when (memq window-system '(mac ns x))
               (exec-path-from-shell-initialize)))
 #+END_SRC
+** PDF Tools
+#+begin_src emacs-lisp
+(use-package pdf-tools)
+#+end_src
 * Scripts
 ** Auto-update UPDATED_AT header
 This was causing an issue with org-roam! Because roam expects the first line to be the properties...

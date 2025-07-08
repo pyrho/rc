@@ -6,3 +6,6 @@ spell
 packer_compiled.vim
 Session.vim
 nvim/plugin
+emacs/config.el
+CLAUDE.md
+#*#

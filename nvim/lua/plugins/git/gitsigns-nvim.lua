@@ -33,6 +33,7 @@ return {
 			end, { expr = true })
 
 			map("n", "<leader>gp", gs.preview_hunk)
+			map("n", "<leader>gP", gs.preview_hunk_inline)
 			map("n", "<leader>gb", function()
 				gs.blame_line({ full = true })
 			end)

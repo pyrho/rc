@@ -669,7 +669,6 @@ return {
 			DefaultStatusline_left_old,
 			Align, -- xxx}
 			Obsession,
-			Space,
 			LSPActive,
 			Space,
 			FileType,

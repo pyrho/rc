@@ -64,7 +64,7 @@ alias grt='cd $(git rev-parse --show-toplevel || echo ".")'
 alias t='todo.sh'
 alias icat="kitty +kitten icat"
 alias ssk="kitty +kitten ssh"
-alias coffee="curl https://coffee.25.wf -T"
+alias coffee="curl https://bin.25.wf -T"
 function haste() {
     PASTE_ID=$(cat $1 | curl -X POST --data-binary @- https://paste.25-47.net/api/pastes/simple)
     echo "https://paste.25-47.net/$PASTE_ID"
@@ -104,5 +104,13 @@ function amGetMail() {
 }
 alias xcd='cd "$(xplr --print-pwd-as-result)"'
 
-alias kmp0='kitty @ set-spacing padding=5 margin=0'
-alias nv='kmp0 && nvim '
+alias dkc='docker compose'
+alias dkcu='docker compose up -d'
+alias dkcd='docker compose down'
+alias dkcb='docker compose build'
+function dkcdbu() {
+    docker compose down $1 && docker compose build $1 && docker compose up -d $1
+}
+function dkclogsjson() {
+    docker compose logs --no-log-prefix -f $1 | jq -R '. as $line | try (fromjson) catch $line'
+}

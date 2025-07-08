@@ -1,10 +1,11 @@
 return {
 	"MeanderingProgrammer/render-markdown.nvim",
-	event = "VeryLazy",
+	ft = { "markdown", "codecompanion" },
 	dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
 	config = function()
 		require("render-markdown").setup({
 			file_types = { "markdown" },
+			only_render_image_at_cursor = true,
 
 			-- Using nabla.nvim instead
 			latex = { enabled = false },

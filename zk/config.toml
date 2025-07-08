@@ -1,8 +1,8 @@
 # zk configuration file
 
 # NOTEBOOK SETTINGS
-[notebook]
-dir = "~/Sync/zettelkasten"
+#[notebook]
+#dir = "~/Sync/zettelkasten"
 
 # NOTE SETTINGS
 [note]
@@ -15,7 +15,7 @@ language = "en"
 #default-title = "Untitled"
 
 # Template used to generate a note's filename, without extension.
-filename = "{{id}}"
+filename = "{{id}}-{{slug title}}"
 
 # The file extension used for the notes.
 extension = "md"
@@ -93,7 +93,8 @@ author = "d"
 
 # Format used to generate links between notes.
 # Either "wiki", "markdown" or a custom template. Default is "markdown".
-link-format = "wiki"
+#link-format = "wiki"
+link-format = "[[{{metadata.id}}|{{title}}]]"
 # Indicates whether a link's path will be percent-encoded.
 # Defaults to true for "markdown" format and false for "wiki" format.
 #link-encode-path = true
@@ -115,7 +116,7 @@ multiword-tags = false
 
 # Default editor used to open notes. When not set, the EDITOR or VISUAL
 # environment variables are used.
-editor = "export NVIMZEN=1 && nvim"
+editor = "export NVIMZEN=1 && nvim +Goyo"
 
 # Pager used to scroll through long output. If you want to disable paging
 # altogether, set it to an empty string "".
@@ -184,7 +185,7 @@ recents = "--sort created- --created-after 'last two weeks'"
 #
 [alias]
 # Here are a few aliases to get you started.
-diary = 'zk new --no-input "$ZK_NOTEBOOK_DIR/diary"'
+diary = 'export NVIMZEN=1 && zk new --no-input "$ZK_NOTEBOOK_DIR/diary"'
 # Shortcut to a command.
 #ls = "zk list $@"
 
@@ -212,5 +213,6 @@ diary = 'zk new --no-input "$ZK_NOTEBOOK_DIR/diary"'
 #hist = "zk list --format path --delimiter0 --quiet $@ | xargs -t -0 git log --patch --"
 
 # Edit this configuration file.
-conf = '$EDITOR "$ZK_NOTEBOOK_DIR/.zk/config.toml"'
+conf = 'NVIMZEN=1 $EDITOR "$ZK_NOTEBOOK_DIR/.zk/config.toml"'
 ie = 'zk edit -x diary -x drafts -i'
+rm = 'zk list --interactive --quiet --format "{{abs-path}}" --delimiter0 $@ | xargs -0 rm -vf --'

@@ -82,7 +82,7 @@ return {
 				{ name = "nvim_lsp", priority = 2 },
 				{ name = "path", priority = 3 },
 				{ name = "conjure" },
-				{ name = "parrot" },
+				{ name = "codecompanion" },
 				-- {name = 'buffer', priority = 10}
 				-- { name = 'ultisnips' }, -- For ultisnips users.
 				-- { name = 'snippy' }, -- For snippy users.

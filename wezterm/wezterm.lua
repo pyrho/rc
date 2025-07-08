@@ -3,6 +3,9 @@ local config = wezterm.config_builder()
 local appearance = require("appearance")
 local projects = require("projects")
 
+config.enable_kitty_graphics = true
+config.max_fps = 120
+
 config.set_environment_variables = {
 	PATH = "/opt/homebrew/bin:" .. os.getenv("PATH"),
 }
@@ -15,7 +18,7 @@ config.show_close_tab_button_in_tabs = false
 config.tab_bar_at_bottom = false
 
 local resurrect = wezterm.plugin.require("https://github.com/MLFlexer/resurrect.wezterm")
-resurrect.periodic_save({ interval_seconds = 60 * 15, save_workspaces = true, save_windows = true, save_tabs = true })
+resurrect.state_manager.periodic_save()
 
 wezterm.on("window-config-reloaded", function(window, pane)
 	window:toast_notification("wezterm", "configuration reloaded!", nil, 4000)
@@ -73,13 +76,22 @@ else
 	}
 end
 
-config.font = wezterm.font_with_fallback({ "Iosevka Custom", "Apple Color Emoji", "Flog Symbols" })
+config.font = wezterm.font_with_fallback({ "IosevkaTerm NF", "Apple Color Emoji", "Flog Symbols" })
 config.font_rules = {
+	{ -- Italic
+		intensity = "Normal",
+		italic = true,
+		font = wezterm.font({
+			family = "IosevkaTerm Nerd Font Propo",
+			style = "Italic",
+			weight = "Light",
+		}),
+	},
 	{
 		intensity = "Bold",
 		italic = false,
 		font = wezterm.font({
-			family = "Iosevka Custom",
+			family = "IosevkaTerm Nerd Font",
 			weight = "ExtraBold",
 		}),
 	},
@@ -107,7 +119,7 @@ config.window_decorations = "RESIZE"
 -- config.window_decorations = "RESIZE|INTEGRATED_BUTTONS"
 config.integrated_title_button_style = "MacOsNative"
 -- Sets the font for the window frame (tab bar)
-config.window_frame.font = wezterm.font({ family = "Iosevka Custom", weight = "ExtraBold" })
+config.window_frame.font = wezterm.font({ family = "IosevkaTerm Nerd Font", weight = "ExtraBold" })
 config.window_frame.font_size = 15
 -- config.window_frame.border_top_height = "1cell"
 
@@ -244,7 +256,7 @@ end
 -- If you're using emacs you probably wanna choose a different leader here,
 -- since we're gonna be making it a bit harder to CTRL + A for jumping to
 -- the start of a line
-config.leader = { key = "a", mods = "CTRL", timeout_milliseconds = 1000 }
+config.leader = { key = "Space", mods = "CTRL", timeout_milliseconds = 1002 }
 
 -- Table mapping keypresses to actions
 config.keys = {
@@ -299,7 +311,7 @@ config.keys = {
 	-- 		patterns = {
 	-- 			"\\S[a-zA-Z0-9/.-]+\\S",
 	-- 		},
-	-- 	}),
+	-- 	}),"SUPER"path"
 	-- },
 	{
 		key = "p",
@@ -332,6 +344,7 @@ config.keys = {
 	{
 		key = "E",
 		mods = "CTRL|SHIFT",
+		description = "lol",
 		action = wezterm.action.PromptInputLine({
 			description = "Enter new name for tab",
 			action = wezterm.action_callback(function(window, pane, line)
@@ -345,30 +358,36 @@ config.keys = {
 		}),
 	},
 
+     {
+      key = 'Enter',
+      mods = 'ALT',
+      action = wezterm.action.DisableDefaultAssignment,
+    }, -- See also disable_default_key_bindings = true,
+
 	{ key = "s", mods = "LEADER", action = wezterm.action.PaneSelect({
 		alphabet = "arstneoi",
 	}) },
 
 	-- Sends ESC + b and ESC + f sequence, which is used
 	-- for telling your shell to jump back/forward.
-	{
-		-- When the left arrow is pressed
-		key = "LeftArrow",
-		-- With the "Option" key modifier held down
-		mods = "OPT",
-		-- Perform this action, in this case - sending ESC + B
-		-- to the terminal
-		action = wezterm.action.SendString("\x1bb"),
-	},
+	-- {
+	-- 	-- When the left arrow is pressed
+	-- 	key = "LeftArrow",
+	-- 	-- With the "Option" key modifier held down
+	-- 	mods = "OPT",
+	-- 	-- Perform this action, in this case - sending ESC + B
+	-- 	-- to the terminal
+	-- 	action = wezterm.action.SendString("\x1bb"),
+	-- },
+	-- {
+	-- 	key = "RightArrow",
+	-- 	mods = "OPT",
+	-- 	action = wezterm.action.SendString("\x1bf"),
+	-- },
 	{
 		key = "m",
 		mods = "LEADER",
 		action = wezterm.action.TogglePaneZoomState,
-	},
-	{
-		key = "RightArrow",
-		mods = "OPT",
-		action = wezterm.action.SendString("\x1bf"),
 	},
 
 	{
@@ -409,6 +428,44 @@ config.keys = {
 		-- Actually send CTRL + A key to the terminal
 		action = wezterm.action.SendKey({ key = "a", mods = "CTRL" }),
 	},
+
+	-- Zellij-esque {{{
+	-- {
+	-- 	key = "h",
+	-- 	-- When we're in leader mode _and_ CTRL + A is pressed...
+	-- 	mods = "ALT",
+	-- 	-- Actually send CTRL + A key to the terminal
+	-- 	action = wezterm.action.ActivatePaneDirection("Left"),
+	-- },
+	-- {
+	-- 	key = "j",
+	-- 	-- When we're in leader mode _and_ CTRL + A is pressed...
+	-- 	mods = "ALT",
+	-- 	-- Actually send CTRL + A key to the terminal
+	-- 	action = wezterm.action.ActivatePaneDirection("Down"),
+	-- },
+	-- {
+	-- 	key = "k",
+	-- 	-- When we're in leader mode _and_ CTRL + A is pressed...
+	-- 	mods = "ALT",
+	-- 	-- Actually send CTRL + A key to the terminal
+	-- 	action = wezterm.action.ActivatePaneDirection("Up"),
+	-- },
+	--    {
+	-- 	key = "l",
+	-- 	-- When we're in leader mode _and_ CTRL + A is pressed...
+	-- 	mods = "ALT",
+	-- 	-- Actually send CTRL + A key to the terminal
+	-- 	action = wezterm.action.ActivatePaneDirection("Right"),
+	-- },
+	--    {
+	-- 	key = "f",
+	-- 	-- When we're in leader mode _and_ CTRL + A is pressed...
+	-- 	mods = "ALT",
+	-- 	-- Actually send CTRL + A key to the terminal
+	-- 	action = wezterm.action.TogglePaneZoomState,
+	-- },
+	-- }}}
 
 	move_pane("j", "Down"),
 	move_pane("k", "Up"),

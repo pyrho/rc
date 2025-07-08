@@ -1,6 +1,6 @@
 return {
 	"github/copilot.vim",
-	event = "VeryLazy",
+	ft = { "typescript" },
 	config = function()
 		vim.keymap.set("i", "<C-J>", 'copilot#Accept("\\<CR>")', {
 			expr = true,
