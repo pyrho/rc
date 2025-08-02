@@ -114,3 +114,32 @@ function dkcdbu() {
 function dkclogsjson() {
     docker compose logs --no-log-prefix -f $1 | jq -R '. as $line | try (fromjson) catch $line'
 }
+
+function testmepls() {
+    echo ${1-hi}
+}
+
+function create_frqs_worktree() {
+  echo "Setting up worktree $1..."
+  echo "Checkout"
+  git checkout main
+  echo "Pull"
+  git pull
+  echo "Add worktree"
+  git worktree add -b ${2-feat}/$1 ../$1
+  echo "Copy files"
+  cp ./reel-42-4a13a716d19f.json ../$1
+  cp ./rest-api/.env ../$1/rest-api/.env
+  cp ./auth-api/.env ../$1/auth-api/.env
+  cp ./rest-api/CLAUDE.md ../$1/rest-api/CLAUDE.md
+  echo "Setup env"
+  cd ../$1 && ./setup-env.sh
+  echo "Pull deps"
+  task dev:pull-deps
+  echo "Migrate"
+  task migrate:up
+  echo "Apply Hasura metadata"
+  task hasura:metadata:apply
+  echo "Done!"
+}
+

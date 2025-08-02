@@ -78,7 +78,8 @@ return {
 				-- { name = 'luasnip' }, -- For luasnip users.
 				{ name = "vsnip", priority = 1 }, -- For vsnip users.
 				-- NOTE: Disabling this because it's annoying
-				-- {name = 'nvim_lsp_signature_help', priority = 2},
+				-- NOTE: 2025-07-10 Trying again
+				{ name = "nvim_lsp_signature_help", priority = 2 },
 				{ name = "nvim_lsp", priority = 2 },
 				{ name = "path", priority = 3 },
 				{ name = "conjure" },
@@ -108,6 +109,7 @@ return {
 	end,
 	dependencies = {
 		"hrsh7th/cmp-nvim-lsp",
+		"hrsh7th/cmp-nvim-lsp-signature-help",
 		"hrsh7th/cmp-buffer",
 		"hrsh7th/cmp-path",
 		"hrsh7th/cmp-cmdline",

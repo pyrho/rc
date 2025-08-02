@@ -2,6 +2,9 @@ return {
 	"coder/claudecode.nvim",
 	dependencies = { "folke/snacks.nvim" },
 	config = true,
+    -- 2025-07-24 Great but a bit cumbersome, UX needs polishing going
+    -- to stick with the regular claude code for now
+    enabled = false,
 	keys = {
 		{ "<leader>a", nil, desc = "AI/Claude Code" },
 		{ "<leader>ac", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },

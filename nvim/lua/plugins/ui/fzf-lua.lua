@@ -30,6 +30,7 @@ return {
 		{ "<LEADER>s", "<CMD>FzfLua live_grep<CR>", desc = "Live grep" },
 		{ "<LEADER>S", "<CMD>FzfLua grep_cword<CR>", desc = "Grep current word" },
 		{ "<LEADER>b", "<CMD>FzfLua buffers<CR>", desc = "Buffer fuzzy finder" },
+		{ "<LEADER>B", "<CMD>FzfLua blines<CR>", desc = "Lines fuzzy finder" },
 		{ "gS", "<CMD>FzfLua lsp_live_workspace_symbols<CR>", desc = "Find workspace symbols" },
 		{ "g0", "<CMD>FzfLua lsp_document_symbols<CR>", desc = "Find current document symbols" },
 		{
