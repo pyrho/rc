@@ -24,6 +24,7 @@ function dnpm(){
 
 # Git {{{
 alias ga='git add'
+alias gccsh='git log -1 --format="%h" | pbcopy'
 alias gb='git branch'
 alias gc='git commit -v'
 alias gc!='git commit -v --amend'
@@ -72,10 +73,6 @@ function haste() {
 function obsess() {
     #kitty @ set-tab-title $@
     cd $(zoxide query "$@") && nvim -S Session.vim
-}
-function createfwd() {
-    gandi forward create -d ${MAIL_EMAIL} $@@${MAIL_FWD_DOMAIN}
-    echo $@@${MAIL_FWD_DOMAIN} | pbcopy
 }
 
 function klogs() {
@@ -129,9 +126,10 @@ function create_frqs_worktree() {
   git worktree add -b ${2-feat}/$1 ../$1
   echo "Copy files"
   cp ./reel-42-4a13a716d19f.json ../$1
+  cp ./postgrestools.jsonc ../$1
   cp ./rest-api/.env ../$1/rest-api/.env
   cp ./auth-api/.env ../$1/auth-api/.env
-  cp ./rest-api/CLAUDE.md ../$1/rest-api/CLAUDE.md
+  cp ./rest-api/*.md ../$1/rest-api/.
   echo "Setup env"
   cd ../$1 && ./setup-env.sh
   echo "Pull deps"

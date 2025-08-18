@@ -33,6 +33,8 @@ return {
         vim.keymap.set('n', ']n', '<cmd>AerialNext<CR>', {buffer = bufnr})
         vim.keymap.set('n', '<leader>n', '<cmd>AerialNavToggle<CR>',
                        {buffer = bufnr})
+        vim.keymap.set('n', '<leader>N', '<cmd>AerialToggle<CR>',
+                       {buffer = bufnr})
       end
     })
   end,
