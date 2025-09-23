@@ -2,13 +2,20 @@ local wezterm = require("wezterm")
 local config = wezterm.config_builder()
 local appearance = require("appearance")
 local projects = require("projects")
+local smart_splits = wezterm.plugin.require("https://github.com/mrjones2014/smart-splits.nvim")
 
 config.enable_kitty_graphics = true
-config.max_fps = 120
+config.max_fps = 80
 
 config.set_environment_variables = {
 	PATH = "/opt/homebrew/bin:" .. os.getenv("PATH"),
 }
+
+-- Smart splits
+local wezterm = require("wezterm")
+local smart_splits = wezterm.plugin.require("https://github.com/mrjones2014/smart-splits.nvim")
+local config = wezterm.config_builder()
+-- you can put the rest of your Wezterm config here
 
 config.show_new_tab_button_in_tab_bar = false
 config.show_close_tab_button_in_tabs = false
@@ -256,10 +263,11 @@ end
 -- If you're using emacs you probably wanna choose a different leader here,
 -- since we're gonna be making it a bit harder to CTRL + A for jumping to
 -- the start of a line
-config.leader = { key = "Space", mods = "CTRL", timeout_milliseconds = 1002 }
+config.leader = { key = "a", mods = "CTRL", timeout_milliseconds = 1000 }
 
 -- Table mapping keypresses to actions
 config.keys = {
+	{ key = "Enter", mods = "SHIFT", action = wezterm.action({ SendString = "\x1b\r" }) },
 	{
 		key = "0",
 		mods = "CTRL",
@@ -358,11 +366,11 @@ config.keys = {
 		}),
 	},
 
-     {
-      key = 'Enter',
-      mods = 'ALT',
-      action = wezterm.action.DisableDefaultAssignment,
-    }, -- See also disable_default_key_bindings = true,
+	{
+		key = "Enter",
+		mods = "ALT",
+		action = wezterm.action.DisableDefaultAssignment,
+	}, -- See also disable_default_key_bindings = true,
 
 	{ key = "s", mods = "LEADER", action = wezterm.action.PaneSelect({
 		alphabet = "arstneoi",
@@ -402,11 +410,12 @@ config.keys = {
 	{
 		-- I'm used to tmux bindings, so am using the quotes (") key to
 		-- split horizontally, and the percent (%) key to split vertically.
-		key = '"',
+		key = "'",
 		-- Note that instead of a key modifier mapped to a key on your keyboard
 		-- like CTRL or ALT, we can use the LEADER modifier instead.
 		-- This means that this binding will be invoked when you press the leader
 		-- (CTRL + A), quickly followed by quotes (").
+		--
 		mods = "LEADER",
 		action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }),
 	},
@@ -416,7 +425,7 @@ config.keys = {
 		action = wezterm.action.CloseCurrentPane({ confirm = true }),
 	},
 	{
-		key = "%",
+		key = "-",
 		mods = "LEADER",
 		action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }),
 	},
@@ -467,10 +476,10 @@ config.keys = {
 	-- },
 	-- }}}
 
-	move_pane("j", "Down"),
-	move_pane("k", "Up"),
-	move_pane("h", "Left"),
-	move_pane("l", "Right"),
+	-- move_pane("j", "Down"),
+	-- move_pane("k", "Up"),
+	-- move_pane("h", "Left"),
+	-- move_pane("l", "Right"),
 
 	{
 		-- When we push LEADER + R...
@@ -639,5 +648,23 @@ wezterm.on("user-var-changed", function(window, pane, name, value)
 	end
 	window:set_config_overrides(overrides)
 end)
+
+smart_splits.apply_to_config(config, {
+	-- the default config is here, if you'd like to use the default keys,
+	-- you can omit this configuration table parameter and just use
+	-- smart_splits.apply_to_config(config)
+
+	-- directional keys to use in order of: left, down, up, right
+	direction_keys = { "h", "j", "k", "l" },
+	-- if you want to use separate direction keys for move vs. resize, you
+	-- can also do this:
+	-- modifier keys to combine with direction_keys
+	modifiers = {
+		move = "CTRL", -- modifier to use for pane movement, e.g. CTRL+h to move left
+		resize = "META", -- modifier to use for pane resize, e.g. META+h to resize to the left
+	},
+	-- log level to use: info, warn, error
+	log_level = "info",
+})
 
 return config
