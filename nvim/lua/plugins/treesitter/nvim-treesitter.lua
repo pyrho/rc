@@ -32,7 +32,7 @@ return {
 				"markdown_inline",
 				"markdown",
 			},
-			refactor = { highlight_current_scope = { enable = true } },
+			refactor = { highlight_current_scope = { enable = false } },
 			textobjects = {
 				move = {
 					enable = true,

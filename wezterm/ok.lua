@@ -1,27 +1,8 @@
-local wezterm = require("wezterm")
-local config = wezterm.config_builder()
+local wezterm = require 'wezterm'
+local config = {}
 local appearance = require("appearance")
 local projects = require("projects")
-
-config.set_environment_variables = {
-	PATH = "/opt/homebrew/bin:" .. os.getenv("PATH"),
-}
-
--- Smart splits
-local wezterm = require("wezterm")
 local smart_splits = wezterm.plugin.require("https://github.com/mrjones2014/smart-splits.nvim")
-local config = wezterm.config_builder()
--- you can put the rest of your Wezterm config here
-
-config.show_new_tab_button_in_tab_bar = false
-config.show_close_tab_button_in_tabs = false
-
--- 2024-11-07 This causes a bug where the focus is going haywire
--- config.pane_focus_follows_mouse = true
-config.tab_bar_at_bottom = false
-
-local resurrect = wezterm.plugin.require("https://github.com/MLFlexer/resurrect.wezterm")
-resurrect.state_manager.periodic_save()
 
 wezterm.on("window-config-reloaded", function(window, pane)
 	window:toast_notification("wezterm", "configuration reloaded!", nil, 4000)
@@ -79,6 +60,8 @@ else
 	}
 end
 
+config.font_size                     = 16
+config.font                          = wezterm.font('JetBrains Mono', { weight = 'Bold', italic = true })
 config.font = wezterm.font_with_fallback({ "IosevkaTerm NF", "Apple Color Emoji", "Flog Symbols" })
 config.font_rules = {
 	{ -- Italic
@@ -100,8 +83,12 @@ config.font_rules = {
 	},
 }
 config.font_size = 18
-config.hide_tab_bar_if_only_one_tab = true
-
+config.hide_tab_bar_if_only_one_tab  = true
+config.hide_mouse_cursor_when_typing = true
+config.default_cursor_style          = 'SteadyBlock'
+config.window_decorations            = "RESIZE"
+config.window_background_opacity     = 1
+config.macos_window_background_blur  = 0
 config.window_padding = {
 	left = "3cell",
 	right = "3cell",
@@ -109,153 +96,8 @@ config.window_padding = {
 	bottom = "2cell",
 }
 
--- Slightly transparent and blurred background
---config.window_background_opacity = 0.9
---config.macos_window_background_blur = 30
-
--- Removes the title bar, leaving only the tab bar. Keeps
--- the ability to resize by dragging the window's edges.
--- On macOS, 'RESIZE|INTEGRATED_BUTTONS' also looks nice if
--- you want to keep the window controls visible and integrate
--- them into the tab bar.
-config.window_decorations = "RESIZE"
--- config.window_decorations = "RESIZE|INTEGRATED_BUTTONS"
-config.integrated_title_button_style = "MacOsNative"
--- Sets the font for the window frame (tab bar)
-config.window_frame.font = wezterm.font({ family = "IosevkaTerm Nerd Font", weight = "ExtraBold" })
-config.window_frame.font_size = 15
--- config.window_frame.border_top_height = "1cell"
-
-local function does_tab_have_zoomed_pane(_, pane)
-	local our_tab = pane:tab()
-	local is_zoomed = false
-	if our_tab ~= nil then
-		for _, pane_attributes in pairs(our_tab:panes_with_info()) do
-			is_zoomed = pane_attributes["is_zoomed"] or is_zoomed
-		end
-	end
-	return is_zoomed
-end
-
-local function segments_for_right_status(window, pane)
-	local bat = ""
-	for _, b in ipairs(wezterm.battery_info()) do
-		local icon = b.state_of_charge >= 0.7 and wezterm.nerdfonts.md_battery_high
-			or (b.state_of_charge >= 0.3 and wezterm.nerdfonts.md_battery_medium or wezterm.nerdfonts.md_battery_low)
-		bat = icon .. string.format("%.0f%%", b.state_of_charge * 100)
-	end
-
-	local segments = {}
-	if does_tab_have_zoomed_pane(window, pane) then
-		table.insert(segments, wezterm.nerdfonts.md_magnify_scan)
-	end
-	table.insert(segments, bat)
-	table.insert(segments, window:active_workspace())
-	table.insert(segments, wezterm.strftime("%a %b %-d %H:%M"))
-	table.insert(segments, wezterm.hostname())
-
-	return segments
-end
-
-wezterm.on("update-status", function(window, pane)
-	local elements = {}
-	local segments = {}
-	if does_tab_have_zoomed_pane(window, pane) then
-		table.insert(segments, wezterm.nerdfonts.md_magnify_scan)
-	end
-	local color_scheme = window:effective_config().resolved_palette
-	-- local bg = wezterm.color.parse(color_scheme.background)
-	local fg = color_scheme.foreground
-
-	for i, seg in ipairs(segments) do
-		local is_first = i == 1
-
-		if is_first then
-			table.insert(elements, { Background = { Color = "none" } })
-		end
-		-- table.insert(elements, { Foreground = { Color = gradient[i] } })
-		-- table.insert(elements, { Text = SOLID_LEFT_ARROW })
-
-		table.insert(elements, { Foreground = { Color = fg } })
-		-- table.insert(elements, { Background = { Color = gradient[i] } })
-		table.insert(elements, { Text = " " .. seg .. " " })
-	end
-
-	window:set_right_status(wezterm.format(elements))
-end)
---[=====[ 
-wezterm.on("update-status", function(window, pane)
-	local SOLID_LEFT_ARROW = wezterm.nerdfonts.pl_right_hard_divider
-	local segments = segments_for_right_status(window, pane)
-
-	local color_scheme = window:effective_config().resolved_palette
-	-- Note the use of wezterm.color.parse here, this returns
-	-- a Color object, which comes with functionality for lightening
-	-- or darkening the colour (amongst other things).
-	local bg = wezterm.color.parse(color_scheme.background)
-	local fg = color_scheme.foreground
-
-	-- Each powerline segment is going to be coloured progressively
-	-- darker/lighter depending on whether we're on a dark/light colour
-	-- scheme. Let's establish the "from" and "to" bounds of our gradient.
-	local gradient_to, gradient_from = bg, bg
-	if appearance.is_dark() then
-		gradient_from = gradient_to:lighten(0.2)
-	else
-		gradient_from = gradient_to:darken(0.2)
-	end
-
-	-- Yes, WezTerm supports creating gradients, because why not?! Although
-	-- they'd usually be used for setting high fidelity gradients on your terminal's
-	-- background, we'll use them here to give us a sample of the powerline segment
-	-- colours we need.
-	local gradient = wezterm.color.gradient(
-		{
-			orientation = "Horizontal",
-			colors = { gradient_from, gradient_to },
-		},
-		#segments -- only gives us as many colours as we have segments.
-	)
-
-	-- We'll build up the elements to send to wezterm.format in this table.
-	local elements = {}
-
-	for i, seg in ipairs(segments) do
-		local is_first = i == 1
-
-		if is_first then
-			table.insert(elements, { Background = { Color = "none" } })
-		end
-		table.insert(elements, { Foreground = { Color = gradient[i] } })
-		table.insert(elements, { Text = SOLID_LEFT_ARROW })
-
-		table.insert(elements, { Foreground = { Color = fg } })
-		table.insert(elements, { Background = { Color = gradient[i] } })
-		table.insert(elements, { Text = " " .. seg .. " " })
-	end
-
-	window:set_right_status(wezterm.format(elements))
-end)
---]=====]
-
-local function move_pane(key, direction)
-	return {
-		key = key,
-		mods = "LEADER",
-		action = wezterm.action.ActivatePaneDirection(direction),
-		one_shot = false,
-		-- Deactivate the keytable after a timeout.
-		timeout_milliseconds = 1000,
-	}
-end
-
-local function resize_pane(key, direction)
-	return {
-		key = key,
-		action = wezterm.action.AdjustPaneSize({ direction, 3 }),
-	}
-end
-
+config.show_new_tab_button_in_tab_bar = false
+config.show_close_tab_button_in_tabs = false
 -- If you're using emacs you probably wanna choose a different leader here,
 -- since we're gonna be making it a bit harder to CTRL + A for jumping to
 -- the start of a line
@@ -528,123 +370,6 @@ config.keys = {
 	},
 }
 
-config.key_tables = {
-	resize_panes = {
-		resize_pane("j", "Down"),
-		resize_pane("k", "Up"),
-		resize_pane("h", "Left"),
-		resize_pane("l", "Right"),
-	},
-}
-
-config.skip_close_confirmation_for_processes_named = {
-	"bash",
-	"sh",
-	"zsh",
-	"fish",
-	"tmux",
-	"nu",
-	"cmd.exe",
-	"sqlite3",
-	"pwsh.exe",
-	"powershell.exe",
-}
-
---The filled in variant of the < symbol
-local LEFT_HALF_CIRCLE = wezterm.nerdfonts.ple_left_half_circle_thick
-
--- The filled in variant of the > symbol
-local RIGHT_HALF_CIRCLE = wezterm.nerdfonts.ple_right_half_circle_thick
-
--- This function returns the suggested title for a tab.
--- It prefers the title that was set via `tab:set_title()`
--- or `wezterm cli set-tab-title`, but falls back to the
--- title of the active pane in that tab.
-local function tab_title(tab_info)
-	local title = tab_info.tab_title
-	-- if the tab title is explicitly set, take that
-	if title and #title > 0 then
-		return tab_info.tab_index + 1 .. ":" .. title
-	end
-	-- Otherwise, use the title from the active pane
-	-- in that tab
-	return tab_info.tab_index + 1 .. ":" .. tab_info.active_pane.title
-end
-
-wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
-	local is_dark = appearance.is_dark()
-	local edge_background = is_dark and "#222436" or "#e1e2e7"
-	local background = is_dark and "#2f334d" or "#c4c8da"
-	local foreground = is_dark and "#828bb8" or "#6172b0"
-
-	if tab.is_active then
-		background = is_dark and "#2f334d" or "#b7c1e3"
-		foreground = is_dark and "#c8d3f5" or "#828bb8"
-	elseif hover then
-		background = is_dark and "#2f334d" or "#b7c1e3"
-		foreground = is_dark and "#c8d3f5" or "#828bb8"
-	end
-
-	local edge_foreground = background
-
-	local title = tab_title(tab)
-
-	-- ensure that the titles fit in the available space,
-	-- and that we have room for the edges.
-	title = wezterm.truncate_right(title, max_width - 2)
-
-	-- Padding
-	if tab.tab_index == 0 then
-		return {
-			{ Background = { Color = edge_background } },
-			{ Foreground = { Color = edge_foreground } },
-			{ Text = " " },
-			{ Text = LEFT_HALF_CIRCLE },
-			{ Background = { Color = background } },
-			{ Foreground = { Color = foreground } },
-			{ Text = title },
-			{ Background = { Color = edge_background } },
-			{ Foreground = { Color = edge_foreground } },
-			{ Text = RIGHT_HALF_CIRCLE },
-		}
-	else
-		return {
-			{ Background = { Color = edge_background } },
-			{ Foreground = { Color = edge_foreground } },
-			{ Text = LEFT_HALF_CIRCLE },
-			{ Background = { Color = background } },
-			{ Foreground = { Color = foreground } },
-			{ Text = title },
-			{ Background = { Color = edge_background } },
-			{ Foreground = { Color = edge_foreground } },
-			{ Text = RIGHT_HALF_CIRCLE },
-		}
-	end
-end)
-
-wezterm.on("user-var-changed", function(window, pane, name, value)
-	local overrides = window:get_config_overrides() or {}
-	if name == "ZEN_MODE" then
-		local incremental = value:find("+")
-		local number_value = tonumber(value)
-		if incremental ~= nil then
-			while number_value > 0 do
-				window:perform_action(wezterm.action.IncreaseFontSize, pane)
-				number_value = number_value - 1
-			end
-			overrides.enable_tab_bar = false
-		elseif number_value < 0 then
-			window:perform_action(wezterm.action.ResetFontSize, pane)
-			overrides.font_size = nil
-			overrides.enable_tab_bar = true
-		else
-			overrides.font_size = number_value
-			overrides.enable_tab_bar = false
-		end
-	end
-	window:set_config_overrides(overrides)
-end)
-
 smart_splits.apply_to_config(config, {
 	-- the default config is here, if you'd like to use the default keys,
 	-- you can omit this configuration table parameter and just use
@@ -660,21 +385,6 @@ smart_splits.apply_to_config(config, {
 		resize = "META", -- modifier to use for pane resize, e.g. META+h to resize to the left
 	},
 	-- log level to use: info, warn, error
-	log_level = "error",
+	log_level = "info",
 })
-
-config.enable_kitty_graphics = true
-config.max_fps = 120
-
--- 0.99 is crucial,
--- For some reason, 1 (the default) leads to 100% GPU usage.
--- As of 2025-09-23 there are no reports of this on github.
-config.window_background_opacity     = 0.9
-config.macos_window_background_blur  = 40
-
-config.inactive_pane_hsb = {
-  saturation = 0.9,
-  brightness = 0.8,
-}
-
 return config

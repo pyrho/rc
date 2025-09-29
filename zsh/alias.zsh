@@ -113,25 +113,28 @@ function dkclogsjson() {
 }
 
 function testmepls() {
-    echo ${1-hi}
+  new_name=${1//\//_}
+  echo $new_name
 }
 
 function create_frqs_worktree() {
-  echo "Setting up worktree $1..."
+  new_name=${1//\//_}
+  echo "Setting up worktree $new_name..."
   echo "Checkout"
   git checkout main
   echo "Pull"
   git pull
   echo "Add worktree"
-  git worktree add -b ${2-feat}/$1 ../$1
+  git worktree add -b $1 ../$new_name
   echo "Copy files"
-  cp ./reel-42-4a13a716d19f.json ../$1
-  cp ./postgrestools.jsonc ../$1
-  cp ./rest-api/.env ../$1/rest-api/.env
-  cp ./auth-api/.env ../$1/auth-api/.env
-  cp ./rest-api/*.md ../$1/rest-api/.
+  cp ./reel-42-4a13a716d19f.json ../$new_name
+  cp ./postgrestools.jsonc ../$new_name
+  cp ./rest-api/.env ../$new_name/rest-api/.env
+  cp ./auth-api/.env ../$new_name/auth-api/.env
+  cp ./rest-api/*.md ../$new_name/rest-api/.
+  cp -r ./rest-api/.vscode ../$new_name/rest-api/.
   echo "Setup env"
-  cd ../$1 && ./setup-env.sh
+  cd ../$new_name && ./setup-env.sh
   echo "Pull deps"
   task dev:pull-deps
   echo "Migrate"

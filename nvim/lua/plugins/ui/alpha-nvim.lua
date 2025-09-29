@@ -1,5 +1,7 @@
 return {
 	"goolord/alpha-nvim",
+    -- using nothing instead
+    enabled = false,
 	event = "VimEnter",
 	dependencies = {
 		"nvim-tree/nvim-web-devicons",

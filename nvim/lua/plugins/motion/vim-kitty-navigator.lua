@@ -1,5 +1,7 @@
 return {
 	"knubie/vim-kitty-navigator",
+    -- using wezterm now
+    enabled = false,
 	version = "*",
 	event = "VeryLazy",
 	config = function()

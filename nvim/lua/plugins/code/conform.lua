@@ -7,7 +7,7 @@ return {
 			formatters = {
 				prettier = {
 					command = require("conform.util").from_node_modules("prettier"),
-					cwd = require("conform.util").root_file({ ".editorconfig", "package.json" }),
+					cwd = require("conform.util").root_file({ "package.json", ".editorconfig" }),
 				},
 			},
 			formatters_by_ft = {
@@ -26,7 +26,7 @@ return {
 				-- javascript = { { "prettierd", "prettier" } },
 				-- typescript = { { "prettierd", "prettier" } },
 				typescriptreact = { "prettier", stop_after_first = true },
-				sql = { "sql_formatter" },
+				sql = { "sqlfmt" },
 				json = { "fixjson" },
 			},
 		})

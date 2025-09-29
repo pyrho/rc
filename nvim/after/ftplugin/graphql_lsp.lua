@@ -1,2 +1,1 @@
 vim.lsp.enable("graphql")
-

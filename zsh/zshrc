@@ -59,6 +59,6 @@ if [ -e /home/pyrho/.nix-profile/etc/profile.d/nix.sh ]; then . /home/pyrho/.nix
 
 # initialize plugins statically with ${ZDOTDIR:-~}/.zsh_plugins.txt
 antidote load
-export PATH="/opt/homebrew/opt/postgresql@17/bin:$PATH"
+export PATH="$VOLTA_HOME/bin:/opt/homebrew/opt/postgresql@17/bin:$PATH"
 
 source /Users/pyrho/.config/broot/launcher/bash/br

@@ -1,5 +1,5 @@
 module.exports = {
-  defaultBrowser: "Arc",
+  defaultBrowser: "Firefox",
   options: {
     // Hide the finicky icon from the top bar. Default: false
     hideIcon: false,

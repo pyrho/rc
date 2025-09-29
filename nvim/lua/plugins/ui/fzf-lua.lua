@@ -1,6 +1,14 @@
 return {
 	"ibhagwan/fzf-lua",
-	dependencies = { "nvim-tree/nvim-web-devicons" },
+	dependencies = {
+		"nvim-tree/nvim-web-devicons",
+		{
+			"elanmed/fzf-lua-frecency.nvim",
+			config = function()
+				require("fzf-lua-frecency").setup()
+			end,
+		},
+	},
 	event = "VeryLazy",
 	config = function()
 		require("fzf-lua").setup({
@@ -10,23 +18,33 @@ return {
 					layout = "vertical",
 				},
 			},
-			-- treesitter = { enable = true, disable = {} },
+			treesitter = { enable = true, disable = {} },
 		})
-		-- require("fzf-lua").register_ui_select()
-		require("fzf-lua").register_ui_select(function(ui_opts, _)
+
+		require("fzf-lua").register_ui_select(function(ui_opts, items)
+			local min_h, max_h = 0.15, 0.70
+			local h = (#items + 4) / vim.o.lines
+			if h < min_h then
+				h = min_h
+			elseif h > max_h then
+				h = max_h
+			end
 			return {
 				prompt = "❯ ",
 				winopts = {
+					height = h,
 					title = ui_opts.prompt:gsub(":%s*$", ""),
 					title_pos = "center",
-					height = 0.33,
-					width = 0.5,
+					width = 0.60,
+					row = 0.40,
 				},
 			}
 		end)
+
 	end,
 	keys = {
-		{ "<LEADER>o", "<CMD>FzfLua files<CR>", desc = "File fuzzy finder" },
+		{ "<LEADER>O", "<CMD>FzfLua global<CR>", desc = "Everything fuzzy finder" },
+		{ "<LEADER>o", "<CMD>FzfLua frecency cwd_only=true<CR>", desc = "File fuzzy finder" },
 		{ "<LEADER>s", "<CMD>FzfLua live_grep<CR>", desc = "Live grep" },
 		{ "<LEADER>S", "<CMD>FzfLua grep_cword<CR>", desc = "Grep current word" },
 		{ "<LEADER>b", "<CMD>FzfLua buffers<CR>", desc = "Buffer fuzzy finder" },

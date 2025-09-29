@@ -1,1 +1,2 @@
-vim.lsp.enable("postgres_lsp")
+-- It's trash
+--vim.lsp.enable("postgres_lsp")

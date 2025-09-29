@@ -2,17 +2,17 @@ local M = {}
 
 function M.init()
 	-- Movement
-	vim.api.nvim_set_keymap("n", "<Leader>h", ":wincmd h<CR>", { noremap = true, silent = true })
-	vim.api.nvim_set_keymap("n", "<Leader>j", ":wincmd j<CR>", { noremap = true, silent = true })
-	vim.api.nvim_set_keymap("n", "<Leader>k", ":wincmd k<CR>", { noremap = true, silent = true })
-	vim.api.nvim_set_keymap("n", "<Leader>l", ":wincmd l<CR>", { noremap = true, silent = true })
+	-- vim.api.nvim_set_keymap("n", "<Leader>h", ":wincmd h<CR>", { noremap = true, silent = true })
+	-- vim.api.nvim_set_keymap("n", "<Leader>j", ":wincmd j<CR>", { noremap = true, silent = true })
+	-- vim.api.nvim_set_keymap("n", "<Leader>k", ":wincmd k<CR>", { noremap = true, silent = true })
+	-- vim.api.nvim_set_keymap("n", "<Leader>l", ":wincmd l<CR>", { noremap = true, silent = true })
 
 	-- These mappings are actually used by kitty via the vim-kitty-navigator plugin. They are
 	-- never issue by me directly, kitty sends them (via the pass_keys.py kitten)
-	vim.api.nvim_set_keymap("n", "<C-h>", ":wincmd h<CR>", { noremap = true, silent = true })
-	vim.api.nvim_set_keymap("n", "<C-j>", ":wincmd j<CR>", { noremap = true, silent = true })
-	vim.api.nvim_set_keymap("n", "<C-k>", ":wincmd k<CR>", { noremap = true, silent = true })
-	vim.api.nvim_set_keymap("n", "<C-l>", ":wincmd l<CR>", { noremap = true, silent = true })
+	-- vim.api.nvim_set_keymap("n", "<C-h>", ":wincmd h<CR>", { noremap = true, silent = true })
+	-- vim.api.nvim_set_keymap("n", "<C-j>", ":wincmd j<CR>", { noremap = true, silent = true })
+	-- vim.api.nvim_set_keymap("n", "<C-k>", ":wincmd k<CR>", { noremap = true, silent = true })
+	-- vim.api.nvim_set_keymap("n", "<C-l>", ":wincmd l<CR>", { noremap = true, silent = true })
 
 	vim.api.nvim_set_keymap("n", "<Leader>w", ":wa<CR>", { noremap = true, silent = true })
 

@@ -1,4 +1,5 @@
 return {
+    enabled = false,
 	"CopilotC-Nvim/CopilotChat.nvim",
 	ft = { "typescript" },
 	dependencies = {
