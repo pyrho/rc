@@ -660,6 +660,19 @@ Mostly stolen from [[https://web.archive.org/web/20250601133505/https://sophiebo
 #+begin_src emacs-lisp
 (use-package org-web-tools)
 #+end_src
+** Org Social
+#+begin_src emacs-lisp
+(use-package request)
+(use-package org-social
+  :demand t ;; waat
+  :straight
+    (org-social
+    :type git :host github :repo "tanrax/org-social.el")
+    :config
+    (setq org-social-file "~/org/social.org")  ;; Path to your local file
+    (setq org-social-relay "https://org-social-relay.andros.dev/")  ;; Relay server
+    (setq org-social-my-public-url "https://orgsocial.25.wf"))  ;; Your public URL
+#+end_src
 * Configuration for built-in packages
 Since we're using use-package as our package management system, we
 might as well try to organize under the same syntax as much as
