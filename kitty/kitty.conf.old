@@ -1,0 +1,759 @@
+# vim:fileencoding=utf-8:ft=conf
+
+# You can include secondary config files via the "include" directive.
+# If you use a relative path for include, it is resolved with respect to the
+# location of the current config file. Note that environment variables
+# are expanded, so ${USER}.conf becomes name.conf if USER=name
+# For example:
+# include other.conf
+
+# Fonts {{{
+# Font family. You can also specify different fonts for the
+# bold/italic/bold-italic variants. By default they are derived automatically,
+# by the OSes font system. Setting them manually is useful for font families
+# that have many weight variants like Book, Medium, Thick, etc. For example:
+# font_family Operator Mono Book
+# bold_font Operator Mono Medium
+# italic_font Operator Mono Book Italic
+# bold_italic_font Operator Mono Medium Italic
+#
+# You can get a list of full family names available on your computer by running
+# kitty list-fonts
+# The default values shown below rely on your OS to choose an appropriate monospace font family.
+#font_family      Hack Nerd Font Mono
+# jfont_family      Iosevka Term
+#
+# 2021-05-05 THIS WORKS
+#font_family      FiraCode Nerd Font Mono
+
+# font_family      Victor Mono Regular
+# italic_font      Victor Mono Italic
+# bold_font        Victor Mono Bold
+# bold_italic_font Victor Mono Bold Oblique
+#
+# font_family      Fira Code
+# italic_font      Fira Code Light
+# bold_font        Fira Code Bold
+# bold_italic_font Fira Code SemiBold
+# font_family      Hasklig Medium
+# italic_font      Hasklig Medium Italic
+# bold_font        Hasklig Bold
+# bold_italic_font Hasklig Bold Italic
+#
+# font_family      IosevkaTerm NF
+# italic_font      IosevkaTerm Nerd Font Propo Light Italic
+# bold_font        IosevkaTerm Nerd Font ExtraBold
+# bold_italic_font IosevkaTerm Nerd Font Propo Bold Italic
+
+# Nerd Fonts v2.2.2
+
+symbol_map U+23FB-U+23FE,U+2665,U+26A1,U+2B58,U+E000-U+E00A,U+E0A0-U+E0A3,U+E0B0-U+E0C8,U+E0CA,U+E0CC-U+E0D2,U+E0D4,U+E200-U+E2A9,U+E300-U+E3E3,U+E5FA-U+E634,U+E700-U+E7C5,U+EA60-U+EBEB,U+F000-U+F2E0,U+F300-U+F32F,U+F400-U+F4A9,U+F500-U+F8FF Symbols Nerd Font
+
+# Font size (in pts)
+font_size        18.0
+
+
+# Adjust the cell dimensions.
+# You can use either numbers, which are interpreted as pixels or percentages
+# (number followed by %), which are interpreted as percentages of the
+# unmodified values. You can use negative pixels or percentages less than
+# 100% to reduce sizes (but this might cause rendering artifacts).
+adjust_line_height 0
+adjust_column_width 0
+
+# Symbol mapping (special font for specified unicode code points). Map the
+# specified unicode codepoints to a particular font. Useful if you need special
+# rendering for some symbols, such as for Powerline. Avoids the need for
+# patched fonts. Each unicode code point is specified in the form U+<code point
+# in hexadecimal>. You can specify multiple code points, separated by commas
+# and ranges separated by hyphens. symbol_map itself can be specified multiple times.
+# Syntax is:
+#
+# symbol_map codepoints Font Family Name
+#
+# For example:
+#
+# symbol_map U+E0A0-U+E0A2,U+E0B0-U+E0B3 PowerlineSymbols
+
+# Change the sizes of the lines used for the box drawing unicode characters
+# These values are in pts. They will be scaled by the monitor DPI to arrive at
+# a pixel value. There must be four values corresponding to thin, normal, thick,
+# and very thick lines;
+#box_drawing_scale 0.001, 1, 1.5, 2
+# }}}
+
+
+# Cursor customization {{{
+# The cursor color
+# cursor           #cccccc
+
+# The cursor shape can be one of (block, beam, underline)
+cursor_shape     block
+
+# The interval (in seconds) at which to blink the cursor. Set to zero to
+# disable blinking. Note that numbers smaller than repaint_delay will be
+# limited to repaint_delay.
+cursor_blink_interval     0
+
+# Stop blinking cursor after the specified number of seconds of keyboard inactivity. Set to
+# zero to never stop blinking.
+cursor_stop_blinking_after 15.0
+# }}}
+
+
+# Scrollback {{{
+# Number of lines of history to keep in memory for scrolling back
+scrollback_lines 2000
+
+#: Number of lines of history to keep in memory for scrolling back.
+#: Memory is allocated on demand. Negative numbers are (effectively)
+#: infinite scrollback. Note that using very large scrollback is not
+#: recommended a it can slow down resizing of the terminal and also
+#: use large amounts of RAM.
+
+scrollback_pager less --chop-long-lines --RAW-CONTROL-CHARS +INPUT_LINE_NUMBER
+
+#: Program with which to view scrollback in a new window. The
+#: scrollback buffer is passed as STDIN to this program. If you change
+#: it, make sure the program you use can handle ANSI escape sequences
+#: for colors and text formatting. INPUT_LINE_NUMBER in the command
+#: line above will be replaced by an integer representing which line
+#: should be at the top of the screen.
+
+wheel_scroll_multiplier 1.0
+
+#: Modify the amount scrolled by the mouse wheel. Note this is only
+#: used for low precision scrolling devices, not for high precision
+#: scrolling on platforms such as macOS and Wayland. Use negative
+#: numbers to change scroll direction.
+
+#: }}}
+
+
+# Mouse {{{
+# The color and style for highlighting URLs on mouse-over. url_style can be one of:
+# none, single, double, curly
+url_color #0087BD
+url_style curly
+
+# The modifier keys to press when clicking with the mouse on URLs to open the URL
+open_url_modifiers cmd
+
+# The program with which to open URLs that are clicked on. The special value "default" means to
+# use the operating system's default URL handler.
+open_url_with default
+
+# Copy to clipboard on select. With this enabled, simply selecting text with
+# the mouse will cause the text to be copied to clipboard. Useful on platforms
+# such as macOS/Wayland that do not have the concept of primary selections. Note
+# that this is a security risk, as all programs, including websites open in your
+# browser can read the contents of the clipboard.
+copy_on_select no
+
+# The modifiers to use rectangular selection (i.e. to select text in a
+# rectangular block with the mouse)
+rectangle_select_modifiers ctrl+alt
+
+# Characters considered part of a word when double clicking. In addition to these characters
+# any character that is marked as an alpha-numeric character in the unicode
+# database will be matched.
+select_by_word_characters :@-./_~?&=%+#
+
+# The interval between successive clicks to detect double/triple clicks (in seconds)
+click_interval 0.5
+
+# Hide mouse cursor after the specified number of seconds of the mouse not being used. Set to
+# zero to disable mouse cursor hiding.
+mouse_hide_wait 3.0
+
+# Set the active window to the window under the mouse when moving the mouse around
+focus_follows_mouse yes
+# }}}
+
+
+# Performance tuning {{{
+# Delay (in milliseconds) between screen updates. Decreasing it, increases
+# frames-per-second (FPS) at the cost of more CPU usage. The default value
+# yields ~100 FPS which is more than sufficient for most uses. Note that to
+# actually achieve 100FPS you have to either set sync_to_monitor to no or use a
+# monitor with a high refresh rate.
+repaint_delay    10
+
+# Delay (in milliseconds) before input from the program running in the terminal
+# is processed. Note that decreasing it will increase responsiveness, but also
+# increase CPU usage and might cause flicker in full screen programs that
+# redraw the entire screen on each loop, because kitty is so fast that partial
+# screen updates will be drawn.
+input_delay 3
+
+# Sync screen updates to the refresh rate of the monitor. This prevents
+# tearing (https://en.wikipedia.org/wiki/Screen_tearing) when scrolling. However,
+# it limits the rendering speed to the refresh rate of your monitor. With a
+# very high speed mouse/high keyboard repeat rate, you may notice some slight input latency.
+# If so, set this to no.
+sync_to_monitor yes
+# }}}
+
+
+# Audio/visual bell {{{
+# Visual bell duration. Flash the screen when a bell occurs for the specified number of
+# seconds. Set to zero to disable.
+visual_bell_duration 0.0
+
+# Enable/disable the audio bell. Useful in environments that require silence.
+enable_audio_bell yes
+
+# Request window attention on bell.
+# Makes the dock icon bounce on macOS or the taskbar flash on linux.
+window_alert_on_bell yes
+
+# Show a bell symbol on the tab if a bell occurs in one of the windows in the
+# tab and the window is not the currently focused window
+bell_on_tab yes
+# }}}
+
+
+# Window layout {{{
+# If enabled, the window size will be remembered so that new instances of kitty will have the same
+# size as the previous instance. If disabled, the window will initially have size configured
+# by initial_window_width/height, in pixels.
+remember_window_size   yes
+initial_window_width   640
+initial_window_height  400
+
+# The enabled window layouts. A comma separated list of layout names. The special value * means
+# all layouts. The first listed layout will be used as the startup layout.
+# For a list of available layouts, see the README.
+#enabled_layouts tall,fat,stack,splits
+enabled_layouts splits,fat,stack
+
+# The step size (in units of cell width/cell height) to use when resizing
+# windows. The cells value is used for horizontal resizing and the lines value
+# for vertical resizing.
+window_resize_step_cells 2
+window_resize_step_lines 2
+
+#: The step size (in units of cell width/cell height) to use when
+#: resizing windows. The cells value is used for horizontal resizing
+#: and the lines value for vertical resizing.
+
+window_border_width 3.0
+
+
+#: The width (in pts) of window borders. Will be rounded to the
+#: nearest number of pixels based on screen resolution. Note that
+#: borders are displayed only when more than one window is visible.
+#: They are meant to separate multiple windows.
+
+draw_minimal_borders yes
+
+#: Draw only the minimum borders needed. This means that only the
+#: minimum needed borders for inactive windows are drawn. That is only
+#: the borders that separate the inactive window from a neighbor. Note
+#: that setting a non-zero window margin overrides this and causes all
+#: borders to be drawn.
+
+#single_window_margin_width -1000.0
+
+#: The window margin (in pts) to use when only a single window is
+#: visible. Negative values will cause the value of
+#: window_margin_width to be used instead.
+
+
+# The window margin (in pts) (blank area outside the border)
+# BUG, if this is anything else tha n 0 (on commit 97c3061b), the border will not show
+window_margin_width 10
+
+# The window padding (in pts) (blank area between the text and the window border)
+#window_padding_width 5 20 5 20
+window_padding_width 5
+placement_strategy center
+single_window_margin_width 5
+
+# The color for the border of inactive windows in which a bell has occurred
+
+# Fade the text in inactive windows by the specified amount (a number between
+# zero and one, with 0 being fully faded).
+inactive_text_alpha 1.0
+# }}}
+
+
+#: Tab bar {{{
+
+tab_bar_edge bottom
+
+#: Which edge to show the tab bar on, top or bottom
+
+tab_bar_margin_width 4
+
+#: The margin to the left and right of the tab bar (in pts)
+
+tab_bar_style powerline
+
+#: The tab bar style, can be one of: fade or separator. In the fade
+#: style, each tab's edges fade into the background color, in the
+#: separator style, tabs are separated by a configurable separator.
+
+tab_fade 0.25 0.5 0.75 1
+# tab_fade 1 1 1
+
+#: Control how each tab fades into the background when using fade for
+#: the tab_bar_style. Each number is an alpha (between zero and one)
+#: that controls how much the corresponding cell fades into the
+#: background, with zero being no fade and one being full fade. You
+#: can change the number of cells used by adding/removing entries to
+#: this list.
+
+tab_separator " ┇"
+
+#: The separator between tabs in the tab bar when using separator as
+#: the tab_bar_style.
+
+active_tab_foreground   #222433 
+active_tab_background   #63f2f1
+active_tab_font_style   bold
+
+inactive_tab_foreground #63f2f1
+inactive_tab_background #222433 
+inactive_tab_font_style normal
+# }}}
+
+
+# Color scheme {{{
+# The foreground color
+#foreground       #dddddd
+
+# The background color
+#background       #000000
+
+# The opacity of the background. A number between 0 and 1, where 1 is opaque and 0 is fully transparent.
+# This will only work if supported by the OS (for instance, when using a compositor under X11). Note
+# that it only sets the default background color's opacity. This is so that
+# things like the status bar in vim, powerline prompts, etc. still look good.
+# But it means that if you use a color theme with a background color in your
+# editor, it will not be rendered as transparent.  Instead you should change the
+# default background color in your kitty config and not use a background color
+# in the editor color scheme. Or use the escape codes to set the terminals
+# default colors in a shell script to launch your editor.
+# Be aware that using a value less than 1.0 is a (possibly significant) performance hit.
+background_opacity 1.0
+
+# How much to dim text that has the DIM/FAINT attribute set. 1.0 means no dimming and
+# 0.0 means fully dimmed (i.e. invisible).
+dim_opacity 1.0
+
+# The foreground for selections
+selection_foreground #000000
+
+# The background for selections
+selection_background #363e7f
+
+# The 16 terminal colors. There are 8 basic colors, each color has a dull and
+# bright version. You can also set the remaining colors from the 256 color table
+# as color16 to color256.
+
+# solarized {{{
+# Dark
+    
+# }}}
+
+# Base16 OneDark - kitty color config {{{
+# Lalit Magant (http://github.com/tilal6991)
+# background #282c34
+# foreground #abb2bf
+# selection_background #abb2bf
+# selection_foreground #282c34
+# url_color #565c64
+# cursor #abb2bf
+
+# # normal
+# color0 #282c34
+# color1 #e06c75
+# color2 #98c379
+# color3 #e5c07b
+# color4 #61afef
+# color5 #c678dd
+# color6 #56b6c2
+# color7 #abb2bf
+
+# # bright
+# color8 #545862
+# color9 #e06c75
+# color10 #98c379
+# color11 #e5c07b
+# color12 #61afef
+# color13 #c678dd
+# color14 #56b6c2
+# color15 #abb2bf
+# }}}
+#
+# 
+# Dogrun {{{ 
+
+# # special
+# foreground       #9ea3c0
+# cursor           #9ea3c0
+# background       #222433
+
+# # black
+# color0   #000000
+# color8   #5d6872
+
+# # red
+# color1   #ff6e67
+# color9   #d5635e
+
+# # green
+# color2   #7cbe8c
+# color10  #6ca97a
+
+# # yellow
+# color3   #f4f99d
+# color11  #b3c580
+
+# # blue
+# color4   #929be5
+# color12  #838cd6
+
+# # magenta
+# color5   #ff92d0
+# color13  #ff92d0
+
+# # cyan
+# color6   #2aacbd
+# color14  #2aacbd
+
+# # white
+# color7   #c7c7c7
+# color15  #ffffff
+
+# }}}
+# }}}
+
+
+# Advanced {{{
+
+# The shell program to execute. The default value of . means
+# to use whatever shell is set as the default shell for the current user.
+# Note that on macOS if you change this, you might need to add --login to
+# ensure that the shell starts in interactive mode and reads its startup rc files.
+shell .
+
+# Close the window when the child process (shell) exits. If no (the default),
+# the terminal will remain open when the child exits as long as there are still
+# processes outputting to the terminal (for example disowned or backgrounded
+# processes). If yes, the window will close as soon as the child process exits.
+# Note that setting it to yes means that any background processes still using
+# the terminal can fail silently because their stdout/stderr/stdin no longer
+# work.
+close_on_child_death yes
+
+# Allow other programs to control kitty. If you turn this on other programs can
+# control all aspects of kitty, including sending text to kitty windows,
+# opening new windows, closing windows, reading the content of windows, etc.
+# Note that this even works over ssh connections.
+allow_remote_control yes
+
+# Allow programs running in kitty to read and write from the clipboard. You can
+# control exactly which actions are allowed. The set of possible actions is:
+# write-clipboard read-clipboard write-primary read-primary
+# The default is to allow writing to the clipboard and primary selection. Note
+# that enabling the read functionality is a security risk as it means that any
+# program, even one running on a remote server via SSH can read your clipboard.
+clipboard_control write-clipboard write-primary read-clipboard read-primary
+
+# The value of the TERM environment variable to set. Changing this can break
+# many terminal programs, only change it if you know what you are doing, not
+# because you read some advice on Stack Overflow to change it.
+term xterm-kitty
+
+
+# }}}
+
+
+# Keyboard shortcuts {{{
+# For a list of key names, see: http://www.glfw.org/docs/latest/group__keys.html
+# For a list of modifier names, see: http://www.glfw.org/docs/latest/group__mods.html
+
+# The value of kitty_mod is used as the modifier for all default shortcuts, you
+# can change it in your kitty.conf to change the modifiers for all the default
+# shortcuts.
+kitty_mod cmd
+#
+# You can use the special action no_op to unmap a keyboard shortcut that is
+# assigned in the default configuration.
+#
+# You can combine multiple actions to be triggered by a single shortcut, using the
+# syntax below:
+# map key combine <separator> action1 <separator> action2 <separator> action3 ...
+# For example:
+# map kitty_mod+e combine : new_window : next_layout
+# this will create a new window and switch to the next available layout
+#
+# You can use multi-key shortcuts using the syntax shown below:
+# map key1>key2>key3 action
+# For example:
+# map ctrl+f>2 set_font_size 20
+# this will change the font size to 20 points when you press ctrl+f and then 2
+
+# Clipboard {{{
+map kitty_mod+v        paste_from_clipboard
+map kitty_mod+s        paste_from_selection
+map kitty_mod+c        copy_to_clipboard
+map shift+insert       paste_from_selection
+# You can also pass the contents of the current selection to any program using
+# pass_selection_to_program. By default, the system's open program is used, but
+# you can specify your own, for example:
+# map kitty_mod+o      pass_selection_to_program firefox
+map kitty_mod+o        pass_selection_to_program
+# }}}
+
+# Scrolling {{{
+# map kitty_mod+up        scroll_line_up
+# map kitty_mod+down      scroll_line_down
+map kitty_mod+k         scroll_line_up
+map kitty_mod+j         scroll_line_down
+map kitty_mod+page_up   scroll_page_up
+map kitty_mod+page_down scroll_page_down
+map kitty_mod+home      scroll_home
+map kitty_mod+end       scroll_end
+#map kitty_mod+h         show_scrollback
+# }}}
+
+# Window management {{{
+map kitty_mod+enter    new_window_with_cwd
+map kitty_mod+shift+enter    new_window
+map kitty_mod+n        new_os_window
+map kitty_mod+shift+c        close_window
+map alt+down        next_window
+map alt+up        previous_window
+#map kitty_mod+f        move_window_forward
+map kitty_mod+b        move_window_backward
+map kitty_mod+`        move_window_to_top
+map kitty_mod+r        start_resizing_window
+
+map kitty_mod+shift+h move_window left
+map kitty_mod+shift+j move_window bottom
+map kitty_mod+shift+k move_window top
+map kitty_mod+shift+l move_window right
+
+map kitty_mod+ctrl+shift+h layout_action move_to_screen_edge left
+map kitty_mod+ctrl+shift+j layout_action move_to_screen_edge down
+map kitty_mod+ctrl+shift+k layout_action move_to_screen_edge up
+map kitty_mod+ctrl+shift+l move_window right
+# Switching to a particular window
+# map kitty_mod+1        first_window
+# map kitty_mod+2        second_window
+# map kitty_mod+3        third_window
+# map kitty_mod+4        fourth_window
+# map kitty_mod+5        fifth_window
+# map kitty_mod+6        sixth_window
+# map kitty_mod+7        seventh_window
+# map kitty_mod+8        eighth_window
+# map kitty_mod+9        ninth_window
+# map kitty_mod+0        tenth_window
+# You can open a new window running an arbitrary program, for example:
+# map kitty_mod+y      new_window mutt
+#
+# You can pass the current selection to the new program by using the @selection placeholder
+# map kitty_mod+y      new_window less @selection
+#
+# You can even send the contents of the current screen + history buffer as stdin using
+# the placeholders @text (which is the plain text) and @ansi (which includes text styling escape codes).
+# For only the current screen, use @screen or @ansi_screen.
+# For example, the following command opens the scrollback buffer in less in a new window.
+# map kitty_mod+y      new_window @ansi less +G -R
+#
+# You can open a new window with the current working directory set to the
+# working directory of the current window using
+# }}}
+
+# Tab management {{{
+map kitty_mod+right    next_tab
+map kitty_mod+left     previous_tab
+map kitty_mod+t        new_tab
+map kitty_mod+q        close_tab
+map ctrl+shift+l        next_layout
+map kitty_mod+.        move_tab_forward
+map kitty_mod+,        move_tab_backward
+map kitty_mod+alt+t    set_tab_title
+map kitty_mod+h         kitten kittens/pass_keys.py left ctrl+h
+map kitty_mod+j         kitten kittens/pass_keys.py bottom ctrl+j
+map kitty_mod+k         kitten kittens/pass_keys.py top ctrl+k
+map kitty_mod+l         kitten kittens/pass_keys.py right ctrl+l
+
+
+# You can also create shortcuts to go to specific tabs, with 1 being the first tab
+map kitty_mod+1          goto_tab 1
+map kitty_mod+2          goto_tab 2
+map kitty_mod+3          goto_tab 3
+map kitty_mod+4          goto_tab 4
+map kitty_mod+5          goto_tab 5
+map kitty_mod+6          goto_tab 6
+map kitty_mod+7          goto_tab 7
+map kitty_mod+8          goto_tab 8
+
+# Just as with new_window above, you can also pass the name of arbitrary
+# commands to run when using new_tab and use new_tab_with_cwd.
+# }}}
+
+# Layout management {{{
+# You can create shortcuts to switch to specific layouts
+# map ctrl+alt+1          goto_layout tall
+map kitty_mod+shift+1          goto_layout stack
+map kitty_mod+shift+2          goto_layout fat
+map kitty_mod+shift+3          goto_layout tall
+map ctrl+. layout_action bias 50 70
+# }}}
+
+# Font sizes {{{
+map kitty_mod+equal    increase_font_size
+map kitty_mod+minus    decrease_font_size
+map kitty_mod+backspace restore_font_size
+# To setup shortcuts for specific font sizes, follow the example below:
+# map kitty_mod+f6     set_font_size 10.0
+# map kitty_mod+f7     set_font_size 20.5
+# }}}
+
+# Select and act on visible text {{{
+# Use the hints kitten to select text and either pass it to an external program or
+# insert it into the terminal or copy it to the clipboard.
+#
+# Open a currently visible URL using the keyboard. The program used to open the
+# URL is specified in open_url_with.
+map kitty_mod+p>u         kitten hints
+
+# Select a path/filename and insert it into the terminal. Useful, for instance to
+# run git commands on a filename output from a previous git command.
+map kitty_mod+p>p       kitten hints --type path --program -
+
+# Select a path/filename and open it with the default open program.
+#map alt+p>shift+f kitten hints --type path
+
+# Select a line of text and insert it into the terminal. Use for the
+# output of things like: ls -1
+map alt+p>l       kitten hints --type line --program -
+
+# Select words and insert into terminal.
+# map alt+p>w       kitten hints --type word --program -
+#map kitty_mod+p>v       kitten hints --type=linenum --linenum-action=tab zsh -c 'nvim +{line} {path}'
+
+# The hints kitten has many more modes of operation that you can map to different
+# shortcuts. For a full description run: kitty +kitten hints --help
+# }}}
+
+# Miscellaneous {{{
+#map f1 kitten hints --customize-processing open-linear-issue.py
+map kitty_mod+f11      toggle_fullscreen
+map kitty_mod+u        input_unicode_character
+map kitty_mod+f2       edit_config_file
+# Open the kitty shell in a new window/tab/overlay/os_window to control kitty using commands.
+map kitty_mod+escape   kitty_shell window
+
+map kitty_mod+f kitten zoom_toggle.py
+
+map kitty_mod+d launch --location=vsplit --cwd=current
+map kitty_mod+shift+d launch --location=hsplit --cwd=current
+
+# Sending arbitrary text on shortcut key presses
+# You can tell kitty to send arbitrary (UTF-8) encoded text to
+# the client program when pressing specified shortcut keys. For example:
+# map ctrl+alt+a send_text all Special text
+# This will send "Special text" when you press the Ctrl+Alt+a key combination.
+# The text to be sent is a python string literal so you can use escapes like
+# \x1b to send control codes or \u21fb to send unicode characters (or you can
+# just input the unicode characters directly as UTF-8 text). The first argument
+# to send_text is the keyboard modes in which to activate the shortcut. The possible
+# values are normal or application or kitty or a comma separated combination of them.
+# The special keyword all means all modes. The modes normal and application refer to
+# the DECCKM cursor key mode for terminals, and kitty refers to the special kitty
+# extended keyboard protocol. Another example, that outputs a word and then moves the cursor
+# to the start of the line (same as pressing the Home key):
+# map ctrl+alt+a send_text normal Word\x1b[H
+# map ctrl+alt+a send_text application Word\x1bOH
+# }}}
+
+# You can have kitty remove all shortcut definition seen up to this point. Useful, for
+# instance, to remove the default shortcuts.
+clear_all_shortcuts no
+# }}}
+
+# Customize tab title {{{
+
+# Using icons from nerdfonts to make a fancy tab title:
+#   Layout     | Hex    | Symbol
+#  ---------------------------
+#   STACK      | \xf0c8 | 
+#   TALL       | \xfb3f | ﬿
+#   FAT        | \xfa6e | 﩮
+#   GRID       | \xfa72 | 全
+#   SPLITS     | \xfa73 | 侀
+#   HORIZONTAL | \xfa75 | 冀
+#   VERTICAL   | \xfc74 | 充
+
+# active index:             
+# inactive index:           
+tab_title_template "{'' if index is 1 else '' if index is 2 else '' if index is 3 else '' if index is 4 else '' if index is 5 else '' if index is 6 else '' if index is 7 else '' if index is 8 else '' if index is 9 else ''}•{layout_name[:2].upper().replace('ST',' ').replace('TA','﬿ ').replace('FA','﩮').replace('GR','全').replace('SP','侀').replace('HO','冀').replace('VE','充')}{title}"
+
+active_tab_title_template "{'' if index is 1 else '' if index is 2 else '' if index is 3 else '' if index is 4 else '' if index is 5 else '' if index is 6 else '' if index is 7 else '' if index is 8 else '' if index is 9 else ''}•{layout_name[:2].upper().replace('ST',' ').replace('TA','﬿ ').replace('FA','﩮').replace('GR','全').replace('SP','侀').replace('HO','冀').replace('VE','充')}{title}"
+
+# }}}
+
+# OS specific tweaks {{{
+
+# Change the color of the kitty window's titlebar on macOS. A value of "system"
+# means to use the default system color, a value of "background" means to use
+# the background color of the currently active window and finally you can use
+# an arbitrary color, such as #12af59 or "red". WARNING: This option works by
+# using a hack, as there is no proper Cocoa API for it. It sets the background
+# color of the entire window and makes the titlebar transparent. As such it is
+# incompatible with background_opacity. If you want to use both, you are
+# probably better off just hiding the titlebar with macos_hide_titlebar.
+macos_titlebar_color background
+#macos_titlebar_color system
+
+# Hide the kitty window's title bar on macOS.
+hide_window_decorations no
+
+# Use the option key as an alt key. With this set to no, kitty will use
+# the macOS native Option+Key = unicode character behavior. This will
+# break any Alt+key keyboard shortcuts in your terminal programs, but you
+# can use the macOS unicode input technique.
+macos_option_as_alt yes
+
+macos_window_resizable yes
+# Hide the kitty window from running tasks (alt-tab) on macOS.
+macos_hide_from_tasks no
+macos_custom_beam_cursor no
+macos_thicken_font 0
+macos_traditional_fullscreen no
+macos_quit_when_last_window_closed no
+macos_show_window_title_in none
+confirm_os_window_close 1
+
+
+# }}}
+#
+tab_bar_min_tabs 2
+
+# For some reason this is not working... I have to do it manually instead
+shell_integration enabled
+map ctrl+shift+z scroll_to_prompt -1
+
+listen_on unix:/tmp/kittynyx.sock
+
+#include kitty-tokyonight-storm.conf
+#include ./tokyonight_moon.conf
+# The color for the border of the active window
+active_border_color #394b70
+
+enable_audio_bell no
+share_connections no
+
+
+# BEGIN_KITTY_FONTS
+font_family      family="Aporetic Sans Mono"
+bold_font        auto
+italic_font      auto
+bold_italic_font auto
+# END_KITTY_FONTS

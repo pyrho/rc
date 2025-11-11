@@ -1,0 +1,1983 @@
+(defun pyrho/get-1password-secret (secret-reference)
+  "Retrieve a secret from 1Password using op CLI."
+  (string-trim
+   (shell-command-to-string
+    (format "op read --no-newline %s" secret-reference))))
+
+(defun pyrho/revert-buffer()
+  "Revert the buffer (:e!), but ask for confirmation if the buffer is modified"
+  (interactive)
+  (revert-buffer t (not (buffer-modified-p)) t))
+
+(use-package emacs
+  :straight nil
+  :preface
+  (defvar pyrho/indent-width 2) ; change this value to your preferred width
+  :config
+  (setq frame-title-format '("Yay-Evil") ; Yayyyyy Evil!
+        ring-bell-function 'ignore       ; minimize distraction
+        frame-resize-pixelwise t
+        default-directory "~/")
+
+  (tool-bar-mode -1)
+  (menu-bar-mode -1)
+
+  (setq native-comp-async-report-warnings-errors nil)
+
+  (setq backup-directory-alist `(("." . "~/.emacsbackups")))
+
+  ;; better scrolling experience
+  (setq scroll-margin 0
+        scroll-conservatively 101 ; gt 100
+        scroll-preserve-screen-position t
+        auto-window-vscroll nil)
+
+  ;; Always use spaces for indentation
+  (setq-default indent-tabs-mode nil
+                tab-width pyrho/indent-width)
+
+  ;; Omit default startup screen
+  (setq inhibit-startup-screen t)
+
+  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+  (winner-mode 1)
+
+  ;; Automatically switch to help windows
+  (setq help-window-select t)
+
+ ;; Buffer rules
+  (add-to-list 'display-buffer-alist
+             '("\\*Org Src.*\\*"
+               (display-buffer-pop-up-window)
+               (window-width . 0.8)   ; 80% of frame width
+               (window-height . 0.8))) ; 80% of frame height
+
+    ;; Auto-select new window after splitting
+ (advice-add 'split-window :after
+   (lambda (&rest _)
+     (select-window (get-lru-window))))
+
+ (global-hi-lock-mode 1)
+
+ ;; Allows poping the mark multiple times in a row
+ ;; by just using C-SPC
+ (setq set-mark-command-repeat-pop t))
+
+(use-package emacs
+  :config
+  (when (member "Aporetic Serif Mono" (font-family-list))
+    (set-face-attribute 'default nil :font "Aporetic Serif Mono" :height 150)
+    (set-face-attribute 'fixed-pitch nil :family "Aporetic Serif Mono"))
+
+  (when (member "Aporetic Sans" (font-family-list))
+    (set-face-attribute 'variable-pitch nil :family "Aporetic Sans" :height 1.18)))
+
+(use-package fontaine
+  :disabled
+  :if (display-graphic-p)
+  :hook
+  ;; Persist the latest font preset when closing/starting Emacs.
+  ((after-init . fontaine-mode)
+   (after-init . (lambda ()
+                   ;; Set last preset or fall back to desired style from `fontaine-presets'.
+                   (fontaine-set-preset (or (fontaine-restore-latest-preset) 'regular)))))
+  :config
+  ;; This is defined in Emacs C code: it belongs to font settings.
+  (setq x-underline-at-descent-line nil)
+
+  ;; And this is for Emacs28.
+                                        ;(setq-default text-scale-remap-header-line t)
+
+  ;; This is the default value.  Just including it here for
+  ;; completeness.
+  (setq fontaine-latest-state-file (locate-user-emacs-file "fontaine-latest-state.eld"))
+
+  ;; The font family is my design: <https://github.com/protesilaos/aporetic>.
+  (setq fontaine-presets
+        '((small
+           :default-height 80)
+          (regular) ; like this it uses all the fallback values and is named `regular'
+          (medium
+           :default-height 115)
+          (large
+           :default-height 160)
+          (presentation
+           :default-height 180)
+          (jumbo
+           :inherit medium
+           :default-height 260)
+          (t
+           ;; I keep all properties for didactic purposes, but most can be
+           ;; omitted.  See the fontaine manual for the technicalities:
+           ;; <https://protesilaos.com/emacs/fontaine>.
+           :default-family "Aporetic Serif Mono"
+           :default-weight regular
+           :default-slant normal
+           :default-width normal
+           :default-height 100
+
+           :fixed-pitch-family "Aporetic Serif Mono"
+           :fixed-pitch-weight nil
+           :fixed-pitch-slant nil
+           :fixed-pitch-width nil
+           :fixed-pitch-height 1.0
+
+           :fixed-pitch-serif-family nil
+           :fixed-pitch-serif-weight nil
+           :fixed-pitch-serif-slant nil
+           :fixed-pitch-serif-width nil
+           :fixed-pitch-serif-height 1.0
+
+           :variable-pitch-family "Aporetic Sans"
+           :variable-pitch-weight nil
+           :variable-pitch-slant nil
+           :variable-pitch-width nil
+           :variable-pitch-height 1.0
+
+           :mode-line-active-family nil
+           :mode-line-active-weight nil
+           :mode-line-active-slant nil
+           :mode-line-active-width nil
+           :mode-line-active-height 1.0
+
+           :mode-line-inactive-family nil
+           :mode-line-inactive-weight nil
+           :mode-line-inactive-slant nil
+           :mode-line-inactive-width nil
+           :mode-line-inactive-height 1.0
+
+           :header-line-family nil
+           :header-line-weight nil
+           :header-line-slant nil
+           :header-line-width nil
+           :header-line-height 1.0
+
+           :line-number-family nil
+           :line-number-weight nil
+           :line-number-slant nil
+           :line-number-width nil
+           :line-number-height 1.0
+
+           :tab-bar-family nil
+           :tab-bar-weight nil
+           :tab-bar-slant nil
+           :tab-bar-width nil
+           :tab-bar-height 1.0
+
+           :tab-line-family nil
+           :tab-line-weight nil
+           :tab-line-slant nil
+           :tab-line-width nil
+           :tab-line-height 1.0
+
+           :bold-family nil
+           :bold-slant nil
+           :bold-weight bold
+           :bold-width nil
+           :bold-height 1.0
+
+           :italic-family nil
+           :italic-weight nil
+           :italic-slant italic
+           :italic-width nil
+           :italic-height 1.0
+
+           :line-spacing nil))))
+
+(use-package org
+  :hook ((org-mode . visual-line-mode)
+         (org-mode . org-indent-mode))
+  :bind (("C-c a" . org-agenda)
+         ("C-c c" . org-capture))
+  :config
+  (setq org-M-RET-may-split-line nil)
+  ;; https://emacs.stackexchange.com/questions/62720/open-org-link-in-the-same-window
+  ;; Open links in current window
+  (setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
+
+  (setq org-return-follows-link t)
+  (global-set-key (kbd "C-c l") #'org-store-link)
+  (global-set-key (kbd "C-c a") #'org-agenda)
+  (global-set-key (kbd "C-c c") #'org-capture)
+
+   ;; Hide *~_/ characeters (like conceal).
+   ;; To show them, enter (visible-mode).
+ (setq org-hide-emphasis-markers t)
+
+ (setq org-directory "~/org")
+ (setq org-default-notes-file (concat org-directory "/inbox.org"))
+ (setq org-agenda-files (list
+                         (concat org-directory "/todo.org")
+                         (concat org-directory "/calendar-beorg.org")
+                         (concat org-directory "/events.org")))
+
+ (setq org-outline-path-complete-in-steps nil)         ; Refile in a single go
+ (setq org-refile-use-outline-path t)                  ; Show full paths for refiling
+
+ (setq org-refile-targets (list (list (concat org-directory "/todo.org") :maxlevel 5)))
+
+ (setq org-agenda-custom-commands
+              '(("W" "Weekly review"
+                 agenda ""
+                 ((org-agenda-start-day "-14d")
+                  (org-agenda-span 14)
+                  (org-agenda-start-on-weekday 1)
+                  (org-agenda-start-with-log-mode '(closed))
+                  (org-agenda-archives-mode t)
+                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp "^\\*+ DONE "))))
+                ("n" "Agenda and all TODOs"
+                 agenda ""
+                 ((alltodo ""))))))
+
+
+(use-package org-bullets :hook (org-mode . org-bullets-mode))
+
+;; Org Babel stuff
+(org-babel-do-load-languages
+   'org-babel-load-languages
+   '((shell . t)
+     (sql . t)))
+
+;; https://andreamaglie.com/2025-03-25-emacs-org-mode-auto-clock-in-when-doing
+(defun pyrho--org-clock-in-when-doing ()
+  "Clock in when the TODO state is switched to IN_PROGRESS."
+  (when (string= org-state "DOING")
+    (unless (org-clocking-p)
+      (org-clock-in))))
+
+(add-hook 'org-after-todo-state-change-hook #'pyrho--org-clock-in-when-doing)
+(setq org-clock-out-when-done t)
+
+;; Function to archive all DONE tasks in current subtree
+(defun my/archive-done-tasks-in-subtree ()
+  "Archive all DONE tasks in the current subtree."
+  (interactive)
+  (org-map-entries
+   (lambda ()
+     (when (member (org-get-todo-state) '("DONE" "CANCELED"))
+       (org-archive-subtree)))
+   t 'tree))
+
+;; Function to archive DONE tasks older than N days
+(defun my/archive-old-done-tasks (days)
+  "Archive DONE tasks in current subtree older than DAYS."
+  (interactive "nArchive DONE tasks older than how many days? ")
+  (let ((cutoff-time (time-subtract (current-time)
+                                   (days-to-time days))))
+    (org-map-entries
+     (lambda ()
+       (when (and (member (org-get-todo-state) '("DONE" "CANCELED"))
+                  (let ((closed-time (org-entry-get (point) "CLOSED")))
+                    (and closed-time
+                         (time-less-p (org-time-string-to-time closed-time)
+                                     cutoff-time))))
+         (org-archive-subtree)))
+     t 'tree)))
+
+(defun my-org-tab-with-smart-cycle ()
+  "Enhanced TAB that works regardless of position after ellipsis."
+  (interactive)
+  (cond
+   ;; If we're on a heading line
+   ((org-at-heading-p)
+    (org-cycle))
+   ;; If we're on a line with ellipsis, find the heading and cycle it
+   ((save-excursion
+      (beginning-of-line)
+      (re-search-forward "\\.\\.\\." (line-end-position) t))
+    (save-excursion
+      (beginning-of-line)
+      (org-cycle)))
+   ;; Otherwise, use default TAB behavior
+   (t
+    (org-cycle))))
+
+;; Replace the default TAB binding in org-mode
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "TAB") #'my-org-tab-with-smart-cycle))
+
+;; Start calendar on monday
+(setq org-agenda-start-on-weekday 1)
+
+;(use-package emacs
+;  :straight nil
+;  :config
+;  (with-eval-after-load 'org
+;    (custom-set-faces
+;     '(org-document-title ((t (:family "Aporetic Sans" :height 300)))))
+
+;    (let ((base-size 250))
+;      (dotimes (i 8)
+;        (let ((level-face (intern (format "org-level-%d" (1+ i))))
+;              (size (- base-size (* i 10))))
+;          (set-face-attribute level-face nil
+;                              :family "Aporetic Sans"
+;                              :height size))))))
+(use-package org
+  :hook (org-mode . variable-pitch-mode)
+  :after doom-themes
+  :config
+
+ (defun pyrho--set-faces()
+     ;; Resize Org headings
+   (dolist (face '((org-level-1 . 1.35)
+                   (org-level-2 . 1.3)
+                   (org-level-3 . 1.2)
+                   (org-level-4 . 1.1)
+                   (org-level-5 . 1.1)
+                   (org-level-6 . 1.1)
+                   (org-level-7 . 1.1)
+                   (org-level-8 . 1.1)))
+     (set-face-attribute (car face) nil :font "Aporetic Sans" :weight 'bold :height (cdr face)))
+
+   ;; Make the document title a bit bigger
+   (set-face-attribute 'org-document-title nil :font "Aporetic Sans" :weight
+                       'bold :height 1.8)
+   ;; Make the document title a bit bigger
+   (set-face-attribute 'org-document-title nil :font "Aporetic Sans" :weight
+                       'bold :height 1.8)
+   (require 'org-indent)
+
+   (set-face-attribute 'org-block nil            :inherit 'fixed-pitch :height 0.85)
+   (set-face-attribute 'org-code nil             :inherit '(shadow fixed-pitch) :height 0.85)
+   (set-face-attribute 'org-indent nil           :inherit '(org-hide fixed-pitch))
+   (set-face-attribute 'org-verbatim nil         :inherit '(shadow fixed-pitch))
+   (set-face-attribute 'org-special-keyword nil  :inherit '(font-lock-comment-face
+                                                            fixed-pitch))
+   (set-face-attribute 'org-meta-line nil        :inherit '(font-lock-comment-face fixed-pitch))
+   (set-face-attribute 'org-checkbox nil         :inherit 'fixed-pitch))
+
+
+ (add-hook 'after-enable-theme-hook 'pyrho--set-faces))
+
+(use-package org-roam
+  :straight (org-roam
+             :type git
+             :host github
+             :repo "org-roam/org-roam")
+  :custom
+  (org-roam-directory "~/org/roam")
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n g" . org-roam-graph)
+         ("C-c n i" . org-roam-node-insert)
+         ("C-c n c" . org-roam-capture)
+         ;; Dailies
+         ("C-c n j" . org-roam-dailies-capture-today)
+         ("C-c n J" . org-roam-dailies-goto-today))
+  :config
+  ;; If you're using a vertical completion framework, you might want a more informative completion interface
+                                        ;(setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+  (setq org-roam-dailies-capture-templates
+      '(("d" "default" entry
+         "* %?"
+         :target (file+head "%<%Y-%m-%d>.org"
+                            "#+title: %<%Y-%m-%d>\n* Tasks\n* Thoughts"))))
+  ;; (setq org-roam-capture-templates
+  ;;         '(("d" "default" plain "%?"
+  ;;            :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+  ;;                               ":PROPERTIES:
+  ;; :ID:       %<%Y-%m-%d>-${slug}
+  ;; :END:
+  ;; #+title: ${title}
+  ;; #+UPDATED_AT: %<%Y-%m-%d %H:%M:%S>
+
+  ;; ")
+  ;;            :unnarrowed t)))
+
+  (setq org-roam-capture-templates
+   '(("d" "default" plain "%?"
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n")
+      :unnarrowed t)))
+
+  (org-roam-db-autosync-mode)
+  (require 'org-roam-protocol))
+
+(use-package consult-org-roam
+  :after org-roam
+  :init
+  (require 'consult-org-roam)
+  ;; Activate the minor mode
+  (consult-org-roam-mode 1)
+  :custom
+  ;; Use `ripgrep' for searching with `consult-org-roam-search'
+  (consult-org-roam-grep-func #'consult-ripgrep)
+  ;; Configure a custom narrow key for `consult-buffer'
+  (consult-org-roam-buffer-narrow-key ?r)
+  ;; Display org-roam buffers right after non-org-roam buffers
+  ;; in consult-buffer (and not down at the bottom)
+  (consult-org-roam-buffer-after-buffers t)
+  :config
+  ;; Eventually suppress previewing for certain functions
+  (consult-customize
+   consult-org-roam-forward-links
+   :preview-key "M-.")
+  :bind
+  ;; Define some convenient keybindings as an addition
+  ("C-c n e" . consult-org-roam-file-find)
+  ("C-c n b" . consult-org-roam-backlinks)
+  ("C-c n B" . consult-org-roam-backlinks-recursive)
+  ("C-c n l" . consult-org-roam-forward-links)
+  ("C-c n r" . consult-org-roam-search))
+
+(use-package org-tempo
+  :straight nil
+  :after org)
+
+(use-package svg-tag-mode
+  :config
+  (defconst date-re "[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}")
+  (defconst time-re "[0-9]\\{2\\}:[0-9]\\{2\\}")
+  (defconst day-re "[A-Za-z]\\{3\\}")
+  (defconst day-time-re (format "\\(%s\\)? ?\\(%s\\)?" day-re time-re))
+
+  (defun svg-progress-percent (value)
+        (svg-image (svg-lib-concat
+                                        (svg-lib-progress-bar (/ (string-to-number value) 100.0)
+                                         nil :margin 0 :stroke 2 :radius 3 :padding 2 :width 11)
+                                        (svg-lib-tag (concat value "%")
+                                         nil :stroke 0 :margin 0)) :ascent 'center))
+
+  (defun svg-progress-count (value)
+        (let* ((seq (mapcar #'string-to-number (split-string value "/")))
+               (count (float (car seq)))
+               (total (float (cadr seq))))
+         (svg-image (svg-lib-concat
+                     (svg-lib-progress-bar (/ count total) nil
+                                                                  :margin 0 :stroke 2 :radius 3 :padding 2 :width 11)
+                     (svg-lib-tag value nil
+                                                                  :stroke 0 :margin 0)) :ascent 'center)))
+  (setq svg-tag-tags
+      `(
+        ;; Task priority
+        ("\\[#[A-Z]\\]" . ( (lambda (tag)
+                              (svg-tag-make tag :face 'org-priority
+                                            :beg 2 :end -1 :margin 0))))
+
+        ;; Progress
+        ("\\(\\[[0-9]\\{1,3\\}%\\]\\)" . ((lambda (tag)
+                                           (svg-progress-percent (substring tag 1 -2)))))
+        ("\\(\\[[0-9]+/[0-9]+\\]\\)" . ((lambda (tag)
+                                         (svg-progress-count (substring tag 1 -1)))))
+
+        ;; Citation of the form [cite:@Knuth:1984]
+        ("\\(\\[cite:@[A-Za-z]+:\\)" . ((lambda (tag)
+                                          (svg-tag-make tag
+                                                        :inverse t
+                                                        :beg 7 :end -1
+                                                        :crop-right t))))
+        ("\\[cite:@[A-Za-z]+:\\([0-9]+\\]\\)" . ((lambda (tag)
+                                                  (svg-tag-make tag
+                                                                :end -1
+                                                                :crop-left t))))
+
+
+        ;; Active date (with or without day name, with or without time)
+        (,(format "\\(<%s>\\)" date-re) .
+         ((lambda (tag)
+            (svg-tag-make tag :beg 1 :end -1 :margin 0))))
+        (,(format "\\(<%s \\)%s>" date-re day-time-re) .
+         ((lambda (tag)
+            (svg-tag-make tag :beg 1 :inverse nil :crop-right t :margin 0))))
+        (,(format "<%s \\(%s>\\)" date-re day-time-re) .
+         ((lambda (tag)
+            (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0))))
+
+        ;; Inactive date  (with or without day name, with or without time)
+        (,(format "\\(\\[%s\\]\\)" date-re) .
+         ((lambda (tag)
+            (svg-tag-make tag :beg 1 :end -1 :margin 0 :face 'org-date))))
+        (,(format "\\(\\[%s \\)%s\\]" date-re day-time-re) .
+         ((lambda (tag)
+            (svg-tag-make tag :beg 1 :inverse nil
+                  :crop-right t :margin 0 :face 'org-date))))
+        (,(format "\\[%s \\(%s\\]\\)" date-re day-time-re) .
+         ((lambda (tag)
+            (svg-tag-make tag :end -1 :inverse t
+                  :crop-left t :margin 0 :face 'org-date)))))))
+
+(add-hook 'org-mode-hook 'svg-tag-mode)
+(add-hook 'org-mode-hook (lambda ()
+                           (add-hook 'meow-insert-enter-hook
+                                     #'svg-tag-mode-off
+                                     nil
+                                     t)
+                           (add-hook 'meow-insert-exit-hook
+                                     #'svg-tag-mode-on
+                                     nil
+                                     t)))
+
+(use-package org-appear
+
+ :commands (org-appear-mode)
+ :hook     (org-mode . org-appear-mode)
+ :config
+  (setq org-hide-emphasis-markers t  ; Must be activated for org-appear to work
+        org-appear-autoemphasis   t   ; Show bold, italics, verbatim, etc.
+        org-appear-autolinks      t   ; Show links
+        org-appear-autosubmarkers t
+        org-appear-trigger 'manual)
+
+  (add-hook 'org-mode-hook (lambda ()
+                             (add-hook 'meow-insert-enter-hook
+                                       #'org-appear-manual-start
+                                       nil
+                                       t)
+                             (add-hook 'meow-insert-exit-hook
+                                       #'org-appear-manual-stop
+                                       nil
+                                       t))))
+
+(defun pyrho--prettify-symbols-setup ()
+  ;; Checkboxes
+  (push '("[ ]" . "") prettify-symbols-alist)
+  (push '("[X]" . "") prettify-symbols-alist)
+  (push '("[-]" . "" ) prettify-symbols-alist)
+
+  ;; org-abel
+  (push '("#+BEGIN_SRC" . ?≫) prettify-symbols-alist)
+  (push '("#+END_SRC" . ?≫) prettify-symbols-alist)
+  (push '("#+begin_src" . ?≫) prettify-symbols-alist)
+  (push '("#+end_src" . ?≫) prettify-symbols-alist)
+
+  (push '("#+BEGIN_QUOTE" . ?❝) prettify-symbols-alist)
+  (push '("#+END_QUOTE" . ?❞) prettify-symbols-alist)
+  (push '("#+begin_quote" . ?❝) prettify-symbols-alist)
+  (push '("#+end_quote" . ?❞) prettify-symbols-alist)
+
+  ;; Drawers
+  ;; (push '(":PROPERTIES:" . "") prettify-symbols-alist)
+  ;; (push '(":LOGBOOK:" . "") prettify-symbols-alist)
+  ;; Tags
+  (push '(":projects:" . "") prettify-symbols-alist)
+  (push '(":personal:" . "") prettify-symbols-alist)
+  (push '(":work:"     . "") prettify-symbols-alist)
+  (push '(":inbox:"    . "") prettify-symbols-alist)
+  (push '(":task:"     . "") prettify-symbols-alist)
+  (push '(":emacs:"    . "") prettify-symbols-alist)
+  (push '(":learn:"    . "") prettify-symbols-alist)
+  (push '(":code:"     . "") prettify-symbols-alist)
+
+  (prettify-symbols-mode))
+(add-hook 'org-mode-hook        #'pyrho--prettify-symbols-setup)
+(add-hook 'org-agenda-mode-hook #'pyrho--prettify-symbols-setup)
+
+(use-package org
+  :hook (org-mode . variable-pitch-mode)
+  :config
+  (setq org-adapt-indentation t
+    org-hide-leading-stars t
+    org-pretty-entities t
+    org-ellipsis "  ·")
+
+  (setq org-src-fontify-natively t
+      org-src-tab-acts-natively t
+      org-edit-src-content-indentation 0)
+
+  (setq org-log-done                       t
+     org-auto-align-tags                t
+     org-tags-column                    -80
+     org-fold-catch-invisible-edits     'show-and-error
+     org-special-ctrl-a/e               t
+     org-insert-heading-respect-content t)
+
+  (add-hook 'org-mode-hook 'visual-line-mode))
+
+(use-package org-roam-ui
+  :straight
+    (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
+    :after org-roam
+;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+;;         a hookable mode anymore, you're advised to pick something yourself
+;;         if you don't care about startup time, use
+;;  :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+
+(use-package org-web-tools)
+
+(setq calendar-latitude 48.856613)
+(setq calendar-longitude 2.352222)
+
+(use-package delsel
+  :straight nil
+  :config (delete-selection-mode +1))
+
+(use-package scroll-bar
+  :straight nil
+  :config (scroll-bar-mode -1))
+
+(use-package simple
+  :straight nil
+  :config (column-number-mode +1))
+
+(use-package files
+  :straight nil
+  :config
+  (setq confirm-kill-processes nil
+        create-lockfiles nil ; don't create .# files (crashes 'npm start')
+        make-backup-files nil))
+
+(use-package autorevert
+  :straight nil
+  :config
+  (global-auto-revert-mode +1)
+  (setq auto-revert-interval 2
+        auto-revert-check-vc-info t
+        global-auto-revert-non-file-buffers t
+        auto-revert-verbose nil))
+
+(use-package eldoc
+  :straight nil
+  :diminish eldoc-mode
+  :config
+  (setq eldoc-idle-delay 0.4))
+
+;; C, C++, and Java
+(use-package cc-vars
+  :straight nil
+  :config
+  (setq-default c-basic-offset pyrho/indent-width)
+  (setq c-default-style '((java-mode . "java")
+                          (awk-mode . "awk")
+                          (other . "k&r"))))
+
+;; Python (both v2 and v3)
+(use-package python
+  :straight nil
+  :config (setq python-indent-offset pyrho/indent-width))
+
+(use-package mwheel
+  :straight nil
+  :config (setq mouse-wheel-scroll-amount '(2 ((shift) . 1))
+                mouse-wheel-progressive-speed nil))
+
+(use-package paren
+  :straight nil
+  :init (setq show-paren-delay 0)
+  :config (show-paren-mode +1))
+
+; (use-package frame
+;   :preface
+;   (defun ian/set-default-font ()
+;     (interactive)
+;     (when (member "Aporetic Serif Mono" (font-family-list))
+;       (set-face-attribute 'default nil :family "Aporetic Serif Mono"))
+;     (set-face-attribute 'default nil
+;                         :height 180
+;                         :weight 'normal))
+;   :straight nil
+;   :config
+;   (setq initial-frame-alist '((fullscreen . maximized)))
+;   (ian/set-default-font))
+
+(use-package ediff
+  :straight nil
+  :config
+  (setq ediff-window-setup-function #'ediff-setup-windows-plain)
+  (setq ediff-split-window-function #'split-window-horizontally))
+
+;; (use-package elec-pair
+;;   :straight nil
+;;   :hook (prog-mode . electric-pair-mode))
+
+(use-package whitespace
+  :straight nil
+  :hook (before-save . whitespace-cleanup))
+
+(use-package dired
+  :straight nil
+  :config
+  (setq delete-by-moving-to-trash t)
+  (when (string= system-type "darwin")
+   (setq dired-use-ls-dired t
+         insert-directory-program "/opt/homebrew/bin/gls"
+         dired-listing-switches "-aBhl --group-directories-first"))
+  (eval-after-load "dired"
+    #'(lambda ()
+        (put 'dired-find-alternate-file 'disabled nil)
+        (define-key dired-mode-map (kbd "RET") #'dired-find-alternate-file))))
+
+(use-package treesit
+  :straight nil
+  :mode (("\\.tsx\\'" . tsx-ts-mode)
+         ("\\.js\\'"  . typescript-ts-mode)
+         ("\\.mjs\\'" . typescript-ts-mode)
+         ("\\.mts\\'" . typescript-ts-mode)
+         ("\\.cjs\\'" . typescript-ts-mode)
+         ("\\.ts\\'"  . typescript-ts-mode)
+         ("\\.jsx\\'" . tsx-ts-mode)
+         ("\\.json\\'" .  json-ts-mode)
+         ("\\.Dockerfile\\'" . dockerfile-ts-mode)
+         ("\\.prisma\\'" . prisma-ts-mode))
+         ;; More modes defined here...
+
+  :preface
+  (defun os/setup-install-grammars ()
+    "Install Tree-sitter grammars if they are absent."
+    (interactive)
+    (dolist (grammar
+             '((css . ("https://github.com/tree-sitter/tree-sitter-css" "v0.20.0"))
+               (bash "https://github.com/tree-sitter/tree-sitter-bash")
+               (html . ("https://github.com/tree-sitter/tree-sitter-html" "v0.20.1"))
+               (javascript . ("https://github.com/tree-sitter/tree-sitter-javascript" "v0.21.2" "src"))
+               (json . ("https://github.com/tree-sitter/tree-sitter-json" "v0.20.2"))
+               (python . ("https://github.com/tree-sitter/tree-sitter-python" "v0.20.4"))
+               (go "https://github.com/tree-sitter/tree-sitter-go" "v0.20.0")
+               (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+               (make "https://github.com/alemuller/tree-sitter-make")
+               (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+               (cmake "https://github.com/uyha/tree-sitter-cmake")
+               (c "https://github.com/tree-sitter/tree-sitter-c")
+               (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+               (toml "https://github.com/tree-sitter/tree-sitter-toml")
+               (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "v0.20.3" "tsx/src"))
+               (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "v0.20.3" "typescript/src"))
+               (yaml . ("https://github.com/ikatyang/tree-sitter-yaml" "v0.5.0"))
+               (prisma "https://github.com/victorhqc/tree-sitter-prisma")))
+      (add-to-list 'treesit-language-source-alist grammar)
+      ;; Only install `grammar' if we don't already have it
+      ;; installed. However, if you want to *update* a grammar then
+      ;; this obviously prevents that from happening.
+      (unless (treesit-language-available-p (car grammar))
+        (treesit-install-language-grammar (car grammar)))))
+
+  ;; Optional, but recommended. Tree-sitter enabled major modes are
+  ;; distinct from their ordinary counterparts.
+  ;;
+  ;; You can remap major modes with `major-mode-remap-alist'. Note
+  ;; that this does *not* extend to hooks! Make sure you migrate them
+  ;; also
+  (dolist (mapping
+           '((python-mode . python-ts-mode)
+             (css-mode . css-ts-mode)
+             (typescript-mode . typescript-ts-mode)
+             (js-mode . typescript-ts-mode)
+             (js2-mode . typescript-ts-mode)
+             (c-mode . c-ts-mode)
+             (c++-mode . c++-ts-mode)
+             (c-or-c++-mode . c-or-c++-ts-mode)
+             (bash-mode . bash-ts-mode)
+             (css-mode . css-ts-mode)
+             (json-mode . json-ts-mode)
+             (js-json-mode . json-ts-mode)
+             (sh-mode . bash-ts-mode)
+             (sh-base-mode . bash-ts-mode)))
+    (add-to-list 'major-mode-remap-alist mapping))
+  :config
+  (os/setup-install-grammars))
+
+(use-package typescript-ts-mode
+  :mode (("\\.ts\\'" . typescript-ts-mode)
+         ("\\.tsx\\'" . tsx-ts-mode))
+  :hook (typescript-ts-base-mode . (lambda ()
+                                     (setq js-indent-level 2)
+                                     (electric-pair-local-mode)
+                                     (lsp-deferred)
+                                     (lsp-lens-mode)
+                                     (dolist (h '(lsp-format-buffer
+                                                  lsp-organize-imports))
+                                       (add-hook 'before-save-hook h nil t)))))
+
+(use-package tab-bar
+  :straight nil
+  :after ef-themes
+  :defer t
+  :custom
+  (tab-bar-close-button-show nil)
+  (tab-bar-new-button-show nil)
+  (tab-bar-tab-hints t)
+  (tab-bar-auto-width nil)
+  (tab-bar-separator " ")
+  (tab-bar-format '(tab-bar-format-tabs-groups
+                                                        Tab-bar-format-tabs tab-bar-separator
+                                                        tab-bar-format-add-tab))
+  :init
+  ;;; --- OPTIONAL INTERNAL FN OVERRIDES TO DECORATE NAMES
+  (defun tab-bar-tab-name-format-hints (name _tab i)
+          (if tab-bar-tab-hints (concat (format "»%d«" i) "") name))
+
+  (defun tab-bar-tab-group-format-default (tab _i &optional current-p)
+        (propertize
+         (concat (funcall tab-bar-tab-group-function tab))
+         'face (if current-p 'tab-bar-tab-group-current 'tab-bar-tab-group-inactive)))
+
+
+     ;;; --- UTILITIES FUNCTIONS
+  (defun emacs-solo/tab-group-from-project ()
+        "Call `tab-group` with the current project name as the group."
+        (interactive)
+        (when-let* ((proj (project-current))
+                    (name (file-name-nondirectory
+                           (directory-file-name (project-root proj)))))
+         (tab-group (format "[%s]" name))))
+
+  (defun emacs-solo/tab-switch-to-group ()
+   "Prompt for a tab group and switch to its first tab.
+Uses position instead of index field."
+   (interactive)
+   (let* ((tabs (funcall tab-bar-tabs-function)))
+        (let* ((groups (delete-dups (mapcar (lambda (tab)
+                                             (funcall tab-bar-tab-group-function tab))
+                                            tabs)))
+               (group (completing-read "Switch to group: " groups nil t)))
+         (let ((i 1) (found nil))
+              (dolist (tab tabs)
+               (let ((tab-group (funcall tab-bar-tab-group-function tab)))
+                    (when (and (not found)
+                           (string= tab-group group))
+                     (setq found t)
+                     (tab-bar-select-tab i)))
+               (setq i (1+ i)))))))
+
+             ;;; --- EXTRA KEYBINDINGS
+  (global-set-key (kbd "C-x t P") #'emacs-solo/tab-group-from-project)
+  (global-set-key (kbd "C-x t g") #'emacs-solo/tab-switch-to-group)
+
+  ;; (custom-set-faces
+  ;;  `(tab-bar
+  ;;    ((t (:background ,(ef-themes-with-colors bg-main) :foreground ,(ef-themes-with-colors fg-alt)))))
+  ;;  `(tab-bar-tab
+  ;;    ((t (:background ,(ef-themes-with-colors bg-alt) :underline t))))
+  ;;  '(tab-bar-tab-inactive
+  ;;    ((t ()))) ;; :background "#232635" ;; uncomment to use this
+  ;;  ;; :box (:line-width 1 :color "#676E95")
+
+  ;; '(tab-bar-tab-group-current
+  ;;   ((t (:background "#232635" :foreground "#A6Accd" :underline t))))
+   ;;'(tab-bar-tab-group-inactive
+    ;; ((t (:background "#232635" :foreground "#777")))))
+                                                                   ;;; --- TURNS ON BY DEFAULT
+  (tab-bar-mode 1))
+
+(use-package cus-edit
+  :straight nil
+  :config
+  (setq custom-file (concat user-emacs-directory "to-be-dumped.el")))
+
+;; === WORKING GNUS + AUTH-SOURCE-1PASSWORD CONFIGURATION ===
+
+;; === AUTH-SOURCE-1PASSWORD SETUP ===
+(use-package auth-source-1password
+  :straight (auth-source-1password
+             :type git
+             :host github
+             :repo "dlobraico/auth-source-1password")
+  :config
+  (auth-source-1password-enable))
+
+;; === FIX FOR AUTH-SOURCE-1PASSWORD BUG ===
+;; auth-source-1password can't handle hostname lists, but Gnus passes lists
+;; This advice converts lists to strings for compatibility
+(defun fix-1password-host-list (orig-fun &rest args)
+  "Convert hostname list to string for auth-source-1password compatibility."
+  (let ((host (plist-get args :host)))
+    (when (listp host)
+      ;; Convert list to single hostname string
+      (setq args (plist-put args :host
+                           (or (seq-find (lambda (h) (string-match-p "\\." h)) host)
+                               (car host))))))
+  (apply orig-fun args))
+
+(advice-add 'auth-source-search :around #'fix-1password-host-list)
+
+;; === BASIC USER INFORMATION ===
+(setq user-full-name "dr"
+      user-mail-address "d@25.wf")  ; Match your 1Password entry
+
+;; === AUTH-SOURCE CONFIGURATION ===
+(setq auth-sources '(1password))
+
+;; === GNUS SERVER CONFIGURATION ===
+(setq gnus-select-method '(nnnil ""))
+
+;; Configure Fastmail IMAP - using full hostname as server name
+(setq gnus-secondary-select-methods
+      '((nnimap "imap.fastmail.com"
+                (nnimap-address "imap.fastmail.com")
+                (nnimap-server-port 993)
+                (nnimap-stream ssl))))
+
+;; === SMTP CONFIGURATION ===
+(setq message-send-mail-function 'smtpmail-send-it
+      smtpmail-smtp-server "smtp.fastmail.com"
+      smtpmail-smtp-service 587
+      smtpmail-stream-type 'starttls)
+
+;; === SENT MAIL CONFIGURATION ===
+(setq gnus-message-archive-group "nnimap+imap.fastmail.com:Sent")
+
+;; === BASIC GNUS PREFERENCES ===
+(setq gnus-auto-select-first nil
+      gnus-thread-sort-functions '(gnus-thread-sort-by-most-recent-date))
+
+;; === HTML EMAIL SUPPORT WITH W3M ===
+;; Install w3m first: brew install w3m (macOS) or apt-get install w3m (Linux)
+
+;; Configure w3m for HTML email rendering
+(when (executable-find "w3m")
+  (setq gnus-html-renderer 'w3m)
+
+  ;; w3m-specific settings for better email rendering
+  (setq w3m-display-inline-images t          ; Show images in HTML emails
+        w3m-use-cookies nil                   ; Don't use cookies for email
+        w3m-default-display-inline-images t   ; Auto-display images
+        w3m-toggle-inline-images-permanently t)
+
+  ;; Configure how w3m handles HTML content
+  (setq gnus-article-wash-function 'gnus-article-wash-html-with-w3m)
+
+  ;; Show images by default (can be toggled with 'i' in article view)
+  (setq gnus-blocked-images nil)
+
+  ;; Better text wrapping in w3m
+  (setq w3m-fill-column 80)
+
+  ;; Configure w3m to work better with dark themes (if applicable)
+  ;; (setq w3m-default-background-color "black")
+  ;; (setq w3m-default-foreground-color "white")
+
+  (message "w3m configured for HTML email rendering"))
+
+;; Fallback to built-in renderer if w3m not available
+(unless (executable-find "w3m")
+  (setq gnus-html-renderer 'shr)
+  (message "w3m not found, using built-in shr renderer"))
+
+;; === HTML EMAIL VIEWING ENHANCEMENTS ===
+;; Better handling of multipart emails
+(setq gnus-mime-display-multipart-related-as-mixed t)
+
+;; Show more MIME parts by default
+(setq gnus-mime-display-multipart-alternative-as-mixed nil)
+
+;; Configure article washing for HTML content
+(setq gnus-article-wash-function 'gnus-article-wash-html)
+
+(use-package nerd-icons
+  :custom
+  (nerd-icons-font-family "Symbols Nerd Font Mono"))
+                                        ;(nerd-icons-scale-factor 1.5))
+
+(use-package doom-themes
+  :config
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config)
+  ;; Enable custom neotree theme (nerd-icons must be installed!)
+  (doom-themes-neotree-config)
+  ;; or for treemacs user s
+  ;;(setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+  ;; (doom-themes-treemacs-config)
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config)
+
+  (defvar after-enable-theme-hook nil
+   "Normal hook run after enabling a theme.")
+  (defun run-after-enable-theme-hook (&rest _args))
+  "Run `after-enable-theme-hook'."
+  (run-hooks 'after-enable-theme-hook)
+
+  (advice-add 'enable-theme :after #'run-after-enable-theme-hook))
+
+(use-package ef-themes)
+  ;; :config)
+  ;; (setq ef-themes-headings ; read the manual's entry or the doc string
+  ;;     '((0 variable-pitch 1.4)
+  ;;       (1 variable-pitch 1.3)
+  ;;       (2 variable-pitch 1.2)
+  ;;       (3 variable-pitch 1.1)
+  ;;       (4 variable-pitch 1 regular)
+  ;;       (5 variable-pitch 1 regular) ; absence of weight means `bold'
+  ;;       (6 variable-pitch 1 light)
+  ;;       (7 variable-pitch 1 light)
+  ;;       (t variable-pitch 1 light)))
+
+  ;; ;; ;; (setq ef-themes-to-toggle '(ef-frost ef-night))
+  ;; ;; ;; They are nil by default...
+  ;; (setq ef-themes-mixed-fonts t
+  ;;       ef-themes-variable-pitch-ui t)
+
+  ;; ;; ;; Disable all other themes to avoid awkward blending:
+  ;; (mapc #'disable-theme custom-enabled-themes))
+  ;; ;; (if (display-graphic-p)
+  ;; ;;   (load-theme 'ef-night :no-confirm)
+  ;; ;;  (load-theme 'doom-moonlight :no-confirm)))
+
+(use-package circadian
+  :after (tokyonight-themes doom-themes)
+  :config
+  (setq circadian-themes '((:sunrise . ef-light)
+                           (:sunset . doom-one)))
+                           ;; (:sunset . ef-night)))
+
+   ;; Ef theme handles this directly, this hook's needed for other
+   ;; themes tho
+  (add-hook 'circadian-after-load-theme-hook #'(lambda (theme)
+                                                 (pyrho--set-faces)))
+  (circadian-setup))
+
+(use-package tokyonight-themes
+  :straight (tokyonight-themes
+             :type git
+             :host github
+             :repo "xuchengpeng/tokyonight-themes"))
+  ;(load-theme 'tokyonight-day :no-confirm))
+
+(use-package writeroom-mode
+  :config
+  (setq writeroom-fullscreen-effect 'maximized)
+  (add-to-list 'writeroom-global-effects 'writeroom-set-internal-border-width)
+  :hook (writeroom-mode . (lambda ()
+                            (display-line-numbers-mode
+                             (if writeroom-mode -1 1))
+                            (tab-bar-mode
+                             (if writeroom-mode -1 1)))))
+
+(use-package beacon
+  :config
+  (beacon-mode 1))
+
+(use-package doom-modeline
+  :init (doom-modeline-mode 1)
+  :config
+  (setq doom-modeline-modal-icon t
+        doom-modeline-height 30
+        doom-modeline-spc-face-overrides (list :family (face-attribute 'fixed-pitch :family))
+        doom-modeline-buffer-modification-icon nil)
+  :hook after-init)
+
+(use-package mood-line
+  :disabled
+  ;; Enable mood-line
+  :config
+
+  ;; (defun pyrho/mood-line-segment-mode-icon()
+  ;;  (propertize (nerd-icons-icon-for-mode major-mode :face 'nerd-icons-blue)
+  ;;              'face '(:inherit mood-line-important :height 1.3)
+  ;;              'display '(raise -0.05)))  ; Lower the icon to center it
+
+  (defun pyrho/mood-line-segment-mode-icon()
+   (propertize (nerd-icons-icon-for-mode major-mode :height 0.8)
+               'display '(raise -0.05)))
+        ;; (setq mood-line-format mood-line-format-default)
+  (setq mood-line-format
+        (mood-line-defformat
+
+         :left
+         (((mood-line-segment-modal)            . " ")
+          ((or (mood-line-segment-buffer-status)
+               (mood-line-segment-client)
+               " ")                             . " ")
+          ((mood-line-segment-project)          . "/")
+          ((mood-line-segment-buffer-name)      . "  ")
+          ;; ((mood-line-segment-anzu)             . "  ")
+          ;; ((mood-line-segment-multiple-cursors) . "  ")
+          ;; (mood-line-segment-cursor-position)
+          ;; #(":" 0 1 (face mood-line-unimportant))
+          ;; ((mood-line-segment-cursor-point)     . " ")
+          ;; ((mood-line-segment-region)           . " ")
+          (mood-line-segment-scroll))
+
+         :right
+         ;; (((mood-line-segment-indentation) . "  "))
+          ;; ((mood-line-segment-eol)         . "  ")
+          ;; ((mood-line-segment-encoding)    . "  ")
+
+         (((mood-line-segment-vc)          . "  ")
+          ;; ((mood-line-segment-mode-icon)   . "  ")
+          ((pyrho/mood-line-segment-mode-icon) . " • ")
+          ((mood-line-segment-major-mode)  . "  ")
+          ((mood-line-segment-misc-info)   . "  ")
+          ((mood-line-segment-checker)     . "  ")
+          ((mood-line-segment-process)     . "  "))))
+ (mood-line-mode)
+
+ (defun pyrho/set-mode-line-boxes ()
+  "Set mode-line box attributes."
+  (set-face-attribute 'mode-line nil
+                      :box `(:line-width 5 :color ,(face-background 'mode-line)))
+  (set-face-attribute 'mode-line-inactive nil
+                      :box `(:line-width 5 :color ,(face-background 'mode-line-inactive))))
+
+  ;; Apply now and after theme changes
+ (pyrho/set-mode-line-boxes)
+ (add-hook 'enable-theme-functions (lambda (&rest _) (pyrho/set-mode-line-boxes)))
+  ;; (with-eval-after-load 'mood-line
+  ;;  (set-face-attribute 'mode-line nil
+  ;;                   :box `(:line-width 5 :color ,(face-background 'mode-line)))
+  ;;  (set-face-attribute 'mode-line-inactive nil
+  ;;                   :box `(:line-width 5 :color ,(face-background 'mode-line-inactive))))
+
+;; Use pretty Fira Code-compatible glyphs
+ :custom
+ (mood-line-glyph-alist mood-line-glyphs-fira-code))
+
+(use-package highlight-numbers
+  :hook (prog-mode . highlight-numbers-mode))
+
+(use-package highlight-escape-sequences
+  :hook (prog-mode . hes-mode))
+
+;; use-package with package.el:
+(use-package dashboard
+  :config
+  (dashboard-setup-startup-hook)
+  (setq dashboard-center-content t)
+  ;; (setq dashboard-startup-banner "~/rc/emacs/splash.txt")
+  (setq dashboard-startup-banner (cons
+                                  "~/rc/emacs/doom.svg"
+                                  "~/rc/emacs/splash.txt"))
+  (setq dashboard-image-banner-max-width 200)
+  (setq dashboard-image-banner-max-height 200)
+
+  ;; vertically center content
+  (setq dashboard-vertically-center-content t)
+  (setq dashboard-items '((recents   . 5)
+                          (bookmarks . 5)
+                          (projects  . 5)
+                          (agenda    . 5)))
+  (setq dashboard-display-icons-p t)
+  (setq dashboard-icon-type 'nerd-icons)
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons t))
+
+(use-package perspective
+  :disabled
+  :bind (("C-x b" . persp-switch-to-buffer*)
+         ("C-x k" . persp-kill-buffer*))
+  :custom
+  (persp-state-default-file "~/.emacs.d/perspectives/defaut")
+  (persp-mode-prefix-key (kbd "C-c M-p"))  ; pick your own prefix key here
+  :init
+  (persp-mode)
+  :hook
+  (kill-emacs-hook . persp-state-save)
+  :config
+   (defun my/switch-to-project-perspective (project-dir)
+    "Switch to or create a perspective for PROJECT-DIR."
+    (let ((persp-name (file-name-nondirectory
+                       (directory-file-name project-dir))))
+      (persp-switch persp-name)))
+
+   (advice-add 'project-switch-project :after
+               (lambda (dir &rest _)
+                 (my/switch-to-project-perspective dir))))
+
+(use-package meow
+  :demand t
+
+  :custom
+  (meow-use-clipboard t)
+  (meow-goto-line-function 'consult-goto-line)
+
+  :straight (meow :type git :host github :repo "meow-edit/meow")
+
+  :config
+  (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+  (setq meow-cheatsheet-physical-layout meow-cheatsheet-physical-layout-ansi)
+
+  (add-to-list 'meow-mode-state-list '(pgmacs-mode . motion))
+  (add-to-list 'meow-mode-state-list '(vterm-mode . insert))
+
+  (defun meow-negative-find ()
+    (interactive) (let
+                    ((current-prefix-arg -1))
+                    (call-interactively 'meow-find)))
+  (defun meow-negative-till ()
+    (interactive) (let
+                      ((current-prefix-arg -1))
+                      (call-interactively 'meow-till)))
+
+  ;; Create a code block meow-thing for org and markdown
+  (meow-thing-register 'org-md-block
+                   '(regexp "^[ \\|\t]*\\(#\\+begin_\\|```\\)[^\n]*\n" "^[ \\|\t]*\\(#\\+end_[^\n]*\\|```\\)$")
+                   '(regexp "^[ \\|\t]*\\(#\\+begin_\\|```\\)[^\n]*\n" "^[ \\|\t]*\\(#\\+end_[^\n]*\\|```\\)$"))
+
+  (add-to-list 'meow-char-thing-table '(?B . org-md-block))
+
+  ;; Remove some native emacs bindings that interfer with meow.
+  (dolist (key (list (kbd "C-x C-t")
+                     (kbd "C-x C-o")
+                     (kbd "C-x C-0")))
+    (global-unset-key key))
+
+  ;; Custom keymap dispatch
+     ;; This is the default state for special buffers (like dired)
+     ;; Only j and k are bound to move up and down, SPC is still bound to the
+     ;; leader key, to access actual SPC, press it twice.
+ (meow-motion-define-key
+  '("j" . meow-next)
+  '("k" . meow-prev)
+  '("<escape>" . ignore))
+
+ (meow-leader-define-key
+  ;; Use SPC (0-9) for digit arguments.
+  '("1" . meow-digit-argument)
+  '("2" . meow-digit-argument)
+  '("3" . meow-digit-argument)
+  '("4" . meow-digit-argument)
+  '("5" . meow-digit-argument)
+  '("6" . meow-digit-argument)
+  '("7" . meow-digit-argument)
+  '("8" . meow-digit-argument)
+  '("9" . meow-digit-argument)
+  '("0" . meow-digit-argument)
+  '("/" . meow-keypad-describe-key)
+  '("?" . meow-cheatsheet)
+
+  ;; The key concept is that you want to bind
+  ;; here things that would have to be escaped with SPC during the sequence.
+  ;; For example here for ~C-x p~, without this you would have to do
+  ;; SPC x SPC P
+  ;; '("p" . "C-x p")
+  ;; '("b" . "C-x C-b")
+  ;; '("w" . "C-x w")
+  (cons "s" search-map))
+
+
+ (meow-normal-define-key
+  '("0" . meow-expand-0)
+  '("9" . meow-expand-9)
+  '("8" . meow-expand-8)
+  '("7" . meow-expand-7)
+  '("6" . meow-expand-6)
+  '("5" . meow-expand-5)
+  '("4" . meow-expand-4)
+  '("3" . meow-expand-3)
+  '("2" . meow-expand-2)
+  '("1" . meow-expand-1)
+  '("`" . avy-goto-char-2)
+  '("-" . negative-argument)
+  '(";" . meow-reverse)
+  '("," . meow-inner-of-thing)
+  '("/" . consult-line)
+  '("." . meow-bounds-of-thing)
+  '("[" . meow-beginning-of-thing)
+  '("]" . meow-end-of-thing)
+  '("a" . meow-append)
+  '("A" . meow-open-below)
+  '("b" . meow-back-word)
+  '("B" . meow-back-symbol)
+  '("c" . meow-change)
+  '("C" . meow-comment)
+  '("d" . meow-delete)
+  ;; '("<down>" . (lambda()
+  ;;               (interactive)
+  ;;               (scroll-up-command (/ (window-height) 2))))
+  ;; '("<up>" . (lambda()
+  ;;             (interactive)
+  ;;             (scroll-down-command (/ (window-height) 2))))
+  '("D" . meow-backward-delete)
+  '("e" . meow-next-word)
+  '("E" . meow-next-symbol)
+  '("f" . meow-find)
+  '("g" . meow-cancel-selection)
+  '("G" . meow-grab)
+  '("h" . meow-left)
+  '("H" . meow-left-expand)
+  '("i" . meow-insert)
+  '("I" . meow-open-above)
+  '("j" . meow-next)
+  '("J" . meow-next-expand)
+  '("k" . meow-prev)
+  '("K" . meow-prev-expand)
+  '("l" . meow-right)
+  '("L" . meow-right-expand)
+  '("m" . meow-join)
+  '("n" . meow-search)
+  '("o" . meow-block)
+  '("O" . meow-to-block)
+  '("p" . meow-yank)
+  ;;'("q" . meow-quit)
+  '("Q" . meow-goto-line)
+  '("r" . meow-replace)
+  '("R" . meow-swap-grab)
+  '("s" . meow-kill)
+  '("t" . meow-till)
+  '("u" . meow-undo)
+  '("U" . undo-redo)
+  '("v" . meow-visit)
+  '("w" . meow-mark-word)
+  '("W" . meow-mark-symbol)
+  '("x" . meow-line)
+  '("y" . meow-save)
+  '("Y" . meow-sync-grab)
+  '("z" . meow-pop-selection)
+  '("'" . repeat)
+
+  ;; Embrace
+  '("\"" . embrace-commander)
+
+  ;; Jumps ?
+  '("!" . meow-pop-to-mark)
+  '("@" . meow-unpop-to-mark)
+
+  '("\\ s" . save-buffer)
+
+  ;; vim-isms
+  '(": w" . save-buffer)
+  ;; '("C-u" . scroll-down)
+  ;; '("C-d" . scroll-up)
+
+  '("<escape>" . ignore))
+
+ (meow-define-keys 'insert
+     '("C-u" . scroll-down)
+     '("C-d" . scroll-up)
+     '("s-s" . save-buffer))
+
+ (meow-global-mode 1))
+
+;; From https://aatmunbaxi.netlify.app/comp/meow_state_org_speed/
+(setq meow-org-motion-keymap (make-keymap))
+(meow-define-state org-motion
+  "Org-mode structural motion"
+  :lighter "[O]"
+  :keymap meow-org-motion-keymap)
+
+;(add-to-list 'meow-mode-state-list '(org-mode . org-motion))
+
+(meow-define-keys 'org-motion
+  '("<escape>" . meow-normal-mode)
+  ;; Moving between headlines
+  '("k" .  org-previous-visible-heading)
+  '("j" .  org-next-visible-heading)
+  ;; Moving between headings at the same level
+  '("p" .  org-backward-heading-same-level)
+  '("n" .  org-forward-heading-same-level)
+  ;; Moving subtrees themselves
+  '("K" .  org-move-subtree-up)
+  '("J" .  org-move-subtree-down)
+  ;; Subtree de/promotion
+  '("L" .  org-demote-subtree)
+  '("H" .  org-promote-subtree)
+  ;; Completion-style search of headings
+  '("v" .  consult-org-heading)
+  ;; Setting subtree metadata
+  '("l" .  org-set-property)
+  '("t" .  org-todo)
+  '("d" .  org-deadline)
+  '("s" .  org-schedule)
+  '("e" .  org-set-effort)
+  ;; Block navigation
+  '("b" .  org-previous-block)
+  '("f" .  org-next-block)
+  ;; Narrowing/widening
+  '("N" .  org-narrow-to-subtree)
+  '("W" .  widen))
+
+;;(meow-define-keys 'normal
+;;  '("O" . meow-org-motion-mode))
+
+(use-package meow-tree-sitter
+  :config
+  (meow-tree-sitter-register-defaults))
+
+(use-package embrace
+  :straight (embrace
+             :type git
+             :host github
+             :repo "cute-jumper/embrace.el"))
+
+(use-package avy
+  :straight (avy :type git :host github :repo "abo-abo/avy")
+  :after general)
+
+(use-package magit
+  :bind ("C-x g" . magit-status))
+
+(use-package git-gutter
+  :hook (prog-mode . git-gutter-mode)
+  :config
+  (setq git-gutter:update-interval 0.02))
+
+(use-package git-gutter-fringe
+  :config
+  (define-fringe-bitmap 'git-gutter-fr:added [224] nil nil '(center repeated))
+  (define-fringe-bitmap 'git-gutter-fr:modified [224] nil nil '(center repeated))
+  (define-fringe-bitmap 'git-gutter-fr:deleted [128 192 224 240] nil nil 'bottom))
+
+(use-package forge
+  :after magit)
+
+;; Enable Vertico.
+(use-package vertico
+  :custom
+  (vertico-scroll-margin 0) ;; Different scroll margin
+  (vertico-count 20) ;; Show more candidates
+  (vertico-resize t) ;; Grow and shrink the Vertico minibuffer
+  (vertico-cycle t) ;; Enable cycling for `vertico-next/previous'
+  :hook
+  (after-init . vertico-mode))
+
+;; Persist history over Emacs restarts. Vertico sorts by history position.
+(use-package savehist
+  :init
+  (savehist-mode)
+  (recentf-mode 1))
+
+;; Emacs minibuffer configurations.
+(use-package emacs
+  :custom
+  ;; Support opening new minibuffers from inside existing minibuffers.
+  (enable-recursive-minibuffers t)
+  ;; Hide commands in M-x which do not work in the current mode.  Vertico
+  ;; commands are hidden in normal buffers. This setting is useful beyond
+  ;; Vertico.
+  (read-extended-command-predicate #'command-completion-default-include-p)
+  ;; Do not allow the cursor in the minibuffer prompt
+  (minibuffer-prompt-properties
+   '(read-only t cursor-intangible t face minibuffer-prompt)))
+
+;; Optionally use the `orderless' completion style.
+(use-package orderless
+  :custom
+  ;; Configure a custom style dispatcher (see the Consult wiki)
+  ;;(orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch))
+  ;;(orderless-component-separator #'orderless-escapable-split-on-space)
+  (completion-styles '(orderless basic))
+  (completion-category-defaults nil)
+  (completion-category-overrides '((file (styles partial-completion)))))
+
+;; Configure directory extension.
+(use-package vertico-directory
+  :after vertico
+  :straight nil
+  ;; More convenient directory navigation commands
+  :bind (:map vertico-map
+              ("RET" . vertico-directory-enter)
+              ("DEL" . vertico-directory-delete-char)
+              ("M-DEL" . vertico-directory-delete-word))
+  ;; Tidy shadowed file names
+  :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
+
+          ;;;; Code Completion
+          ;;;; Code Completion
+(use-package corfu
+  ;; Optional customizations
+  :custom
+  (corfu-cycle t)                 ; Allows cycling through candidates
+  (corfu-auto t)                  ; Enable auto completion
+  (corfu-auto-prefix 2)           ; Minimum length of prefix for completion
+  (corfu-auto-delay 0)            ; No delay for completion
+  (corfu-popupinfo-delay '(0.5 . 0.2))  ; Automatically update info popup after that numver of seconds
+  (corfu-preview-current 'insert) ; insert previewed candidate
+  (corfu-preselect 'prompt)
+  (corfu-on-exact-match nil)      ; Don't auto expand tempel snippets
+  ;; Optionally use TAB for cycling, default is `corfu-complete'.
+  :bind (:map corfu-map
+              ("M-SPC"      . corfu-insert-separator)
+              ("TAB"        . corfu-next)
+              ([tab]        . corfu-next)
+              ("S-TAB"      . corfu-previous)
+              ([backtab]    . corfu-previous)
+              ("S-<return>" . corfu-insert)
+              ("RET"        . corfu-insert))
+
+  :init
+  (global-corfu-mode)
+  (corfu-history-mode)
+  (corfu-popupinfo-mode) ; Popup completion info
+  :config
+  (add-hook 'eshell-mode-hook
+            (lambda () (setq-local corfu-quit-at-boundary t
+                                   corfu-quit-no-match t
+                                   corfu-auto nil)
+              (corfu-mode))
+            nil
+            t))
+
+;; A few more useful configurations...
+(use-package emacs
+  :custom
+  ;; TAB cycle if there are only few candidates
+  (completion-cycle-threshold 3)
+
+  ;; Enable indentation+completion using the TAB key.
+  ;; `completion-at-point' is often bound to M-TAB.
+  (tab-always-indent 'complete)
+
+  ;; Emacs 30 and newer: Disable Ispell completion function.
+  ;; Try `cape-dict' as an alternative.
+  (text-mode-ispell-word-completion nil)
+
+  ;; Hide commands in M-x which do not apply to the current mode.  Corfu
+  ;; commands are hidden, since they are not used via M-x. This setting is
+  ;; useful beyond Corfu.
+  (read-extended-command-predicate #'command-completion-default-include-p))
+
+(use-package marginalia
+  :config
+  (marginalia-mode 1))
+
+(use-package embark
+  :bind (("C-." . embark-act)
+         :map minibuffer-local-map
+         ("C-c C-c" . embark-collect)
+         ("C-c C-e" . embark-export)))
+
+;; The `embark-consult' package is glue code to tie together `embark'
+;; and `consult'.
+(use-package embark-consult)
+
+;; The `wgrep' packages lets us edit the results of a grep search
+;; while inside a `grep-mode' buffer.  All we need is to toggle the
+;; editable mode, make the changes, and then type C-c C-c to confirm
+;; or C-c C-k to abort.
+;;
+;; Further reading: https://protesilaos.com/emacs/dotemacs#h:9a3581df-ab18-4266-815e-2edd7f7e4852
+(use-package wgrep
+  :bind ( :map grep-mode-map
+          ("e" . wgrep-change-to-wgrep-mode)
+          ("C-x C-q" . wgrep-change-to-wgrep-mode)
+          ("C-c C-c" . wgrep-finish-edit)))
+
+(use-package consult
+  :bind
+  ("C-x C-b" . consult-buffer)
+
+  :config
+
+
+  ;; Add the source to consult-buffer-sources
+  (add-to-list 'consult-buffer-sources 'consult--source-org-files 'append))
+
+;; Example configuration for Consult
+(use-package consult
+  ;; Replace bindings. Lazily loaded by `use-package'.
+  :bind (;; C-c bindings in `mode-specific-map'
+         ("C-c M-x" . consult-mode-command)
+         ("C-c h" . consult-history)
+         ("C-c k" . consult-kmacro)
+         ("C-c m" . consult-man)
+         ("C-c i" . consult-info)
+         ([remap Info-search] . consult-info)
+         ;; C-x bindings in `ctl-x-map'
+         ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+         ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
+         ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+         ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+         ("C-x t b" . consult-buffer-other-tab)    ;; orig. switch-to-buffer-other-tab
+         ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
+         ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
+         ;; Custom M-# bindings for fast register access
+         ("M-#" . consult-register-load)
+         ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
+         ("C-M-#" . consult-register)
+         ;; Other custom bindings
+         ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+         ;; M-g bindings in `goto-map'
+         ("M-g e" . consult-compile-error)
+         ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
+         ("M-g g" . consult-goto-line)             ;; orig. goto-line
+         ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+         ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
+         ("M-g m" . consult-mark)
+         ("M-g k" . consult-global-mark)
+         ("M-g i" . consult-imenu)
+         ("M-g I" . consult-imenu-multi)
+         ;; M-s bindings in `search-map'
+         ("M-s d" . consult-find)                  ;; Alternative: consult-fd
+         ("M-s c" . consult-locate)
+         ("M-s g" . consult-grep)
+         ("M-s G" . consult-git-grep)
+         ("M-s r" . consult-ripgrep)
+         ("M-s l" . consult-line)
+         ("M-s L" . consult-line-multi)
+         ("M-s k" . consult-keep-lines)
+         ("M-s u" . consult-focus-lines)
+         ;; Isearch integration
+         ("M-s e" . consult-isearch-history)
+         :map isearch-mode-map
+         ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
+         ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
+         ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
+         ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
+         ;; Minibuffer history
+         :map minibuffer-local-map
+         ("M-s" . consult-history)                 ;; orig. next-matching-history-element
+         ("M-r" . consult-history))                ;; orig. previous-matching-history-element
+
+  ;; Enable automatic preview at point in the *Completions* buffer. This is
+  ;; relevant when you use the default completion UI.
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+
+  ;; The :init configuration is always executed (Not lazy)
+  :init
+
+  ;; Tweak the register preview for `consult-register-load',
+  ;; `consult-register-store' and the built-in commands.  This improves the
+  ;; register formatting, adds thin separator lines, register sorting and hides
+  ;; the window mode line.
+  (advice-add #'register-preview :override #'consult-register-window)
+  (setq register-preview-delay 0.5)
+
+  ;; Use Consult to select xref locations with preview
+  (setq xref-show-xrefs-function #'consult-xref
+        xref-show-definitions-function #'consult-xref)
+
+  ;; Configure other variables and modes in the :config section,
+  ;; after lazily loading the package.
+
+  :config
+  ;; Define the custom source for org files
+  (defvar consult--source-org-files
+    `(:name "Org Files"
+            :narrow ?o
+            :category file
+            :face consult-file
+            :history file-name-history
+            :action ,(lambda (file)
+                       (find-file (expand-file-name file "~/org/")))
+            :items ,(lambda ()
+                      (mapcar (lambda (file)
+                                (file-relative-name file "~/org/"))
+                              (seq-filter (lambda (file)
+                                            (not (string-match-p "/roam/" file)))
+                                          (directory-files-recursively "~/org/" "\\.org$")))))
+    "Custom consult source for org files in ~/org directory.")
+
+
+  ;; Optionally configure preview. The default value
+  ;; is 'any, such that any key triggers the preview.
+  ;; (setq consult-preview-key 'any)
+  ;; (setq consult-preview-key "M-.")
+  ;; (setq consult-preview-key '("S-<down>" "S-<up>"))
+  ;; For some commands and buffer sources it is useful to configure the
+  ;; :preview-key on a per-command basis using the `consult-customize' macro.
+  (consult-customize
+   consult-theme :preview-key '(:debounce 0.2 any)
+   consult-ripgrep consult-git-grep consult-grep consult-man
+   consult-bookmark consult-recent-file consult-xref
+   consult--source-bookmark consult--source-file-register
+   consult--source-recent-file consult--source-project-recent-file
+   ;; :preview-key "M-."
+   :preview-key '(:debounce 0.4 any))
+
+  ;; Optionally configure the narrowing key.
+  ;; Both < and C-+ work reasonably well.
+  (setq consult-narrow-key "<") ;; "C-+"
+
+  ;; Optionally make narrowing help available in the minibuffer.
+  ;; You may want to use `embark-prefix-help-command' or which-key instead.
+  (keymap-set consult-narrow-map (concat consult-narrow-key " ?") #'consult-narrow-help))
+
+(use-package pg
+  :straight (pg :type git :host github :repo "emarsden/pg-el"))
+(use-package pgmacs
+  :straight (pgmacs :type git :host github :repo "emarsden/pgmacs"))
+
+(use-package smartparens
+  :after (org)
+  :hook (prog-mode text-mode markdown-mode) ;; add `smartparens-mode` to these hooks
+  :config
+  ;; load default config
+  (require 'smartparens-config))
+
+(use-package flycheck
+  :init (global-flycheck-mode)
+  :bind (:map flycheck-mode-map
+              ("M-n" . flycheck-next-error) ; optional but recommended error navigation
+              ("M-p" . flycheck-previous-error)))
+
+(use-package consult-flycheck
+  :straight (consult-flycheck
+             :type git
+             :host github
+             :repo "minad/consult-flycheck"))
+
+(use-package lsp-mode
+  :diminish "LSP"
+  :hook ((lsp-mode . lsp-diagnostics-mode)
+         (lsp-mode . lsp-enable-which-key-integration)
+         ((tsx-ts-mode
+           typescript-ts-mode
+           sql-mode
+           js-ts-mode) . lsp-deferred))
+  :custom
+  (lsp-keymap-prefix "C-c l")           ; Prefix for LSP actions
+  (lsp-completion-provider :none)       ; Using Corfu as the provider
+  (lsp-diagnostics-provider :flycheck)
+  (lsp-session-file (locate-user-emacs-file ".lsp-session"))
+  (lsp-log-io nil)                      ; IMPORTANT! Use only for debugging! Drastically affects performance
+  (lsp-keep-workspace-alive nil)        ; Close LSP server if all project buffers are closed
+  (lsp-idle-delay 0.5)                  ; Debounce timer for `after-change-function'
+  ;; core
+  (lsp-enable-xref nil)                   ; Use xref to find references
+  (lsp-auto-configure t)                ; Used to decide between current active servers
+  (lsp-eldoc-enable-hover t)            ; Display signature information in the echo area
+  (lsp-enable-dap-auto-configure t)     ; Debug support
+  (lsp-enable-file-watchers nil)
+  (lsp-enable-folding t)              ; I disable folding since I use origami
+  (lsp-enable-imenu t)
+  (lsp-enable-indentation nil)          ; I use prettier
+  (lsp-enable-links nil)                ; No need since we have `browse-url'
+  (lsp-enable-on-type-formatting nil)   ; Prettier handles this
+  (lsp-enable-suggest-server-download t) ; Useful prompt to download LSP providers
+  (lsp-enable-symbol-highlighting t)     ; Shows usages of symbol at point in the current buffer
+  (lsp-enable-text-document-color nil)   ; This is Treesitter's job
+
+  (lsp-ui-sideline-show-hover nil)      ; Sideline used only for diagnostics
+  (lsp-ui-sideline-diagnostic-max-lines 20) ; 20 lines since typescript errors can be quite big
+  ;; completion
+  (lsp-completion-enable t)
+  (lsp-completion-enable-additional-text-edit t) ; Ex: auto-insert an import for a completion candidate
+  (lsp-enable-snippet t)                         ; Important to provide full JSX completion
+  (lsp-completion-show-kind t)                   ; Optional
+  ;; headerline
+  (lsp-headerline-breadcrumb-enable t)  ; Optional, I like the breadcrumbs
+  (lsp-headerline-breadcrumb-enable-diagnostics nil) ; Don't make them red, too noisy
+  (lsp-headerline-breadcrumb-enable-symbol-numbers nil)
+  (lsp-headerline-breadcrumb-icons-enable t)
+  ;; modeline
+  (lsp-modeline-code-actions-enable nil) ; Modeline should be relatively clean
+  (lsp-modeline-diagnostics-enable nil)  ; Already supported through `flycheck'
+  (lsp-modeline-workspace-status-enable nil) ; Modeline displays "LSP" when lsp-mode is enabled
+  (lsp-signature-doc-lines 1)                ; Don't raise the echo area. It's distracting
+  (lsp-ui-doc-use-childframe t)              ; Show docs for symbol at point
+  (lsp-eldoc-render-all nil)            ; This would be very useful if it would respect `lsp-signature-doc-lines', currently it's distracting
+  ;; lens
+  (lsp-lens-enable t)                 ; Optional, I don't need it
+  ;; semantic
+  (lsp-semantic-tokens-enable nil)      ; Related to highlighting, and we defer to treesitter
+
+  :init
+  (setq lsp-use-plists t)
+  (defun lsp-booster--advice-json-parse (old-fn &rest args)
+     "Try to parse bytecode instead of json."
+     (or
+      (when (equal (following-char) ?#)
+        (let ((bytecode (read (current-buffer))))
+          (when (byte-code-function-p bytecode)
+            (funcall bytecode))))
+      (apply old-fn args)))
+  (advice-add (if (progn (require 'json)
+                         (fboundp 'json-parse-buffer))
+                  'json-parse-buffer
+                'json-read)
+              :around
+              #'lsp-booster--advice-json-parse)
+
+  (defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
+    "Prepend emacs-lsp-booster command to lsp CMD."
+    (let ((orig-result (funcall old-fn cmd test?)))
+      (if (and (not test?)                             ;; for check lsp-server-present?
+               (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
+               lsp-use-plists
+               (not (functionp 'json-rpc-connection))  ;; native json-rpc
+               (executable-find "emacs-lsp-booster"))
+          (progn
+            (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
+              (setcar orig-result command-from-exec-path))
+            (message "Using emacs-lsp-booster for %s!" orig-result)
+            (cons "emacs-lsp-booster" orig-result))
+        orig-result)))
+  (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
+  :config
+  (setq lsp-sqls-workspace-config-path nil))
+  ;; this does not work, see https://github.com/emacs-lsp/lsp-mode/issues/3200
+  ;; (setq lsp-sqls-connections
+  ;;     '(((driver . "postgresql") (dataSourceName . "host=127.0.0.1 port=5433 user=postgres password=postres dbname=reel sslmode=disable")))))
+
+(use-package lsp-completion
+  :straight nil
+  :no-require
+  :hook ((lsp-mode . lsp-completion-mode)))
+
+(use-package lsp-ui
+  :commands
+  (lsp-ui-doc-show
+   lsp-ui-doc-glance)
+  :bind (:map lsp-mode-map
+              ("C-c C-d" . 'lsp-ui-doc-glance))
+  :after (lsp-mode)
+  :config (setq lsp-ui-doc-enable t
+                                        ;evil-lookup-func #'lsp-ui-doc-glance ; Makes K in evil-mode toggle the doc for symbol at point
+                lsp-ui-doc-show-with-cursor nil      ; Don't show doc when cursor is over symbol - too distracting
+                lsp-ui-doc-include-signature t       ; Show signature
+                lsp-ui-doc-position 'at-point))
+
+(use-package consult-lsp)
+
+(use-package parinfer-rust-mode
+  :init
+  (setq parinfer-rust-auto-download t)
+  :hook (emacs-lisp-mode . parinfer-rust-mode))
+
+(use-package rainbow-delimiters
+  :hook emacs-lisp-mode)
+
+(use-package markdown-mode
+  :hook (markdown-mode . visual-line-mode))
+
+(use-package web-mode
+  :mode (("\\.html?\\'" . web-mode)
+         ("\\.css\\'"   . web-mode)
+         ("\\.json\\'"  . web-mode))
+  :config
+  (setq web-mode-markup-indent-offset 2) ; HTML
+  (setq web-mode-css-indent-offset 2)    ; CSS
+  (setq web-mode-code-indent-offset 2)   ; JS/JSX/TS/TSX
+  (setq web-mode-content-types-alist '(("jsx" . "\\.js[x]?\\'"))))
+
+(use-package gptel
+  :bind ("C-c g" . gptel)
+  :config
+  (gptel-make-preset 'gpt4coding                       ;preset name, a symbol
+    :description "A preset optimized for coding tasks" ;for your reference
+    :backend "Claude"                     ;gptel backend or backend name
+    :model 'claude-sonnet-4-20250514
+    :system "You are an expert coding assistant. Your role is to provide high-quality code solutions, refactorings, and explanations."
+    :tools '("read_buffer" "modify_buffer")) ;gptel tools or tool names
+  (setq
+   gptel-model 'claude-sonnet-4-20250514
+   ;; gptel-backend (gptel-make-anthropic "Claude"
+   ;;                 :stream t :key (pyrho/get-1password-secret
+   ;;                                 "op://Personal/Anthropic/credential")))
+   gptel-backend (gptel-make-anthropic "Claude"
+                   :stream t
+                   :key #'gptel-api-key-from-auth-source))
+  ;; Setup MCP
+  (require 'gptel-integrations))
+
+(use-package mcp
+  :after gptel
+  :custom (mcp-hub-servers
+           `(
+             ("filesystem" . (:command "npx" :args ("-y" "@modelcontextprotocol/server-filesystem" "~/code/")))
+             ("fetch" . (:command "uvx" :args ("mcp-server-fetch")))
+             ("server-postgres" . (:command "npx" :args ("-y"
+                                                         "@modelcontextprotocol/server-postgres"
+                                                         "postgresql://postgres:postgres@127.0.0.1:5433/reel")))))
+
+
+  :config (require 'mcp-hub)
+  :hook (after-init . mcp-hub-start-all-server))
+
+(use-package claude-code-ide
+  :straight (:type git :host github :repo "manzaltu/claude-code-ide.el"))
+
+(use-package docker)
+
+(use-package docker-compose-mode)
+
+(use-package vterm
+  :hook (vterm-mode . (lambda() (display-line-numbers-mode -1))))
+
+(use-package dirvish
+  :init
+  (dirvish-override-dired-mode)
+  :after nerd-icons
+  :custom
+  (dirvish-quick-access-entries
+   '(("h" "~/"                          "Home")
+     ("d" "~/.emacs.d/"                 "Emacs")
+     ("p" "~/projects"                  "Projects")
+     ("t" "~/.local/share/Trash/files/" "TrashCan")))
+  (dirvish-mode-line-format
+   '(:left (sort file-time " " file-size symlink) :right (omit yank index)))
+  ;; Don't worry, Dirvish is still performant even you enable all these attributes
+  (dirvish-attributes '(nerd-icons collapse subtree-state vc-state git-msg))
+  :config
+  (setq dired-dwim-target t)
+  (setq delete-by-moving-to-trash t)
+  ;; Enable mouse drag-and-drop files to other applications
+  (setq dired-mouse-drag-files t)                   ; added in Emacs 29
+  (setq mouse-drag-and-drop-region-cross-program t) ; added in Emacs 29
+  (setq dired-listing-switches
+        "-l --almost-all --human-readable --time-style=long-iso --group-directories-first --no-group")
+  :bind
+  ;; Bind `dirvish|dirvish-side|dirvish-dwim' as you see fit
+  (("C-c f" . dirvish-fd)
+   ;; Dirvish has all the keybindings in `dired-mode-map' already
+   :map dirvish-mode-map
+   ("a"   . dirvish-quick-access)
+   ("f"   . dirvish-file-info-menu)
+   ("y"   . dirvish-yank-menu)
+   ("N"   . dirvish-narrow)
+   ("^"   . dirvish-history-last)
+   ("H"   . dired-up-directory)
+   ("h"   . dirvish-history-jump) ; remapped `describe-mode'
+   ("s"   . dirvish-quicksort)    ; remapped `dired-sort-toggle-or-edit'
+   ("v"   . dirvish-vc-menu)      ; remapped `dired-view-file'
+   ("TAB" . dirvish-subtree-toggle)
+   ("M-f" . dirvish-history-go-forward)
+   ("M-b" . dirvish-history-go-backward)
+   ("M-l" . dirvish-ls-switches-menu)
+   ("M-m" . dirvish-mark-menu)
+   ("M-t" . dirvish-layout-toggle)
+   ("M-s" . dirvish-setup-menu)
+   ("M-e" . dirvish-emerge-menu)
+   ("M-j" . dirvish-fd-jump)))
+
+;; (use-package auth-source-1password
+;;   :straight (auth-source-1password
+;;              :type git
+;;              :host github
+;;              :repo "dlobraico/auth-source-1password")
+;;   :config
+;;   (auth-source-1password-enable))
+
+(use-package 1password
+  :straight  (1password
+              :type git
+              :host github
+              :repo "justinbarclay/1password.el")
+ :init
+ (1password-enable-auth-source))
+
+(use-package ace-window
+  :bind (("C-x w w" . ace-window)
+         ("C-x w d" . ace-delete-window)
+         ("C-x w s" . ace-swap-window)
+         ("C-x w o" . ace-delete-other-windows))
+
+  :config
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+  (setq aw-dispatch-always t))
+
+(use-package diminish
+  :demand t)
+
+(use-package which-key
+  :diminish which-key-mode
+  :config
+  (which-key-mode +1)
+  (setq which-key-idle-delay 0.4
+        which-key-idle-secondary-delay 0.4))
+
+(use-package exec-path-from-shell
+  :init
+  (require 'exec-path-from-shell)
+  (dolist (var '("LSP_USE_PLISTS" "CC" "CXX"))
+    (add-to-list 'exec-path-from-shell-variables var))
+  :config (when (memq window-system '(mac ns x))
+            (exec-path-from-shell-initialize)))
+
+(use-package pdf-tools)
+
+(defun update-org-updated-at ()
+  "Update #+UPDATED_AT header in current org file."
+  (when (and (eq major-mode 'org-mode)
+             (buffer-file-name))
+    (save-excursion
+      (goto-char (point-min))
+      (if (re-search-forward "^#\\+UPDATED_AT:" nil t)
+          (progn
+            (beginning-of-line)
+            (kill-line)
+            (insert (format "#+UPDATED_AT: %s" (format-time-string "%Y-%m-%d %H:%M:%S"))))
+        ;; If no UPDATED_AT found, add it after other headers
+        (goto-char (point-min))
+        (while (looking-at "^#\\+")
+          (forward-line))
+        (insert (format "#+UPDATED_AT: %s\n" (format-time-string "%Y-%m-%d %H:%M:%S")))))))
+
+;; (add-hook 'before-save-hook 'update-org-updated-at)
