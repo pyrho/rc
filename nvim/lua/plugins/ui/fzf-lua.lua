@@ -44,7 +44,8 @@ return {
 	end,
 	keys = {
 		{ "<LEADER>O", "<CMD>FzfLua global<CR>", desc = "Everything fuzzy finder" },
-		{ "<LEADER>o", "<CMD>FzfLua frecency cwd_only=true<CR>", desc = "File fuzzy finder" },
+		{ "<LEADER>o", "<CMD>FzfLua files<CR>", desc = "File fuzzy finder" },
+		-- { "<LEADER>o", "<CMD>FzfLua frecency cwd_only=true<CR>", desc = "File fuzzy finder" },
 		{ "<LEADER>s", "<CMD>FzfLua live_grep<CR>", desc = "Live grep" },
 		{ "<LEADER>S", "<CMD>FzfLua grep_cword<CR>", desc = "Grep current word" },
 		{ "<LEADER>b", "<CMD>FzfLua buffers<CR>", desc = "Buffer fuzzy finder" },

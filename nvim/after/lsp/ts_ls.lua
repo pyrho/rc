@@ -36,6 +36,9 @@ return {
 		"vue", -- Vue.js single-file components (.vue)
 	},
 	init_options = {
+		tsserver = {
+			path = "./node_modules/typescript/lib",
+		},
 		hostInfo = "neovim",
 		preferences = {
 			includeCompletionsForModuleExports = true,

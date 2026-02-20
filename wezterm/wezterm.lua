@@ -118,7 +118,10 @@ config.window_padding = {
 -- On macOS, 'RESIZE|INTEGRATED_BUTTONS' also looks nice if
 -- you want to keep the window controls visible and integrate
 -- them into the tab bar.
-config.window_decorations = "RESIZE"
+-- 2025-11-13 See https://github.com/wezterm/wezterm/issues/7118
+-- There is an ongoing issue requring to disable shadows
+config.window_decorations = "RESIZE|MACOS_FORCE_DISABLE_SHADOW"
+config.front_end = "OpenGL"
 -- config.window_decorations = "RESIZE|INTEGRATED_BUTTONS"
 config.integrated_title_button_style = "MacOsNative"
 -- Sets the font for the window frame (tab bar)
@@ -669,8 +672,8 @@ config.max_fps = 120
 -- 0.99 is crucial,
 -- For some reason, 1 (the default) leads to 100% GPU usage.
 -- As of 2025-09-23 there are no reports of this on github.
-config.window_background_opacity     = 0.9
-config.macos_window_background_blur  = 40
+-- config.window_background_opacity     = 0.9
+-- config.macos_window_background_blur  = 40
 
 config.inactive_pane_hsb = {
   saturation = 0.9,

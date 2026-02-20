@@ -62,44 +62,9 @@ alias gpsup='git push --set-upstream origin $(git_current_branch)'
 alias grt='cd $(git rev-parse --show-toplevel || echo ".")'
 # }}}
 #
-alias t='todo.sh'
 alias icat="kitty +kitten icat"
 alias ssk="kitty +kitten ssh"
 alias coffee="curl https://bin.25.wf -T"
-function haste() {
-    PASTE_ID=$(cat $1 | curl -X POST --data-binary @- https://paste.25-47.net/api/pastes/simple)
-    echo "https://paste.25-47.net/$PASTE_ID"
-}
-function obsess() {
-    #kitty @ set-tab-title $@
-    cd $(zoxide query "$@") && nvim -S Session.vim
-}
-
-function klogs() {
-    if [[ $1 == "staging" ]]; then
-        kubectl --context do-fra1-fra1-staging -n staging logs -l app=$2 -f | fblog
-    elif [[ $1 == "production" ]]; then
-        kubectl --context do-fra1-production -n production logs -l app=$2 -f | fblog
-    else
-        echo "Unknown stage $1"
-    fi;
-}
-# ﬦ k -n staging logs -l app=monitoring -f |fblog
-
-function bwu(){
-    export BW_SESSION=$(bw unlock --raw $1)
-}
-
-# $1: BookingID (mandatory)
-# $2: Bucket (default: am-emails)
-function amGetMail() {
-    ___bookingId=$1
-    ___bucket=${2:-am-emails}
-    ___path=`PGPASSWORD=$DO_DB_PASSWORD psql -U $DO_DB_USER -h $DO_DB_HOST -p $DO_DB_PORT -d production --set=sslmode=require --csv -A -t -c "select s3_path from bookings.bookings where id = $___bookingId;"`
-
-    cat /home/pyrho/buckets/$___bucket/$___path/mail.json | jq --raw-output '.["body-html"]' > /tmp/`echo $___path | tr '/' '_'`.html && firefox /tmp/`echo $___path | tr '/' '_'`.html
-}
-alias xcd='cd "$(xplr --print-pwd-as-result)"'
 
 alias dkc='docker compose'
 alias dkcu='docker compose up -d'
@@ -112,35 +77,4 @@ function dkclogsjson() {
     docker compose logs --no-log-prefix -f $1 | jq -R '. as $line | try (fromjson) catch $line'
 }
 
-function testmepls() {
-  new_name=${1//\//_}
-  echo $new_name
-}
-
-function create_frqs_worktree() {
-  new_name=${1//\//_}
-  echo "Setting up worktree $new_name..."
-  echo "Checkout"
-  git checkout main
-  echo "Pull"
-  git pull
-  echo "Add worktree"
-  git worktree add -b $1 ../$new_name
-  echo "Copy files"
-  cp ./reel-42-4a13a716d19f.json ../$new_name
-  cp ./postgrestools.jsonc ../$new_name
-  cp ./rest-api/.env ../$new_name/rest-api/.env
-  cp ./auth-api/.env ../$new_name/auth-api/.env
-  cp ./rest-api/*.md ../$new_name/rest-api/.
-  cp -r ./rest-api/.vscode ../$new_name/rest-api/.
-  echo "Setup env"
-  cd ../$new_name && ./setup-env.sh
-  echo "Pull deps"
-  task dev:pull-deps
-  echo "Migrate"
-  task migrate:up
-  echo "Apply Hasura metadata"
-  task hasura:metadata:apply
-  echo "Done!"
-}
-
+alias ccd='cd $(fd -td -d2 | fzf)'

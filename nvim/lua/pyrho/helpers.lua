@@ -1,7 +1,7 @@
 local M = {}
 local api = vim.api
 function M.getFiletypesForLSP()
-  return {"typescript", "typescriptreact", "javascript", "lua", "markdown"}
+  return {"typescript", "typescriptreact", "javascript", "lua", "markdown", "yaml"}
 end
 -- From https://sbulav.github.io/vim/neovim-telescope-github/
 function M.rewrite_wrap(fn)

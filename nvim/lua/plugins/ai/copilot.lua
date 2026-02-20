@@ -13,8 +13,7 @@
 -- }
 return {
 	"zbirenbaum/copilot.lua",
-    -- no more sub
-    enabled = false,
+    enabled = true,
 	cmd = "Copilot",
 	event = "InsertEnter",
 	config = function()
