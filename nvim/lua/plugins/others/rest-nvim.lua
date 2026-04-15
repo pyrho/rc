@@ -3,6 +3,7 @@ return {
 	-- Until its merged, let's use that.
 	ft = { "http" },
 	"rest-nvim/rest.nvim",
+	enabled = false,
 	dependencies = { "nvim-treesitter/nvim-treesitter" },
 	-- config = function()
 	--   require("rest-nvim").setup({
